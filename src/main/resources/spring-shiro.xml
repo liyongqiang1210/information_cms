@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans      
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd      
+                        http://www.springframework.org/schema/context      
+                        http://www.springframework.org/schema/context/spring-context-3.1.xsd      
+                        http://www.springframework.org/schema/mvc      
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+
+	<!-- 创建securityManager对象，多个realm时请使用realms代替realm -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="myRealm" />
+		<!-- 注入cache缓存管理器 -->
+		<property name="cacheManager" ref="cacheManager"></property>
+		<!-- 注入session会话管理器 -->
+		<property name="sessionManager" ref="sessionManager" />
+		<!-- 记住我 -->
+		<property name="rememberMeManager" ref="rememberMeManager" />
+	</bean>
+
+	<!-- 创建shiro过滤器 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- Shiro的核心安全接口,这个属性是必须的 -->
+		<property name="securityManager" ref="securityManager" />
+		<!-- 身份认证失败跳转的地址，没有登录当然就跳转到登录地址 -->
+		<property name="loginUrl" value="/" />
+		<!-- 身份认证成功跳转的地址，一般登录成功后会跳转到系统首页 -->
+		<property name="successUrl" value="main/index.html" />
+		<!-- 权限认证失败跳转的地址 ，用来提示当前用户没有操作权限，可以不需要 -->
+		<property name="unauthorizedUrl" value="main/error/404.html" />
+		<!-- Shiro连接约束配置,即过滤链的定义 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/html/**=authc
+				/login/toLogin.do=anon
+				/user/**=authc,roles[admin]
+				/role/**=authc,roles[admin]
+				/resource/**=authc,roles[admin]
+			</value>
+		</property>
+	</bean>
+
+	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+	<!-- 继承自AuthorizingRealm的自定义Realm,即指定Shiro验证用户登录的类为自定义的ShiroDbRealm.java -->
+	<bean id="myRealm" class="com.maven.realm.MyRealm">
+		<!-- 加密 -->
+		<property name="credentialsMatcher" ref="credentialsMatcher" />
+	</bean>
+	<!-- 加密管理器对象 -->
+	<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher"
+		id="credentialsMatcher">
+		<property name="hashAlgorithmName" value="md5" />
+		<property name="hashIterations" value="1" />
+	</bean>
+
+	<!-- 创建sessionManager对象导入自定义的RedisSessionDao -->
+	<bean class="com.maven.session.CustomSessionManager" id="sessionManager">
+		<property name="sessionDAO" ref="redisSessionDao"></property>
+	</bean>
+	<!-- 创建自定义的sessionDao -->
+	<bean class="com.maven.session.RedisSessionDao" id="redisSessionDao" />
+
+	<!-- 创建自定义的cacheManager管理器对象 -->
+	<bean class="com.maven.cache.RedisCacheManager" id="cacheManager" />
+
+	<!-- 创建记住我cookie管理器 -->
+	<bean class="org.apache.shiro.web.mgt.CookieRememberMeManager" id="rememberMeManager">
+		<property name="cookie" ref="cookie" />
+		<property name="cipherKey"
+			value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}" />
+	</bean>
+	<bean class="org.apache.shiro.web.servlet.SimpleCookie" id="cookie">
+		<constructor-arg value="rememberMe" />
+		<property name="httpOnly" value="true" />
+		<property name="maxAge" value="2000000" />
+	</bean>
+	
+</beans>

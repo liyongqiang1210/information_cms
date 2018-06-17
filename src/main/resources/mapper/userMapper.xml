@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maven.dao.UserDao">
+	<resultMap id="userMap" type="com.maven.entity.User">
+		<result column="id" property="id" jdbcType="INTEGER" />
+		<result column="username" property="username" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="INTEGER" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="role_ids" property="roleIds" jdbcType="VARCHAR" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+		<result column="locked" property="locked" jdbcType="INTEGER" />
+		<result column="create_time" property="createTime" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 根据用户名查找用户 -->
+	<select id="findByUsername" parameterType="string"
+		resultMap="userMap">
+		select * from sys_user where username = #{username}
+	</select>
+
+	<!-- 登录 -->
+	<select id="login" parameterType="com.maven.entity.User"
+		resultType="int">
+		select count(*) from sys_user where username = #{username}
+		and
+		password = #{password}
+	</select>
+	
+	<!-- 查找全部用户 -->
+	<select id="findAll" resultType="com.maven.entity.User">
+		select
+		u.id as id,u.username as
+		userName,u.phone as phone,u.email as email,r.role_name as
+		roleName,u.create_time as createTime,u.locked as locked
+		from sys_user u
+		left join sys_role r on convert(u.role_ids,SIGNED) =
+		r.id
+	</select>
+
+	<!-- 更新用户 -->
+	<update id="updateUser" parameterType="com.maven.entity.User">
+		update sys_user set
+		(username,password,phone,email,salt,role_ids,available) values
+		(#{username},#{password},#{phone},#{email},#{salt},#{role_ids},#{available})
+		where id = #{id}
+	</update>
+
+	<!-- 删除用户根据id -->
+	<delete id="deleteUser" parameterType="int">
+		delete from sys_user
+		where id = #{id}
+	</delete>
+
+	<!-- 新增用户 -->
+	<insert id="createUser" parameterType="com.maven.entity.User"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into sys_user
+		(username,password,email,phone,sex,salt,role_ids,remarks,create_time)
+		values
+		(#{username},#{password},#{email},#{phone},#{sex},#{salt},#{roleIds},#{remarks},#{createTime})
+	</insert>
+
+	<!-- 更新用户是否启用 -->
+	<update id="updateUserState" parameterType="com.maven.entity.User">
+		update sys_user set
+		locked = #{locked} where id = #{id}
+	</update>
+</mapper>

@@ -1,0 +1,10 @@
+@charset "utf-8";
+/* 你自己的样式 */
+/*权限*/
+.role-list{ border:solid 1px #eee;}
+.role-list > dt{ background-color:#efefef;padding:5px 10px}
+.role-list > dd{ padding:10px; padding-left:30px}
+.role-list > dd > dl{ border-bottom:solid 1px #eee; padding:5px 0}
+.role-list > dd > dl > dt{ display:inline-block;float:left;white-space:nowrap;width:100px}
+.role-list > dd > dl > dd{ margin-left:10px;margin-right:10px}
+.role-list > dd > dl > dd > label{ padding-right:10px}
