@@ -42,18 +42,21 @@ public class UserController {
 	}
 
 	/**
-	 * 获取用户列表
 	 * 
-	 * @return 返回json字符串
+	 * @param limit 页面大小
+	 * @param offset 页码
+	 * @param userName
+	 * @param createTime
+	 * @return
 	 */
 	@RequestMapping(value = "/findAll.do", method = RequestMethod.GET)
 	@ResponseBody
-	public String findAll() {
+	public String findAll(int limit, int offset, String userName, String createTime) {
 
 		try {
-			List<User> list = userServiceImpl.findAll();
-
-			return MessageUtil.getJsonArrry(list);
+			List<User> list = userServiceImpl.findAll(limit,offset,userName,createTime);
+			int total = list.size();
+			return MessageUtil.getJsonArrry(total,JSONArray.toJSONString(list));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return MessageUtil.ERROR_MESSAGE;

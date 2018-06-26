@@ -84,14 +84,14 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
-	public List<User> findAll() {
+	public List<User> findAll(int limit, int offset, String userName, String createTime) {
 
 		String key = "findAllUser";
 		List<User> list = redisCache.get(key);
 		if (list != null && list.size() != 0) {
 			return list;
 		}
-		list = userDao.findAll();
+		list = userDao.findAll(limit,offset,userName,createTime);
 		redisCache.put("findAllUser", list);
 		return list;
 	}

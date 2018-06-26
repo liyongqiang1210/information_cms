@@ -18,7 +18,7 @@ public interface UserDao {
 
 	public User findOne(int userId);
 
-	public List<User> findAll();
+	public List<User> findAll(int limit, int offset, String userName, String createTime);
 
 	public User findByUsername(String username);
 	
@@ -27,4 +27,5 @@ public interface UserDao {
 	public List<User> getUserList();
 	
 	public int updateUserState(User user);
+	
 }

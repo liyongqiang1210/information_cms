@@ -25,6 +25,14 @@ public class MessageUtil {
 		return JSONArray.toJSONString(o);
 	}
 	
+	public static String getJsonArrry(int total,String rows){
+		
+		String jsonStr = "{\"total\":" + total + ",\"rows\":" + rows + "}";
+		
+		return jsonStr;
+		
+	}
+	
 	/**
 	 * 获取想要返回的json字符串信息
 	 * 

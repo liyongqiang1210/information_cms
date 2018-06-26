@@ -33,7 +33,16 @@ public interface UserService {
 
 	public User findOne(int userId);
 
-	public List<User> findAll();
+	/**
+	 * 根据条件查询用户列表
+	 * 
+	 * @param limit
+	 * @param offset
+	 * @param userName
+	 * @param createTime
+	 * @return
+	 */
+	public List<User> findAll(int limit, int offset, String userName, String createTime);
 
 	/**
 	 * 根据用户名查找用户

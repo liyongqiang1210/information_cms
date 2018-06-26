@@ -37,7 +37,13 @@
 		roleName,u.create_time as createTime,u.locked as locked
 		from sys_user u
 		left join sys_role r on convert(u.role_ids,SIGNED) =
-		r.id
+		r.id where 1=1
+		<if test="userName!=null and userName!=''">
+			and username like CONCAT(CONCAT('%', #{userName}),'%');
+		</if>
+		<if test="createTime!=null and createTime!=''">
+			and create_time = #{createTime};
+		</if>
 	</select>
 
 	<!-- 更新用户 -->
