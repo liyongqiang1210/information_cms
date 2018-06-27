@@ -68,7 +68,6 @@ public class UserController {
 			int total = list.size();
 			return MessageUtil.getJsonArrry(total, JSONArray.toJSONString(list));
 		} catch (Exception e) {
-			
 			e.printStackTrace();
 			return MessageUtil.ERROR_MESSAGE;
 		}
