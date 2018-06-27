@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.maven.cache.RedisCache;
 import com.maven.dao.UserDao;
-import com.maven.entity.User;
+import com.maven.model.pojo.User;
+import com.maven.model.query.QueryUser;
 import com.maven.service.UserService;
 import com.maven.util.Md5Util;
 import com.maven.util.MessageUtil;
@@ -84,14 +85,14 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
-	public List<User> findAll(int limit, int offset, String userName, String createTime) {
+	public List<User> findAll(QueryUser qu) {
 
 		String key = "findAllUser";
 		List<User> list = redisCache.get(key);
 		if (list != null && list.size() != 0) {
 			return list;
 		}
-		list = userDao.findAll(limit,offset,userName,createTime);
+		list = userDao.findAll(qu);
 		redisCache.put("findAllUser", list);
 		return list;
 	}

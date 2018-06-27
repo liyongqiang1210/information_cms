@@ -2,7 +2,8 @@ package com.maven.dao;
 
 import java.util.List;
 
-import com.maven.entity.User;
+import com.maven.model.pojo.User;
+import com.maven.model.query.QueryUser;
 
 /**
  * 
@@ -18,7 +19,7 @@ public interface UserDao {
 
 	public User findOne(int userId);
 
-	public List<User> findAll(int limit, int offset, String userName, String createTime);
+	public List<User> findAll(QueryUser qu);
 
 	public User findByUsername(String username);
 	

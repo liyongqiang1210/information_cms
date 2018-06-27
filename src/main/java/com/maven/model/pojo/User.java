@@ -1,4 +1,4 @@
-package com.maven.entity;
+package com.maven.model.pojo;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ public class User implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private int id;
-	private String username;
+	private String usename;
 	private String password;
 	private String salt;
 	private String phone;
@@ -32,11 +32,11 @@ public class User implements Serializable {
 	}
 
 	public String getUsername() {
-		return username;
+		return usename;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUsername(String usename) {
+		this.usename = usename;
 	}
 
 	public String getPassword() {
@@ -80,7 +80,7 @@ public class User implements Serializable {
 	}
 
 	public String getCredentialsSalt() {
-		return username + salt;
+		return usename + salt;
 	}
 
 	public String getPhone() {
@@ -123,11 +123,11 @@ public class User implements Serializable {
 		this.remarks = remarks;
 	}
 
-	public User(int id, String username, String password, String salt, String phone, String email, String roleName,
+	public User(int id, String usename, String password, String salt, String phone, String email, String roleName,
 			String locked, String createTime, String remarks, int sex) {
 		super();
 		this.id = id;
-		this.username = username;
+		this.usename = usename;
 		this.password = password;
 		this.salt = salt;
 		this.phone = phone;
@@ -145,7 +145,7 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", password=" + password + ", salt=" + salt + ", phone="
+		return "[id=" + id + ", usename=" + usename + ", password=" + password + ", salt=" + salt + ", phone="
 				+ phone + ", email=" + email + ", sex=" + sex + ", roleIds=" + roleIds + ", remarks=" + remarks
 				+ ", locked=" + locked + ", createTime=" + createTime + ", roleName=" + roleName + "]";
 	}

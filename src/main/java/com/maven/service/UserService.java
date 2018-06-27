@@ -3,7 +3,9 @@ package com.maven.service;
 import java.util.List;
 import java.util.Set;
 
-import com.maven.entity.User;
+import com.maven.model.pojo.User;
+import com.maven.model.query.QueryUser;
+
 
 /**
  * 
@@ -42,7 +44,7 @@ public interface UserService {
 	 * @param createTime
 	 * @return
 	 */
-	public List<User> findAll(int limit, int offset, String userName, String createTime);
+	public List<User> findAll(QueryUser qu);
 
 	/**
 	 * 根据用户名查找用户

@@ -2,7 +2,7 @@ package com.maven.dao;
 
 import java.util.List;
 
-import com.maven.entity.Resource;
+import com.maven.model.pojo.Resource;
 
 /**
  * 

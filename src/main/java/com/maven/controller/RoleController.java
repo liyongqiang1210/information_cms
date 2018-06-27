@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.maven.entity.Role;
+import com.maven.model.pojo.Role;
 import com.maven.service.impl.RoleServiceImpl;
 
 @Controller

@@ -1,4 +1,4 @@
-package com.maven.entity;
+package com.maven.model.pojo;
 
 import java.io.Serializable;
 

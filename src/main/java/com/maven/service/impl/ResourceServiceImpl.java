@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import com.maven.dao.ResourceDao;
 import com.maven.dao.RoleDao;
 import com.maven.dao.UserDao;
-import com.maven.entity.Resource;
-import com.maven.entity.Role;
-import com.maven.entity.User;
+import com.maven.model.pojo.Resource;
+import com.maven.model.pojo.Role;
+import com.maven.model.pojo.User;
 import com.maven.service.ResourceService;
 
 @Service

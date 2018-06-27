@@ -13,7 +13,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.maven.entity.User;
+import com.maven.model.pojo.User;
 import com.maven.service.ResourceService;
 import com.maven.service.RoleService;
 import com.maven.service.UserService;
@@ -23,7 +23,7 @@ import com.maven.service.UserService;
  * 
  * @create
  * @author
- */
+ */	
 public class MyRealm extends AuthorizingRealm {
 
 	@Autowired

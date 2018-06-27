@@ -3,7 +3,7 @@ package com.maven.service;
 import java.util.List;
 import java.util.Set;
 
-import com.maven.entity.Resource;
+import com.maven.model.pojo.Resource;
 
 public interface ResourceService {
 

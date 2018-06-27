@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
-import com.maven.entity.User;
+import com.maven.model.pojo.User;
+import com.maven.model.query.QueryUser;
 import com.maven.service.impl.UserServiceImpl;
 import com.maven.util.DateUtil;
 import com.maven.util.MessageUtil;
@@ -43,20 +44,29 @@ public class UserController {
 
 	/**
 	 * 
-	 * @param limit 页面大小
-	 * @param offset 页码
+	 * @param limit
+	 *            页面大小
+	 * @param offset
+	 *            页码
 	 * @param userName
 	 * @param createTime
 	 * @return
 	 */
-	@RequestMapping(value = "/findAll.do", method = RequestMethod.GET)
+	@RequestMapping(value = "/findAll.do", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
 	@ResponseBody
-	public String findAll(int limit, int offset, String userName, String createTime) {
+	public String findAll(Integer limit, Integer offset, String username) {
 
 		try {
-			List<User> list = userServiceImpl.findAll(limit,offset,userName,createTime);
+			if (limit == null || offset == null || username == null) {
+				return MessageUtil.getStateInfo("参数中不能存在null");
+			}
+			QueryUser qu = new QueryUser();
+			qu.setLimit(limit);
+			qu.setOffset(offset);
+			qu.setUsername(username);
+			List<User> list = userServiceImpl.findAll(qu);
 			int total = list.size();
-			return MessageUtil.getJsonArrry(total,JSONArray.toJSONString(list));
+			return MessageUtil.getJsonArrry(total, JSONArray.toJSONString(list));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return MessageUtil.ERROR_MESSAGE;

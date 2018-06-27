@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.maven.entity.Resource;
+import com.maven.model.pojo.Resource;
 import com.maven.service.impl.ResourceServiceImpl;
 import com.maven.util.MessageUtil;
 

@@ -32,6 +32,7 @@ public class MessageUtil {
 		return jsonStr;
 		
 	}
+
 	
 	/**
 	 * 获取想要返回的json字符串信息

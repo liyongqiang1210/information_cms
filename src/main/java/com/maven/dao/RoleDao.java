@@ -3,7 +3,7 @@ package com.maven.dao;
 import java.util.List;
 import java.util.Set;
 
-import com.maven.entity.Role;
+import com.maven.model.pojo.Role;
 
 /**
  * 

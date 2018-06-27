@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maven.dao.UserDao">
-	<resultMap id="userMap" type="com.maven.entity.User">
+	<resultMap id="userMap" type="com.maven.model.pojo.User">
 		<result column="id" property="id" jdbcType="INTEGER" />
 		<result column="username" property="username" jdbcType="VARCHAR" />
 		<result column="password" property="password" jdbcType="VARCHAR" />
@@ -22,7 +22,7 @@
 	</select>
 
 	<!-- 登录 -->
-	<select id="login" parameterType="com.maven.entity.User"
+	<select id="login" parameterType="com.maven.model.pojo.User"
 		resultType="int">
 		select count(*) from sys_user where username = #{username}
 		and
@@ -30,24 +30,23 @@
 	</select>
 	
 	<!-- 查找全部用户 -->
-	<select id="findAll" resultType="com.maven.entity.User">
+	<select id="findAll" parameterType="com.maven.model.query.QueryUser" resultType="com.maven.model.pojo.User">
+	
 		select
 		u.id as id,u.username as
-		userName,u.phone as phone,u.email as email,r.role_name as
+		username,u.phone as phone,u.email as email,r.role_name as
 		roleName,u.create_time as createTime,u.locked as locked
 		from sys_user u
 		left join sys_role r on convert(u.role_ids,SIGNED) =
 		r.id where 1=1
-		<if test="userName!=null and userName!=''">
-			and username like CONCAT(CONCAT('%', #{userName}),'%');
+		<if test="username!=null and username!=''">
+			and username like CONCAT(CONCAT('%', #{username}),'%');
 		</if>
-		<if test="createTime!=null and createTime!=''">
-			and create_time = #{createTime};
-		</if>
+		limit #{offset},#{limit}
 	</select>
 
 	<!-- 更新用户 -->
-	<update id="updateUser" parameterType="com.maven.entity.User">
+	<update id="updateUser" parameterType="com.maven.model.pojo.User">
 		update sys_user set
 		(username,password,phone,email,salt,role_ids,available) values
 		(#{username},#{password},#{phone},#{email},#{salt},#{role_ids},#{available})
@@ -61,7 +60,7 @@
 	</delete>
 
 	<!-- 新增用户 -->
-	<insert id="createUser" parameterType="com.maven.entity.User"
+	<insert id="createUser" parameterType="com.maven.model.pojo.User"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into sys_user
 		(username,password,email,phone,sex,salt,role_ids,remarks,create_time)
@@ -70,7 +69,7 @@
 	</insert>
 
 	<!-- 更新用户是否启用 -->
-	<update id="updateUserState" parameterType="com.maven.entity.User">
+	<update id="updateUserState" parameterType="com.maven.model.pojo.User">
 		update sys_user set
 		locked = #{locked} where id = #{id}
 	</update>
