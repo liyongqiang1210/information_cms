@@ -84,5 +84,9 @@ public class Md5Util {
 		
 		return sb.toString();
 	}
+	
+	public static void main(String[] args) {
+		System.out.println(md5("123456"));
+	}
 
 }

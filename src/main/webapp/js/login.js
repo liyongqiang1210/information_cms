@@ -6,7 +6,6 @@ $(function() {
 					function() {
 						var username = $("#username").val(); // 用户名
 						var password = $("#password").val(); // 密码
-						var errorMessage = ""; // 返回的错误信息
 						var checkCode = $("#checkCode").val(); // 验证码
 						var rememberMe = $("#rememberMe").prop("checked"); // 记住我
 
@@ -22,7 +21,8 @@ $(function() {
 						} else {
 							$(".alert").remove();
 							// 异步登录
-							$.ajax({
+							$
+									.ajax({
 										type : "POST",
 										url : "http://localhost:8080/Information_cms/login/toLogin.do",
 										data : {
@@ -33,15 +33,22 @@ $(function() {
 										},
 										dataType : "json",
 										success : function(data) {
-											var msg = data.msg;
-											if (msg == "success") { // 登录成功，跳转到主页
+
+											var state = data.success; // 服务器响应状态
+											var message = data.message; // 服务器响应的信息
+
+											if (state) { // 登录成功，跳转到主页
+
+												// 设置cookie
+												setCookie("username",username,7);
+
 												// 页面跳转到主页
 												$(location)
 														.prop('href',
-																'http://localhost:8080/Information_cms/html/main/index.html');
+																'http://localhost:8080/Information_cms/index.html');
 											} else { // 登录失败，提示错误信息
 												// 将错误信息输出到登录页面提示信息中
-
+												promptMessage(message);
 											}
 										},
 										error : function(data) {
@@ -72,7 +79,16 @@ function promptMessage(errorMessage) {
 							+ "class='close' data-dismiss='alert' aria-hidden='true'> &times;</button>"
 							+ errorMessage + "</div>");
 	// 2秒后删除提示信息
-	setTimeout(function(){
+	setTimeout(function() {
 		$(".alert").remove();
-	},2000);
+	}, 2000);
 };
+
+// 设置cookie
+function setCookie(cname,cvalue,exdays)
+{
+  var d = new Date();
+  d.setTime(d.getTime()+(exdays*24*60*60*1000));
+  var expires = "expires="+d.toGMTString();
+  document.cookie = cname + "=" + cvalue + "; " + expires;
+}

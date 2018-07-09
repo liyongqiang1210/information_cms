@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import com.maven.model.query.QueryUser;
 import com.maven.service.impl.UserServiceImpl;
 import com.maven.util.DateUtil;
 import com.maven.util.MessageUtil;
+import com.maven.util.json.JsonResult;
 
 @Controller
 @RequestMapping(value = "/user")
@@ -33,13 +35,13 @@ public class UserController {
 		return "/user/info";
 	}
 
-	@RequestMapping(value = "getUserByUserName")
+	@RequestMapping(value = "/getUserByUserName.do",method = RequestMethod.GET, produces = "application/json;charset=utf-8")
 	@ResponseBody
-	public String getUserByUsername(HttpServletRequest request, String userName) {
-		JSONArray jsonArray = new JSONArray();
-		User user = userServiceImpl.findByUsername(userName);
-		jsonArray.add(user);
-		return jsonArray.toJSONString();
+	public JsonResult getUserByUsername(HttpServletRequest request, String username) {
+		
+		User user = userServiceImpl.findByUsername(username);
+		
+		return JsonResult.buildSuccessResult(user);
 	}
 
 	/**
@@ -54,9 +56,14 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/findAll.do", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
 	@ResponseBody
-	public String findAll(Integer limit, Integer offset, String username) {
+	public String findAll(HttpServletResponse response, Integer limit, Integer offset, String username) {
 
 		try {
+			//这里需要设置头信息，不然客户端无法接收到返回值
+			response.setHeader("Access-Control-Allow-Origin", "*");
+			response.setHeader("Access-Control-Allow-Methods", "GET");
+			response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+			
 			if (limit == null || offset == null || username == null) {
 				return MessageUtil.getStateInfo("参数中不能存在null");
 			}
@@ -68,7 +75,7 @@ public class UserController {
 			int total = list.size();
 			return MessageUtil.getJsonArrry(total, JSONArray.toJSONString(list));
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 			return MessageUtil.ERROR_MESSAGE;
 		}

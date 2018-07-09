@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.maven.util.CodeUtil;
 import com.maven.util.MessageUtil;
+import com.maven.util.json.JsonResult;
 
 /**
  * 
@@ -48,7 +49,7 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "/toLogin.do")
 	@ResponseBody
-	public String toLogin(HttpServletRequest request, HttpServletResponse response, String username, String password, boolean rememberMe,String checkCode) {
+	public JsonResult toLogin(HttpServletRequest request, HttpServletResponse response, String username, String password, boolean rememberMe,String checkCode) {
 		
 		String msg = "";
 
@@ -66,32 +67,29 @@ public class LoginController {
 
 			try {
 				subject.login(token);
-				msg = MessageUtil.getStateInfo("success");
+				return JsonResult.buildSuccessResult("success");
 			} catch (IncorrectCredentialsException e) {
-				msg = MessageUtil.getStateInfo("账号或密码错误");
+				return JsonResult.buildFailedResult("账号或密码错误");
 			} catch (UnknownAccountException e) {
-				msg = MessageUtil.getStateInfo("账号或密码错误");
+				return JsonResult.buildFailedResult("账号或密码错误");
 			} catch (ExcessiveAttemptsException e) {
-				msg = MessageUtil.getStateInfo("登录失败次数过多,账户锁定五分钟");
+				return JsonResult.buildFailedResult("登录失败次数过多,账户锁定五分钟");
 			} catch (LockedAccountException e) {
-				msg = MessageUtil.getStateInfo("帐号已被锁定");
+				return JsonResult.buildFailedResult("帐号已被锁定");
 			} catch (DisabledAccountException e) {
-				msg = MessageUtil.getStateInfo("帐号已被禁用");
+				return JsonResult.buildFailedResult("帐号已被禁用");
 			} catch (ExpiredCredentialsException e) {
-				msg = MessageUtil.getStateInfo("帐号已过期");
+				return JsonResult.buildFailedResult("帐号已过期");
 			} catch (UnauthorizedException e) {
-				msg = MessageUtil.getStateInfo("您没有得到相应的授权");
+				return JsonResult.buildFailedResult("您没有得到相应的授权");
 			} catch (AuthenticationException e) {// 其它异常
-				msg = MessageUtil.getStateInfo("意外的错误");
+				return JsonResult.buildFailedResult("意外的错误");
 			}
 		} else if (checkCode == "" || checkCode.equals("") || checkCode == null) {
-			msg = MessageUtil.getStateInfo("请输入验证码");
+			return JsonResult.buildFailedResult("请输入验证码");
 		}else{
-			msg = MessageUtil.getStateInfo("验证码错误");
+			return JsonResult.buildFailedResult("验证码错误");
 		}
-
-		return msg;
-
 	}
 
 	/**
