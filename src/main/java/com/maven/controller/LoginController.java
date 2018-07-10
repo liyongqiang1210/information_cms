@@ -51,8 +51,6 @@ public class LoginController {
 	@ResponseBody
 	public JsonResult toLogin(HttpServletRequest request, HttpServletResponse response, String username, String password, boolean rememberMe,String checkCode) {
 		
-		String msg = "";
-
 		// 从session中读取验证码的实际值
 		HttpSession session = request.getSession();
 		String code = (String) session.getAttribute("code");

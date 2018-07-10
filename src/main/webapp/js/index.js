@@ -1,5 +1,28 @@
 $(function() {
 
+	// 从cookie中获取当前用户名
+	var username = getCookie("username");
+	// 如何cookie中当前用户为空的话页面自动跳转到登录页面
+	if (username == "") {
+		window.location.href = "http://localhost:8080/Information_cms/login.html";
+	}
+
+	// 用户登录后超过30分钟未操作的话则重新跳转到登录页面
+	var timeStart = 0;// 进入系统时间，
+	var timeOut = 1800;// 有效时间，设置为30分钟
+	if (timeStart == 0) {
+		timeStart = (new Date()).getTime();// 得到初始成功登录系统的时间
+	}
+	document.onmousedown = function(event) {// 监听鼠标事件
+		var timeNow = (new Date()).getTime(); // 当前系统时间
+		var timeOp = timeNow - timeStart - timeOut * 1000;
+		if (timeOp > 0) {
+			window.location.href = "http://localhost:8080/Information_cms/login.html";// 跳转到登录页面
+		} else {
+			timeStart = timeNow;// 未超时，则重新计时
+		}
+	}
+
 	// 左侧导航栏收缩展开
 	$('.nav-left-item>a').on(
 			'click',
@@ -103,17 +126,15 @@ $(function() {
 			+ "style='display: block;'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type='button' "
 			+ "class='close' onclick='closeModel()' data-dismiss='modal' aria-hidden='true'>×</button><h4 class='modal-title' "
 			+ "id='myModalLabel'>个人信息</h4></div><div class='modal-body'>";
-	
+
 	// 弹框html代码后缀
 	var suffix = "</div><div class='modal-footer'><button "
 			+ "type='button' class='btn btn-default' onclick='closeModel()' data-dismiss='modal'>退出</button> "
-			+ "</div></div></div></div>"; 
+			+ "</div></div></div></div>";
 	// 个人信息弹窗
 	$("#information")
 			.click(
 					function() {
-
-						var username = getCookie("username"); // 获取当前用户名
 						$
 								.ajax({
 									type : "GET",
@@ -140,12 +161,14 @@ $(function() {
 												+ remarks + "</li></ul>";
 
 										if (!state) {
-											openModel(prefix + "获取用户信息失败" + suffix);
+											openModel(prefix + "获取用户信息失败"
+													+ suffix);
 										}
 										openModel(prefix + information + suffix);
 									},
 									error : function() {
-										openModel(prefix + "获取用户信息异常，请联系管理员" + suffix);
+										openModel(prefix + "获取用户信息异常，请联系管理员"
+												+ suffix);
 									}
 								});
 

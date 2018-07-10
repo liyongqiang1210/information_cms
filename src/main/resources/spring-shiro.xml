@@ -34,9 +34,9 @@
 		<!-- Shiro连接约束配置,即过滤链的定义 -->
 		<property name="filterChainDefinitions">
 			<value>
-				<!-- /html/**=authc -->
+				/html/**=authc
 				/login/toLogin.do=anon
-			<!-- 	/user/**=authc,roles[admin] -->
+				/user/**=authc,roles[admin]
 				/role/**=authc,roles[admin]
 				/resource/**=authc,roles[admin]
 			</value>
@@ -79,5 +79,5 @@
 		<property name="httpOnly" value="true" />
 		<property name="maxAge" value="2000000" />
 	</bean>
-	
+
 </beans>

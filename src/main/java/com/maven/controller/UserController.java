@@ -59,7 +59,8 @@ public class UserController {
 	public String findAll(HttpServletResponse response, Integer limit, Integer offset, String username) {
 
 		try {
-			//这里需要设置头信息，不然客户端无法接收到返回值
+			
+			//解决跨域问题，这里需要设置头信息，不然客户端无法接收到返回值
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			response.setHeader("Access-Control-Allow-Methods", "GET");
 			response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");

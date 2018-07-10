@@ -41,7 +41,7 @@ $(function() {
 
 												// 设置cookie
 												setCookie("username",username,7);
-
+												
 												// 页面跳转到主页
 												$(location)
 														.prop('href',
