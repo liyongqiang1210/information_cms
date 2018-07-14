@@ -4,7 +4,7 @@ $(function() {
 	var username = getCookie("username");
 	// 如何cookie中当前用户为空的话页面自动跳转到登录页面
 	if (username == "") {
-		window.location.href = "http://localhost:8080/Information_cms/login.html";
+		parent.location.href = "http://localhost:8080/Information_cms/login.html";
 	}
 
 	// 用户登录后超过30分钟未操作的话则重新跳转到登录页面
@@ -17,7 +17,7 @@ $(function() {
 		var timeNow = (new Date()).getTime(); // 当前系统时间
 		var timeOp = timeNow - timeStart - timeOut * 1000;
 		if (timeOp > 0) {
-			window.location.href = "http://localhost:8080/Information_cms/login.html";// 跳转到登录页面
+			parent.location.href = "http://localhost:8080/Information_cms/login.html";// 跳转到登录页面
 		} else {
 			timeStart = timeNow;// 未超时，则重新计时
 		}
@@ -182,37 +182,4 @@ function homePage() {
 	$("ol.breadcrumb")
 			.append(
 					"<li id='home-page'><a href='main.html' target='left_content'>首页</a></li>"); // 向当前元素中添加内容
-}
-// 开启背景幕布
-function openBackdrop() {
-	$(".main").after("<div class='modal-backdrop fade in'></div>");
-}
-
-// 关闭背景幕布
-function closeBackdrop() {
-	$(".modal-backdrop").remove();
-}
-
-// 添加模态框
-function openModel(html) {
-	openBackdrop();
-	$(".main").before(html);
-}
-
-// 关闭模态框
-function closeModel() {
-	closeBackdrop(); // 关闭背景幕布
-	$(".in").remove(); // 移除模态框
-}
-
-// 获取cookie
-function getCookie(cname) {
-	var name = cname + "=";
-	var ca = document.cookie.split(';');
-	for (var i = 0; i < ca.length; i++) {
-		var c = ca[i].trim();
-		if (c.indexOf(name) == 0)
-			return c.substring(name.length, c.length);
-	}
-	return "";
 }

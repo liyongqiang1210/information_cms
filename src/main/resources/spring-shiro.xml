@@ -36,7 +36,7 @@
 			<value>
 				/html/**=authc
 				/login/toLogin.do=anon
-				/user/**=authc,roles[admin]
+				<!-- /user/**=authc,roles[admin] -->
 				/role/**=authc,roles[admin]
 				/resource/**=authc,roles[admin]
 			</value>
