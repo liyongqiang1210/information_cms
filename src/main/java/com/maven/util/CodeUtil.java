@@ -24,7 +24,7 @@ public class CodeUtil {
 	private static int width = 90;// 定义图片的width
 	private static int height = 33;// 定义图片的height
 	private static int codeCount = 4;// 定义图片上显示验证码的个数
-	private static int xx = 10;// X轴位置 
+	private static int xx = 18;// X轴位置 
 	private static int fontHeight = 25;// 字体高度
 	private static int codeY = 30;// Y轴位置
 	private static char[] codeSequence = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
