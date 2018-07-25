@@ -323,7 +323,7 @@ a {
 	left: 220px;
 	right: 0px;
 	bottom: 0px;
-	padding: 10px 10px 10px 10px;
+	/* padding: 10px 10px 10px 10px; */
 	background: #FFFFFF;
 	transition: all .3s;
 }

@@ -9,7 +9,7 @@ $(function() {
 
 	// 用户登录后超过30分钟未操作的话则重新跳转到登录页面
 	var timeStart = 0;// 进入系统时间，
-	var timeOut = 1800;// 有效时间，设置为30分钟
+	var timeOut = 7200;// 有效时间，设置为2小时
 	if (timeStart == 0) {
 		timeStart = (new Date()).getTime();// 得到初始成功登录系统的时间
 	}
@@ -22,7 +22,7 @@ $(function() {
 			timeStart = timeNow;// 未超时，则重新计时
 		}
 	}
-
+	
 	// 左侧导航栏收缩展开
 	$('.nav-left-item>a').on(
 			'click',
@@ -182,4 +182,20 @@ function homePage() {
 	$("ol.breadcrumb")
 			.append(
 					"<li id='home-page'><a href='main.html' target='left_content'>首页</a></li>"); // 向当前元素中添加内容
+}
+
+function openBackdrop() {
+	$("body").prepend("<div class='modal-backdrop fade in'></div>");
+}
+
+//获取cookie
+function getCookie(cname) {
+	var name = cname + "=";
+	var ca = document.cookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i].trim();
+		if (c.indexOf(name) == 0)
+			return c.substring(name.length, c.length);
+	}
+	return "";
 }
