@@ -56,4 +56,16 @@
 		<!-- 内存中的最大值 -->
 		<property name="maxInMemorySize" value="40960" />
 	</bean>
+	
+	<!-- 配置自定义拦截器 -->
+	<mvc:interceptors>
+		<!-- 日志拦截器 -->
+		<mvc:interceptor>
+			<!-- 拦截器要拦截的路径 -->
+			<mvc:mapping path="/**" />
+			<!-- 拦截器不拦截的路径 -->
+			<!-- <mvc:exclude-mapping path="/static/**" /> -->
+			<bean class="com.maven.interceptor.UserLoginInterceptorBySpring" />
+		</mvc:interceptor>
+	</mvc:interceptors>
 </beans>                       
