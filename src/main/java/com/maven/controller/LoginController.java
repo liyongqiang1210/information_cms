@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.maven.util.CodeUtil;
-import com.maven.util.MessageUtil;
 import com.maven.util.json.JsonResult;
 
 /**
