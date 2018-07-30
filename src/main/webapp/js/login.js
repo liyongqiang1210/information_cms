@@ -10,13 +10,13 @@ $(function() {
 						var rememberMe = $("#rememberMe").prop("checked"); // 记住我
 
 						if (username == null || username == "") {
-							promptMessage("用户名不能为空。");
+							promptMessage("form","用户名不能为空。");
 							return;
 						} else if (password == null || password == "") {
-							promptMessage("密码不能为空。");
+							promptMessage("form","密码不能为空。");
 							return;
 						} else if (checkCode == "" || checkCode == null) {
-							promptMessage("验证码不能为空。");
+							promptMessage("form","验证码不能为空。");
 							return;
 						} else {
 							$(".alert").remove();
@@ -52,7 +52,7 @@ $(function() {
 											}
 										},
 										error : function(data) {
-											promptMessage("登录时发生错误，请联系管理员");
+											promptMessage("form","登录时发生错误，请联系管理员");
 										}
 									});
 						}
@@ -69,19 +69,5 @@ $(function() {
 								+ Math.random());
 			});
 });
-
-// 提示错误信息方法
-function promptMessage(errorMessage) {
-	$(".alert").remove();
-	$("form")
-			.prepend(
-					"<div class='alert alert-danger alert-dismissable'><button type='button'"
-							+ "class='close' data-dismiss='alert' aria-hidden='true'> &times;</button>"
-							+ errorMessage + "</div>");
-	// 2秒后删除提示信息
-	setTimeout(function() {
-		$(".alert").remove();
-	}, 2000);
-};
 
 

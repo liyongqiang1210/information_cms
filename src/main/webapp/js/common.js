@@ -18,18 +18,12 @@ function getCookie(cname) {
 	return "";
 }
 
-// 关闭背景幕布
-function closeBackdrop() {
-	$("div.main",window.parent.document).css("z-index","");
-	$(".modal-backdrop",window.parent.document).remove();
-};
-
 // 关闭模态框
 function closeModal() {
-	closeBackdrop(); // 关闭背景幕布
+	$("div.main", window.parent.document).css("z-index", ""); // 将父页面main容器层级设置为
+	$(".modal-backdrop", window.parent.document).remove(); // 删除父页面的背景幕布
 	$(".in").remove(); // 移除模态框
 };
-
 
 // 打开模态框
 function openModal(title, content, buttonClass, methodName) {
@@ -38,8 +32,7 @@ function openModal(title, content, buttonClass, methodName) {
 	content == undefined || content == "" ? b = "请填写内容" : b = content;
 	buttonClass == undefined || buttonClass == "" ? c = "btn-primary"
 			: c = buttonClass;
-	methodName == "" || methodName == undefined ? d = "add()"
-			: d = methodName;
+	methodName == "" || methodName == undefined ? d = "" : d = methodName;
 	// 弹出框html代码
 	var html = "<div class='modal fade in' id='' role='dialog' aria-labelledby='myModalLabel' aria-hidden='false' style='display: block;'>"
 			+ "<div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type='button' class='close' onclick='closeModal()'"
@@ -52,10 +45,68 @@ function openModal(title, content, buttonClass, methodName) {
 			+ c
 			+ "' onclick='addUser()'>保存</button></div></div></div></div>";
 
-	$("body",window.parent.document).prepend("<div class='modal-backdrop fade in'></div>"); // 弹窗时将父页也设置一个背景幕布
-	$("div.main",window.parent.document).css("z-index","1040"); // 将子页面容器的层级设为1040
+	$("body", window.parent.document).prepend(
+			"<div class='modal-backdrop fade in'></div>"); // 弹窗时将父页也设置一个背景幕布
+	$("div.main", window.parent.document).css("z-index", "1040"); // 将子页面容器的层级设为1040
 	$("body").prepend("<div class='modal-backdrop fade in'></div>");// 打开子页面的背景幕布
 	$("body").prepend(html);// 将页面内容添加到弹框中
 };
 
+// 表单验证提示错误信息方法
+function promptMessage(odj, errorMessage) {
+	$(".alert").remove();
+	$(odj)
+			.prepend(
+					"<div class='alert alert-danger alert-dismissable'><button type='button'"
+							+ "class='close' data-dismiss='alert' aria-hidden='true'> &times;</button>"
+							+ errorMessage + "</div>");
+	// 2秒后删除提示信息
+	setTimeout(function() {
+		$(".alert").remove();
+	}, 2000);
+};
 
+var t = setTimeout(closePromptBox, 5000);//设置定时关闭信息提示窗口函数
+
+// 打开右下角信息提示框
+function openPromptBox(content, type) {
+	
+	// 打开信息提示窗口之前如果存在定时器先清理一次定时函数如果存在提示框就先删除一次提示框
+	$(".prompt-box").remove();
+	clearTimeout(t);
+	
+	
+	var a, b;
+	content == "" || content == undefined ? a = "请填写提示信息" : a = content;
+	type == "" || type == undefined ? b = "panel-default" : b = type;
+	$("body")
+			.append(
+					"<div class='prompt-box' style='position: absolute; width: 260px; height: 0px; bottom: 40px; right: 0px; box-shadow:0px 0px 5px #888888; border:1px solid #888888;'>"
+							+ "<div class='panel "
+							+ b
+							+ "' style='margin-bottom: 0px;'><div class='panel-heading' style='height: 40px;'>提示信息"
+							+ "<button type='button' class='close' onclick='closePromptBox()' data-dismiss='alert' aria-label='Close'>"
+							+ "<span aria-hidden='true'>&times;</span></button></div><div class='panel-body' style='height: 70px;'>"
+							+ a + "</div></div></div>");
+	$(".prompt-box").animate({
+		height : "110px"
+	}, 500);
+	
+	t = setTimeout(closePromptBox, 5000); // 重新设置定时函数
+
+}
+
+// 移除信息提示框
+function removePromptBox() {
+	setTimeout(closePromptBox, 5000);
+};
+
+// 关闭右下角信息提示框
+function closePromptBox() {
+	$(".prompt-box").animate({
+		height : "0px"
+	}, 500, function() {
+		$(".prompt-box").remove();
+	});
+
+}

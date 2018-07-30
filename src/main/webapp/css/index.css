@@ -1,16 +1,13 @@
 @charset "utf-8";
 
 /* 以下实际使用若已初始化可删除 .nav height父级需逐级设置为100%*/
-
-body,
-ul {
+body, ul {
 	margin: 0;
 	padding: 0
 }
 
-body,
-html {
-	padding: 0px 0px 0px 0px!important;
+body, html {
+	padding: 0px 0px 0px 0px !important;
 }
 
 body {
@@ -23,40 +20,35 @@ li {
 }
 
 a {
-	text-decoration: none!important;
+	text-decoration: none !important;
 }
-
 
 /* 以上实际使用若已初始化可删除 */
 
-
 /*顶部导航栏*/
-
 .nav-top .navbar {
-	height: 45px!important;
-	min-height: 45px!important;
+	height: 45px !important;
+	min-height: 45px !important;
 }
 
 .nav-top {
 	position: fixed;
 	width: 100%;
-	padding-left: 0px!important;
-	padding-right: 0px!important;
+	padding-left: 0px !important;
+	padding-right: 0px !important;
 	z-index: 999;
 }
 
 .navbar {
 	background-color: #222222;
-	border-radius: 0px!important;
+	border-radius: 0px !important;
 }
 
 .navbar-from {
-	padding-left: 50px!important;
+	padding-left: 50px !important;
 }
 
-
 /*导航栏右侧菜单*/
-
 .navbar-right {
 	width: 160px;
 	height: 43px;
@@ -72,28 +64,25 @@ a {
 	float: left;
 }
 
-.navbar-right>div>li:hover,
-.navbar-right>div>li:focus {
+.navbar-right>div>li:hover, .navbar-right>div>li:focus {
 	background: rgba(255, 255, 255, .2);
 }
 
 .navbar-right>div>li>a {
-	width: 40px!important;
-	height: 43px!important;
+	width: 40px !important;
+	height: 43px !important;
 	padding-top: 12px;
 	padding-left: 13px;
 	display: block;
 }
 
 .dropdown-menu {
-	min-width: 135px!important;
-	right: -40px!important;
-	margin: 0px 0 0!important;
+	min-width: 135px !important;
+	right: -40px !important;
+	margin: 0px 0 0 !important;
 }
 
-
 /*路径导航*/
-
 .route-nav {
 	top: 45px;
 	left: 220px;
@@ -106,12 +95,12 @@ a {
 }
 
 .breadcrumb {
-	height: 40px!important;
-	background-color: #FFFFFF!important;
-	border: 1px solid #DDDDDD!important;
-	border-radius: 0px!important;
-	padding-top: 10px!important;
-	margin-bottom: 0px!important;
+	height: 40px !important;
+	background-color: #FFFFFF !important;
+	border: 1px solid #DDDDDD !important;
+	border-radius: 0px !important;
+	padding-top: 10px !important;
+	margin-bottom: 0px !important;
 	font-size: 16px;
 }
 
@@ -119,9 +108,7 @@ a {
 	color: #000000;
 }
 
-
 /*左侧导航栏*/
-
 .nav-left-top {
 	cursor: pointer;
 	height: 40px;
@@ -142,13 +129,11 @@ a {
 	transition: all .3s;
 }
 
-.left-close{
-	transform:rotate(90deg);
-	-ms-transform:rotate(90deg); /* IE 9 */
-	-webkit-transform:rotate(90deg); /* Safari and Chrome */
+.left-close {
+	transform: rotate(90deg);
+	-ms-transform: rotate(90deg); /* IE 9 */
+	-webkit-transform: rotate(90deg); /* Safari and Chrome */
 }
-
-
 
 .nav-left {
 	top: 45px;
@@ -209,9 +194,7 @@ a {
 	margin-left: -1px;
 }
 
-
 /* 此处修改导航图标 可自定义iconfont 替换*/
-
 .icon_1::after {
 	content: "\e62b";
 }
@@ -224,9 +207,7 @@ a {
 	content: "\e61d";
 }
 
-
 /*---------------------*/
-
 .nav-left-more {
 	float: right;
 	margin-right: 20px;
@@ -234,28 +215,22 @@ a {
 	transition: transform .3s;
 }
 
-
 /* 此处为导航右侧箭头 如果自定义iconfont 也需要替换*/
-
 .nav-left-more::after {
 	content: "\e621";
 }
 
-
 /*---------------------*/
-
 .nav-left-show .nav-left-more {
 	transform: rotate(90deg);
 }
 
-.nav-left-show,
-.nav-left-item>a:hover {
+.nav-left-show, .nav-left-item>a:hover {
 	color: #FFF;
 	background: rgba(255, 255, 255, .1);
 }
 
-.nav-left-show>a:before,
-.nav-left-item>a:hover:before {
+.nav-left-show>a:before, .nav-left-item>a:hover:before {
 	opacity: 1;
 }
 
@@ -269,9 +244,7 @@ a {
 	background: rgba(255, 255, 255, .1);
 }
 
-
 /* nav-left-mini */
-
 .nav-left-mini.nav-left {
 	width: 60px;
 	/*z-index: 9999;*/
@@ -279,6 +252,7 @@ a {
 
 .nav-left-mini.nav-left .nav-left-icon {
 	/* margin-left:-2px; */
+	
 }
 
 .nav-left-mini.nav-left .nav-left-item>a span {
@@ -314,15 +288,13 @@ a {
 	display: block;
 }
 
-
 /*内容页面*/
-
 .main {
 	position: fixed;
 	top: 85px;
 	left: 220px;
 	right: 0px;
-	bottom: 0px;
+	bottom: 40px;
 	/* padding: 10px 10px 10px 10px; */
 	background: #FFFFFF;
 	transition: all .3s;
@@ -332,4 +304,15 @@ iframe {
 	border: 0px;
 	width: 100%;
 	height: 100%;
+}
+
+.bottom {
+	position: fixed;
+	bottom: 0px;
+	left: 220px;
+	height: 40px;
+	width: 100%;
+	background-color: #FFFFFF;
+	padding: 10px 10px 10px 10px;
+	border-top: 1px solid #CCCCCC;
 }

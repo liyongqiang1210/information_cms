@@ -16,12 +16,12 @@ $(function() {
 						// 弹出框标题
 						var title = "添加用户";
 						// 弹出框内容
-						var content = "<form> <div class='form-group col-lg-6 col-lg-offset-3'> <label for='username'>用户名:</label> <input type='text' class='form-control' id='username' placeholder='请输入用户名'> </div>"
-								+ " <div class=' form-group'> <label for='password'>密码:</label> <input type='password' class='form-control' id='password' placeholder='请输入密码'> </div> "
-								+ "<div class='form-group'> <label for='password'>确认密码:</label> <input type='password' class='form-control' id='password2' placeholder='请再次输入密码'> </div>"
-								+ " <div class='form-group'> <label for='email'>邮箱:</label> <input type='text' class='form-control' id='email' placeholder='请输入邮箱'> </div>"
-								+ " <div class='form-group'> <label for='sex'>性别:</label> <input type='radio' name='sex' value='0'> 男  <input type='radio' name='sex' value='1'> 女  </div>"
-								+ " <div class='form-group'> <label for='phone'>手机号:</label> <input type='text' class='form-control' id='phone' placeholder='请输入手机号'> </div> </form>"
+						var content = "<form id='addUser' class='form-horizontal' role='form'> <div class='form-group'> <label for='username' class='col-lg-2 col-lg-offset-1 control-label'>用户名:</label> <div class='col-lg-8'><input type='text' class='form-control' id='username' placeholder='请输入用户名'></div> </div>"
+								+ " <div class=' form-group'> <label for='password' class='col-lg-2 col-lg-offset-1 control-label'>密码:</label> <div class='col-lg-8'><input type='password' class='form-control' id='password' placeholder='请输入密码'> </div></div> "
+								+ "<div class='form-group'> <label for='password' class='col-lg-2 col-lg-offset-1 control-label'>确认密码:</label> <div class='col-lg-8'><input type='password' class='form-control' id='password2' placeholder='请再次输入密码'> </div></div>"
+								+ " <div class='form-group'> <label for='email' class='col-lg-2 col-lg-offset-1 control-label'>邮箱:</label> <div class='col-lg-8'><input type='text' class='form-control' id='email' placeholder='请输入邮箱'> </div></div>"
+								+ " <div class='form-group'> <label for='sex' class='col-lg-2 col-lg-offset-1 control-label'>性别:</label> <div class='col-lg-8'><input type='radio' name='sex' value='0' checked> 男  <input type='radio' name='sex' value='1'> 女 </div> </div>"
+								+ " <div class='form-group'> <label for='phone' class='col-lg-2 col-lg-offset-1 control-label'>手机号:</label> <div class='col-lg-8'><input type='text' class='form-control' id='phone' placeholder='请输入手机号'> </div></div> </form>"
 
 						openModal(title, content, "", "");
 
@@ -145,21 +145,57 @@ function deleteUser() {
 	openModal("删除用户", "确认删除选中的用户吗？", "btn-danger");
 }
 
-//添加用户按钮事件
+// 添加用户按钮事件
 function addUser() {
-	alert("子页面js添加用户");
+	var checkFromState = checkFrom();
+	if (checkFromState) {
+		$.ajax({
+			url : "http://localhost:8080/Information_cms/user/createUser.do",
+			data : {
+				username : $("#username").val(),
+				password : $("#password").val(),
+				email : $("#email").val(),
+				sex : $("input[name='sex']:checked").val(),
+				phone : $("#phone").val()
+			},
+			type : "POST",
+			dataType : "json",
+			success : function(data) { // 添加成功
+				closeModal();
+			},
+			error : function(data) { // 添加失败
+				promptMessage("#addUser", "添加失败");
+			}
+		});
+	}
 }
 
 // 表单验证
 function checkFrom() {
 	var username = $("#username").val();
 	var password = $("#password").val();
-	var password = $("#password").val();
+	var password2 = $("#password2").val();
 	var email = $("#email").val();
 	var sex = $("input[name='sex']:checked").val();
 	var phone = $("#phone").val();
 
-	console.log("username:" + username + ",password:" + password + ",email:"
-			+ email + ",sex:" + sex + ",phone:" + phone);
+	if (username == "") {
+		promptMessage("#addUser", "用户名不能为空");
+		return false;
+	} else if (password == "" || password2 == "") {
+		promptMessage("#addUser", "密码不能为空");
+		return false;
+	} else if (password != password2) {
+		promptMessage("#addUser", "两次输入的密码不一致");
+		return false;
+	} else if (email == "") {
+		promptMessage("#addUser", "邮箱不能为空");
+		return false;
+	} else if (phone == "") {
+		promptMessage("#addUser", "手机号不能为空");
+		return false;
+	}
+
+	return true;
 
 }

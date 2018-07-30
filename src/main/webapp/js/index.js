@@ -22,7 +22,7 @@ $(function() {
 			timeStart = timeNow;// 未超时，则重新计时
 		}
 	}
-	
+
 	// 左侧导航栏收缩展开
 	$('.nav-left-item>a').on(
 			'click',
@@ -55,7 +55,7 @@ $(function() {
 				'padding-left' : '20px',
 				'padding-right' : '20px',
 			});
-			$('.main').css('left', '60px');
+			$('.main,.bottom').css('left', '60px');
 			$('#mini').attr('class', 'left-close');
 		} else {
 			$('.nav-left').removeClass('nav-left-mini');
@@ -65,7 +65,7 @@ $(function() {
 				'padding-left' : '100px',
 				'padding-right' : '100px'
 			});
-			$('.main').css('left', '220px');
+			$('.main,.bottom').css('left', '220px');
 			$('#mini').attr('class', '');
 		}
 	});
@@ -121,16 +121,6 @@ $(function() {
 
 					});
 
-	// 弹框html代码前缀
-	var prefix = "<div class='modal fade in' id='modal-container-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='false' "
-			+ "style='display: block;'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type='button' "
-			+ "class='close' onclick='closeModel()' data-dismiss='modal' aria-hidden='true'>×</button><h4 class='modal-title' "
-			+ "id='myModalLabel'>个人信息</h4></div><div class='modal-body'>";
-
-	// 弹框html代码后缀
-	var suffix = "</div><div class='modal-footer'><button "
-			+ "type='button' class='btn btn-default' onclick='closeModel()' data-dismiss='modal'>退出</button> "
-			+ "</div></div></div></div>";
 	// 个人信息弹窗
 	$("#information")
 			.click(
@@ -161,14 +151,12 @@ $(function() {
 												+ remarks + "</li></ul>";
 
 										if (!state) {
-											openModel(prefix + "获取用户信息失败"
-													+ suffix);
+											openModal("个人信息", "获取用户信息失败,请联系管理员");
 										}
-										openModel(prefix + information + suffix);
+										openModal("个人信息", information);
 									},
 									error : function() {
-										openModel(prefix + "获取用户信息异常，请联系管理员"
-												+ suffix);
+										openModal("个人信息", "获取用户信息失败,请联系管理员");
 									}
 								});
 
@@ -184,11 +172,7 @@ function homePage() {
 					"<li id='home-page'><a href='main.html' target='left_content'>首页</a></li>"); // 向当前元素中添加内容
 }
 
-function openBackdrop() {
-	$("body").prepend("<div class='modal-backdrop fade in'></div>");
-}
-
-//获取cookie
+// 获取cookie
 function getCookie(cname) {
 	var name = cname + "=";
 	var ca = document.cookie.split(';');
@@ -199,3 +183,28 @@ function getCookie(cname) {
 	}
 	return "";
 }
+
+// 关闭模态框
+function closeModal() {
+	$(".modal-backdrop").remove(); // 删除父页面的背景幕布
+	$(".in").remove(); // 移除模态框
+};
+
+// 打开模态框
+function openModal(title, content) {
+	var a, b;
+	title == undefined || title == "" ? a = "请填写标题" : a = title;
+	content == undefined || content == "" ? b = "请填写内容" : b = content;
+	// 弹出框html代码
+	var html = "<div class='modal fade in' id='' role='dialog' aria-labelledby='myModalLabel' aria-hidden='false' style='display: block;'>"
+			+ "<div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type='button' class='close' onclick='closeModal()'"
+			+ " data-dismiss='modal' aria-hidden='true'>×</button><h4 class='modal-title' id=''>"
+			+ a
+			+ "</h4></div><div class='modal-body'>"
+			+ b
+			+ "</div><div class='modal-footer'><button type='button' class='btn btn-default' onclick='closeModal()' data-dismiss='modal'>关闭</button>"
+			+ "</div></div></div></div>";
+
+	$("body").prepend("<div class='modal-backdrop fade in'></div>");// 打开子页面的背景幕布
+	$("body").prepend(html);// 将页面内容添加到弹框中
+};
