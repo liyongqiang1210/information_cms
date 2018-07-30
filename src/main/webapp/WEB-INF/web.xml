@@ -31,6 +31,10 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+	
+	<listener>
+		<listener-class>com.maven.listener.testListener</listener-class>
+	</listener>
 	<!-- 配置过滤器 -->
 	<!-- 解决乱码问题 -->
 	<!-- forceEncoding默认为false,此时效果可大致理解为request.setCharacterEncoding("UTF-8") -->
