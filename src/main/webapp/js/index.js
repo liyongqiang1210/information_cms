@@ -114,7 +114,7 @@ $(function() {
 								.text(); // 获取当前被点击标签的父标题内容
 						$("ol.breadcrumb")
 								.append(
-										"<li onclick='homePage()'><a href='main.html' target='left_content'>首页</a></li><li class='active'>"
+										"<li onclick='homePage()'><a href='http://localhost:8080/Information_cms/main.html' target='left-content'>首页</a></li><li class='active'>"
 												+ parentTitle
 												+ "</li><li class='active'>"
 												+ title + "</li>"); // 向当前元素中添加内容
@@ -169,7 +169,7 @@ function homePage() {
 	$("ol.breadcrumb").empty(); // 清楚当前元素中的内容
 	$("ol.breadcrumb")
 			.append(
-					"<li id='home-page'><a href='main.html' target='left_content'>首页</a></li>"); // 向当前元素中添加内容
+					"<li id='home-page'><a href='http://localhost:8080/Information_cms/main.html' target='left-content'>首页</a></li>"); // 向当前元素中添加内容
 }
 
 // 获取cookie

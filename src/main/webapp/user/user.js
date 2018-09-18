@@ -23,14 +23,26 @@ $(function() {
 								+ " <div class='form-group'> <label for='sex' class='col-lg-2 col-lg-offset-1 control-label'>性别:</label> <div class='col-lg-8'><input type='radio' name='sex' value='0' checked> 男  <input type='radio' name='sex' value='1'> 女 </div> </div>"
 								+ " <div class='form-group'> <label for='phone' class='col-lg-2 col-lg-offset-1 control-label'>手机号:</label> <div class='col-lg-8'><input type='text' class='form-control' id='phone' placeholder='请输入手机号'> </div></div> </form>"
 
-						openModal(title, content, "", "");
+						openModal(title, content, "", "addUser()");
 
 					});
 
 	// 删除选中用户
-	$("#btn_delete_select").on("click", function() {
-		openModal("删除选中用户", "确认删除选中的用户吗？", "btn-danger");
-	});
+	$("#btn_delete_select").on(
+			"click",
+			function() {
+				// 使用getSelections即可获得选中行数据，row是json格式的数据
+				var getSelectRows = $("#table").bootstrapTable('getSelections',
+						function(row) {
+							return row;
+						});
+				
+				if (getSelectRows.length == 0) {
+					window.parent.openPromptBox("请选择要删除的数据","panel-warning","icon-warning-circle");
+				} else {
+					openModal("删除选中用户", "确认删除选中的用户吗？", "btn-danger", "deleteSelectedUser()");
+				}
+			});
 
 });
 
@@ -162,6 +174,8 @@ function addUser() {
 			dataType : "json",
 			success : function(data) { // 添加成功
 				closeModal();
+				openPromptBox("用户添加成功", "panel-success", "icon-check-circle");
+				
 			},
 			error : function(data) { // 添加失败
 				promptMessage("#addUser", "添加失败");
@@ -198,4 +212,27 @@ function checkFrom() {
 
 	return true;
 
+}
+
+function deleteSelectedUser(){
+	
+	// 获取选中行的数据
+	var getSelectRows = $("#table").bootstrapTable('getSelections',
+			function(row) {
+				return row;
+			});
+	
+	$.ajax({
+		type:"POST",
+		url:"",
+		data:"",
+		dataType:"json",
+		success:function(data){
+			
+		},
+		error:function(){
+			
+		}
+		
+	});
 }
