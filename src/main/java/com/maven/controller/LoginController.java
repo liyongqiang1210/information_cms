@@ -29,7 +29,7 @@ import com.maven.util.CodeUtil;
 import com.maven.util.json.JsonResult;
 
 /**
- * 
+ * 用户登录控制器
  * @author liyongqiang
  *
  */
@@ -50,9 +50,17 @@ public class LoginController {
 	@ResponseBody
 	public JsonResult toLogin(HttpServletRequest request, HttpServletResponse response, String username, String password, boolean rememberMe,String checkCode) {
 		
+		// 用户名或者密码非空校验
+		if(username == "" || username == null || password == "" || password == null) {
+			return JsonResult.buildFailedResult("用户名或者密码不能为空!");
+		}
+		
 		// 从session中读取验证码的实际值
 		HttpSession session = request.getSession();
 		String code = (String) session.getAttribute("code");
+		
+		// 将用户名保存到session
+		session.setAttribute("username", username);
 
 		// 将实际值与用户输入值作比较
 		if (code.equalsIgnoreCase(checkCode)) {

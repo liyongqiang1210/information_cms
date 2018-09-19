@@ -1,8 +1,8 @@
 body, html {
-	background: #122B40;
+	background: #F0F8FF;
 }
 
-/*进入页面时的动态效果*/
+/*杩涘叆椤甸潰鏃剁殑鍔ㄦ�佹晥鏋�*/
 .login-div {
 	height: 600px;
 	width: 400px;
@@ -32,7 +32,11 @@ body, html {
 	text-align: center;
 }
 
-/*渐变线*/
+.panel-primary {
+	border-color: #F0F8FF!important;
+}
+
+/*娓愬彉绾�*/
 .panel-line {
 	height: 1px;
 	margin: 0px 0px 30px 0px;
