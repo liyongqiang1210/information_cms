@@ -56,9 +56,8 @@ public class LoginController {
 		}
 		
 		// 从session中读取验证码的实际值
-		HttpSession session = request.getSession();
+		HttpSession session = request.getSession(true);
 		String code = (String) session.getAttribute("code");
-		
 		// 将用户名保存到session
 		session.setAttribute("username", username);
 

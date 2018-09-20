@@ -34,7 +34,13 @@
 	
 	<!-- 自定义监听器配置开始 -->
 	<listener>
-		<listener-class>com.maven.listener.testListener</listener-class>
+		<listener-class>com.maven.listener.MyHttpSessionListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>com.maven.listener.MyServletContextListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>com.maven.listener.MySessionScanerListener</listener-class>
 	</listener>
 	<!-- 自定义监听器配置结束 -->
 	
@@ -122,6 +128,7 @@
 	
 	<!-- 欢迎页面 -->
 	<welcome-file-list>
-		<welcome-file>login.html</welcome-file>
+		<!-- <welcome-file>login.html</welcome-file> -->
+		<welcome-file>test.jsp</welcome-file>
 	</welcome-file-list>
 </web-app>
