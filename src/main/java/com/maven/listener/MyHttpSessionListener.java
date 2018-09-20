@@ -4,7 +4,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-
 /**
  * <p>
  * Title: MyHttpSessionListener
@@ -24,16 +23,11 @@ public class MyHttpSessionListener implements HttpSessionListener {
 
 	@Override
 	public void sessionCreated(HttpSessionEvent httpSessionEvent) {
-		System.out.println("HttpSessionListener初始化");
 		ServletContext servletContext = httpSessionEvent.getSession().getServletContext();
 		TOTAL_ONLINE_USERS = (int) servletContext.getAttribute("TOTAL_ONLINE_USERS");
-		// 如果用户退出,TOTAL_ONLINE_USERS减1
-		if (TOTAL_ONLINE_USERS == 0) {
-			servletContext.setAttribute("TOTAL_ONLINE_USERS", 1);
-		} else {
-			TOTAL_ONLINE_USERS--;
-			servletContext.setAttribute("TOTAL_ONLINE_USERS", TOTAL_ONLINE_USERS);
-		}
+		// 如果用户登录,TOTAL_ONLINE_USERS加1
+		TOTAL_ONLINE_USERS++;
+		servletContext.setAttribute("TOTAL_ONLINE_USERS", TOTAL_ONLINE_USERS);
 		System.out.println("当前在线用户：" + TOTAL_ONLINE_USERS);
 	}
 
@@ -41,11 +35,11 @@ public class MyHttpSessionListener implements HttpSessionListener {
 	public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
 		ServletContext servletContext = httpSessionEvent.getSession().getServletContext();
 		TOTAL_ONLINE_USERS = (int) servletContext.getAttribute("TOTAL_ONLINE_USERS");
-		// 如果用户登录,TOTAL_ONLINE_USERS加1
+		// 如果用户退出,TOTAL_ONLINE_USERS减1
 		if (TOTAL_ONLINE_USERS == 0) {
-			servletContext.setAttribute("TOTAL_ONLINE_USERS", 1);
+			servletContext.setAttribute("TOTAL_ONLINE_USERS", 0);
 		} else {
-			TOTAL_ONLINE_USERS++;
+			TOTAL_ONLINE_USERS--;
 			servletContext.setAttribute("TOTAL_ONLINE_USERS", TOTAL_ONLINE_USERS);
 		}
 		System.out.println("当前在线用户：" + TOTAL_ONLINE_USERS);

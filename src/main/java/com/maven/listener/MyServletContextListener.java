@@ -13,7 +13,8 @@ import javax.servlet.ServletContextListener;
  * Title: MyServletContextListener
  * </p>
  * <p>
- * Description: 实现ServletContextListener接口的ServletContextListener类型监听器
+ * Description:
+ * 实现ServletContextListener接口的ServletContextListener类型监听器(用于添加系统初始化参数)
  * </p>
  * 
  * @author liyongqiang
@@ -21,13 +22,14 @@ import javax.servlet.ServletContextListener;
  */
 public class MyServletContextListener implements ServletContextListener {
 
+
 	public void contextDestroyed(ServletContextEvent servletContextEvent) {
 
 	}
 
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
-
-		System.out.println("********************测试监听器启动********************");
+		servletContextEvent.getServletContext().setAttribute("TOTAL_ONLINE_USERS", 0);
+		// System.out.println("********************测试监听器启动********************");
 		// 获取项目根路径
 		// String contextPath =
 		// servletContextEvent.getServletContext().getRealPath("/");
