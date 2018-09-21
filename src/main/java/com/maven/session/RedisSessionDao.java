@@ -61,11 +61,9 @@ public class RedisSessionDao extends AbstractSessionDAO {
 
 		Set<byte[]> keys = jedisUtil.keys(SHIRO_SESSION_PREFIX);
 		Set<Session> sessions = new HashSet<Session>();
-
 		if (CollectionUtils.isEmpty(keys)) {
 			return sessions;
 		}
-
 		// 遍历key值
 		for (byte[] key : keys) {
 
