@@ -2,6 +2,7 @@ package com.maven.session;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +12,8 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.session.UnknownSessionException;
 import org.apache.shiro.session.mgt.eis.AbstractSessionDAO;
 import org.apache.shiro.util.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.SerializationUtils;
 
@@ -35,6 +38,8 @@ public class RedisSessionDao extends AbstractSessionDAO {
 	private JedisUtil jedisUtil;
 
 	private final String SHIRO_SESSION_PREFIX = "liyongqiang-session:";
+	
+	private static final Logger logger = LoggerFactory.getLogger(RedisSessionDao.class);
 
 	// 创建key
 	private byte[] getKey(String key) {
@@ -43,7 +48,7 @@ public class RedisSessionDao extends AbstractSessionDAO {
 
 	public void delete(Session session) {
 
-		if (session != null && session.getId() != null) {
+		if (session == null && session.getId() == null) {
 			return;
 		}
 
@@ -69,6 +74,8 @@ public class RedisSessionDao extends AbstractSessionDAO {
 			// 将session对象存储到sessions集合中
 			sessions.add(session);
 		}
+		// 获取当前在线人数
+		logger.debug(new Date() + "当前在线人数：" + sessions.size());
 		return sessions;
 	}
 

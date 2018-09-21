@@ -66,11 +66,12 @@
 		<property name="sessionDAO" ref="redisSessionDao" />
 		<property name="sessionListeners" ref="myShiroSessionListener" />
 		<!-- 会话超时时间，单位：毫秒 -->
-		<property name="globalSessionTimeout" value="60000" />
+		<property name="globalSessionTimeout" value="600000" />
 		<property name="deleteInvalidSessions" value="true" />
 		<!-- 定时清理失效会话, 清理用户直接关闭浏览器造成的孤立会话 -->
 		<property name="sessionValidationSchedulerEnabled" value="true" />
-		<property name="sessionValidationInterval" value="10000" />
+		<!-- 每一个小时检查一次session -->
+		<property name="sessionValidationInterval" value="60000" />
 	</bean>
 
 	<!-- 创建自定义的sessionDao -->

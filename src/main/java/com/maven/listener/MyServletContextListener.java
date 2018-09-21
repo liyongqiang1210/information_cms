@@ -28,7 +28,6 @@ public class MyServletContextListener implements ServletContextListener {
 	}
 
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
-		servletContextEvent.getServletContext().setAttribute("TOTAL_ONLINE_USERS", 0);
 		 System.out.println("********************MyServletContextListener监听器初始化********************");
 		// 获取项目根路径
 		// String contextPath =
