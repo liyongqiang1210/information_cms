@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSessionListener;
  * <p>
  * Description: 实现HttpSessionListener接口的监听器
  * 此监听器功能用于实现监听在线用户人数功能(使用时注意只有在使用jsp页面时才有效)
+ * (shiro中是不支持使用此类监听器的)
  * </p>
  * 
  * @author liyongqiang

@@ -10,17 +10,6 @@
                         http://www.springframework.org/schema/mvc      
                         http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
-	<!-- 创建securityManager对象，多个realm时请使用realms代替realm -->
-	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-		<property name="realm" ref="myRealm" />
-		<!-- 注入cache缓存管理器 -->
-		<property name="cacheManager" ref="cacheManager"></property>
-		<!-- 注入session会话管理器 -->
-		<property name="sessionManager" ref="sessionManager" />
-		<!-- 记住我 -->
-		<property name="rememberMeManager" ref="rememberMeManager" />
-	</bean>
-
 	<!-- 创建shiro过滤器 -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<!-- Shiro的核心安全接口,这个属性是必须的 -->
@@ -43,6 +32,18 @@
 		</property>
 	</bean>
 
+	<!-- 创建securityManager对象，多个realm时请使用realms代替realm -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="myRealm" />
+		<!-- 注入cache缓存管理器 -->
+		<property name="cacheManager" ref="cacheManager"></property>
+		<!-- 注入session会话管理器 -->
+		<property name="sessionManager" ref="sessionManager" />
+		<!-- 记住我 -->
+		<property name="rememberMeManager" ref="rememberMeManager" />
+	</bean>
+
+
 	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
 
@@ -51,30 +52,43 @@
 		<!-- 加密 -->
 		<property name="credentialsMatcher" ref="credentialsMatcher" />
 	</bean>
+
 	<!-- 加密管理器对象 -->
-	<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher"
-		id="credentialsMatcher">
+	<bean id="credentialsMatcher"
+		class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
 		<property name="hashAlgorithmName" value="md5" />
 		<property name="hashIterations" value="1" />
 	</bean>
 
 	<!-- 创建sessionManager对象导入自定义的RedisSessionDao -->
-	<bean class="com.maven.session.CustomSessionManager" id="sessionManager">
-		<property name="sessionDAO" ref="redisSessionDao"></property>
+	<bean id="sessionManager" class="com.maven.session.CustomSessionManager">
+		<!-- 配置name的时候一定要注意此处的name不是自己随便写的而是存在于某个类中的属性 -->
+		<property name="sessionDAO" ref="redisSessionDao" />
+		<property name="sessionListeners" ref="myShiroSessionListener" />
+		<!-- 会话超时时间，单位：毫秒 -->
+		<property name="globalSessionTimeout" value="60000" />
+		<property name="deleteInvalidSessions" value="true" />
+		<!-- 定时清理失效会话, 清理用户直接关闭浏览器造成的孤立会话 -->
+		<property name="sessionValidationSchedulerEnabled" value="true" />
+		<property name="sessionValidationInterval" value="10000" />
 	</bean>
+
 	<!-- 创建自定义的sessionDao -->
-	<bean class="com.maven.session.RedisSessionDao" id="redisSessionDao" />
+	<bean id="redisSessionDao" class="com.maven.session.RedisSessionDao" />
+
+	<!-- shiroSessionListener 监听类 -->
+	<bean id="myShiroSessionListener" class="com.maven.listener.MyShiroSessionListener" />
 
 	<!-- 创建自定义的cacheManager管理器对象 -->
 	<bean class="com.maven.cache.RedisCacheManager" id="cacheManager" />
 
 	<!-- 创建记住我cookie管理器 -->
-	<bean class="org.apache.shiro.web.mgt.CookieRememberMeManager" id="rememberMeManager">
+	<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
 		<property name="cookie" ref="cookie" />
 		<property name="cipherKey"
 			value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}" />
 	</bean>
-	<bean class="org.apache.shiro.web.servlet.SimpleCookie" id="cookie">
+	<bean id="cookie" class="org.apache.shiro.web.servlet.SimpleCookie">
 		<constructor-arg value="rememberMe" />
 		<property name="httpOnly" value="true" />
 		<property name="maxAge" value="2000000" />
