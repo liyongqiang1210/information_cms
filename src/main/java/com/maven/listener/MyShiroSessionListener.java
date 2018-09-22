@@ -21,7 +21,6 @@ import com.maven.session.RedisSessionDao;
  * @author liyongqiang
  * @date 2018年9月21日 上午10:36:59
  */
-@Component
 public class MyShiroSessionListener implements SessionListener {
 
 	@Resource

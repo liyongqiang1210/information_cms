@@ -10,13 +10,13 @@ $(function() {
 						var rememberMe = $("#rememberMe").prop("checked"); // 记住我
 
 						if (username == null || username == "") {
-							promptMessage("form","用户名不能为空。");
+							promptMessage("form", "用户名不能为空。");
 							return;
 						} else if (password == null || password == "") {
-							promptMessage("form","密码不能为空。");
+							promptMessage("form", "密码不能为空。");
 							return;
 						} else if (checkCode == "" || checkCode == null) {
-							promptMessage("form","验证码不能为空。");
+							promptMessage("form", "验证码不能为空。");
 							return;
 						} else {
 							$(".alert").remove();
@@ -40,19 +40,20 @@ $(function() {
 											if (state) { // 登录成功，跳转到主页
 
 												// 设置cookie
-												setCookie("username",username,7);
-												
+												// setCookie("username",username,30);
+
 												// 页面跳转到主页
 												$(location)
 														.prop('href',
-																'http://localhost:8080/Information_cms/index.html');
+																'http://localhost:8080/Information_cms/html/index.html');
 											} else { // 登录失败，提示错误信息
 												// 将错误信息输出到登录页面提示信息中
 												promptMessage(message);
 											}
 										},
 										error : function(data) {
-											promptMessage("form","登录时发生错误，请联系管理员");
+											promptMessage("form",
+													"登录时发生错误，请联系管理员");
 										}
 									});
 						}
@@ -69,5 +70,3 @@ $(function() {
 								+ Math.random());
 			});
 });
-
-

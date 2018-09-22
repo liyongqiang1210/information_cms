@@ -46,6 +46,7 @@ public class RedisSessionDao extends AbstractSessionDAO {
 		return (SHIRO_SESSION_PREFIX + key).getBytes();
 	}
 
+	@SuppressWarnings("null")
 	public void delete(Session session) {
 
 		if (session == null && session.getId() == null) {
@@ -113,6 +114,6 @@ public class RedisSessionDao extends AbstractSessionDAO {
 		byte[] key = getKey(session.getId().toString());
 		byte[] value = SerializationUtils.serialize(session);
 		jedisUtil.set(key, value); // 设置session
-		jedisUtil.expire(key, 3600); // 设置session的超时时间一小时
+		jedisUtil.expire(key, 1800); // 设置session的超时时间30分钟
 	}
 }

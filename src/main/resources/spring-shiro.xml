@@ -15,19 +15,28 @@
 		<!-- Shiro的核心安全接口,这个属性是必须的 -->
 		<property name="securityManager" ref="securityManager" />
 		<!-- 身份认证失败跳转的地址，没有登录当然就跳转到登录地址 -->
-		<property name="loginUrl" value="/" />
+		<property name="loginUrl" value="/login.html" />
 		<!-- 身份认证成功跳转的地址，一般登录成功后会跳转到系统首页 -->
-		<property name="successUrl" value="main/index.html" />
+		<property name="successUrl" value="html/index.html" />
 		<!-- 权限认证失败跳转的地址 ，用来提示当前用户没有操作权限，可以不需要 -->
-		<property name="unauthorizedUrl" value="main/error/404.html" />
+		<property name="unauthorizedUrl" value="/login.html" />
 		<!-- Shiro连接约束配置,即过滤链的定义 -->
 		<property name="filterChainDefinitions">
 			<value>
+				/js/jquery.min.js=anon
+				/js/bootstrap.min.js=anon
+				/js/common.js=anon
+				/js/login.js=anon
+				/css/bootstrap.min.css=anon
+				/css/login.css=anon
+				/css/login.css=anon
+				/login/**=anon
 				/html/**=authc
-				/login/toLogin.do=anon
-				<!-- /user/**=authc,roles[admin] -->
+				/logout=logout
+				/user/**=authc,roles[admin]
 				/role/**=authc,roles[admin]
 				/resource/**=authc,roles[admin]
+				/**=user
 			</value>
 		</property>
 	</bean>
@@ -35,11 +44,11 @@
 	<!-- 创建securityManager对象，多个realm时请使用realms代替realm -->
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<property name="realm" ref="myRealm" />
-		<!-- 注入cache缓存管理器 -->
+		<!-- 注册cache缓存管理器 -->
 		<property name="cacheManager" ref="cacheManager"></property>
-		<!-- 注入session会话管理器 -->
+		<!-- 注册session会话管理器 -->
 		<property name="sessionManager" ref="sessionManager" />
-		<!-- 记住我 -->
+		<!-- 注册记住我管理器 -->
 		<property name="rememberMeManager" ref="rememberMeManager" />
 	</bean>
 
@@ -65,13 +74,13 @@
 		<!-- 配置name的时候一定要注意此处的name不是自己随便写的而是存在于某个类中的属性 -->
 		<property name="sessionDAO" ref="redisSessionDao" />
 		<property name="sessionListeners" ref="myShiroSessionListener" />
-		<!-- 会话超时时间，单位：毫秒 -->
-		<property name="globalSessionTimeout" value="600000" />
+		<!-- 会话超时时间(30分钟)，单位：毫秒 -->
+		<property name="globalSessionTimeout" value="60000" />
 		<property name="deleteInvalidSessions" value="true" />
 		<!-- 定时清理失效会话, 清理用户直接关闭浏览器造成的孤立会话 -->
 		<property name="sessionValidationSchedulerEnabled" value="true" />
 		<!-- 每一个小时检查一次session -->
-		<property name="sessionValidationInterval" value="60000" />
+		<property name="sessionValidationInterval" value="360000" />
 	</bean>
 
 	<!-- 创建自定义的sessionDao -->
@@ -85,14 +94,18 @@
 
 	<!-- 创建记住我cookie管理器 -->
 	<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
-		<property name="cookie" ref="cookie" />
+		<property name="cookie" ref="rememberMeCookie" />
 		<property name="cipherKey"
 			value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}" />
 	</bean>
-	<bean id="cookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+	<!-- 记住我cookie -->
+	<bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<!-- cookie名称 -->
 		<constructor-arg value="rememberMe" />
+		<property name="path" value="/"></property>
 		<property name="httpOnly" value="true" />
-		<property name="maxAge" value="2000000" />
+		<!-- 默认记住30天 -->
+		<property name="maxAge" value="2592000" />
 	</bean>
 
 </beans>

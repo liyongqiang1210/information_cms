@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<title>主页</title>
+
+<link rel="stylesheet" href="../css/bootstrap.min.css">
+<link rel="stylesheet" href="../css/iconfont/iconfont.css">
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/common.js"></script>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="page-header">
+					<h3>右下角提示框示例</h3>
+				</div>
+
+				<button type="button" class="btn btn-primary"
+					onclick="window.parent.openPromptBox('默认信息提示框')">默认提示框</button>
+
+				<button type="button" class="btn btn-success"
+					onclick="window.parent.openPromptBox('成功信息提示框','panel-success','icon-check-circle')">成功提示框</button>
+
+				<button type="button" class="btn btn-warning"
+					onclick="window.parent.openPromptBox('警告信息提示框','panel-warning','icon-warning-circle')">警告提示框</button>
+
+				<button type="button" class="btn btn-danger"
+					onclick="window.parent.openPromptBox('警告信息提示框','panel-danger','icon-close-circle')">失败提示框</button>
+			</div>
+		</div>
+		<div class="row clearfix">
+			<div class="col-md-6 column">
+				<div class="page-header">
+					<h3>文字滚动示例</h3>
+				</div>
+
+				<div id="news"
+					style="background-color: pink; height: 30px; overflow: hidden; line-height: 30px;">
+					<ul style="margin-top: 0 !important">
+						<li><a href="#">1首页</a></li>
+						<li><a href="#">2产品</a></li>
+						<li><a href="#">3联系我们</a></li>
+						<li><a href="#">4支付方式</a></li>
+						<li><a href="#">5销售QQ</a></li>
+						<li><a href="#">6售后服务</a></li>
+					</ul>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+function autoScroll(obj){
+$(obj).find('ul').animate({
+marginTop: '-30px'
+      },1000,function(){
+$(this).css({marginTop : "0px"});
+         var li =$("ul").children().first().clone()
+$("ul li:last").after(li );
+         $("ul li:first").remove();
+
+      })
+}
+
+
+$(function(){
+
+setInterval('autoScroll("#news")',2000);
+
+
+   })
+</script>
+</html>
