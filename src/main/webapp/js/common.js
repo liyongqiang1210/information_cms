@@ -55,9 +55,9 @@ function openModal(title, content, buttonClass, methodName) {
 };
 
 // 表单验证提示错误信息方法
-function promptMessage(odj, errorMessage) {
+function promptMessage(obj, errorMessage) {
 	$(".alert").remove();
-	$(odj)
+	$(obj)
 			.prepend(
 					"<div class='alert alert-danger alert-dismissable'><button type='button'"
 							+ "class='close' data-dismiss='alert' aria-hidden='true'> &times;</button>"
