@@ -1,6 +1,17 @@
 $(function() {
+	
+	// 防止iframe框架局部跳转到登录页面
+	if (window != top) {
+		top.location.href = location.href;
+	}
+	
+	// 随机获取一个验证码
+	$("img.checkCode").prop(
+			"src",
+			"http://localhost:8080/Information_cms/login/getCheckCode.do?number="
+					+ Math.random());
 
-	/* 用户登录 */
+	// 用户登录 
 	$("#login")
 			.click(
 					function() {
@@ -48,12 +59,11 @@ $(function() {
 																'http://localhost:8080/Information_cms/html/index.html');
 											} else { // 登录失败，提示错误信息
 												// 将错误信息输出到登录页面提示信息中
-												promptMessage("form",message);
+												promptMessage("form", message);
 											}
 										},
 										error : function(data) {
-											promptMessage("form",
-													"登录时发生错误，请联系管理员");
+											promptMessage("form", "请刷新页面后重新登录");
 										}
 									});
 						}

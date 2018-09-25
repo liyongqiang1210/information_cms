@@ -35,12 +35,12 @@ public class UserController {
 		return "/user/info";
 	}
 
-	@RequestMapping(value = "/getUserByUserName.do",method = RequestMethod.GET, produces = "application/json;charset=utf-8")
+	@RequestMapping(value = "/getUserByUserName.do", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public JsonResult getUserByUsername(HttpServletRequest request, String username) {
-		
+
 		User user = userServiceImpl.findByUsername(username);
-		
+
 		return JsonResult.buildSuccessResult(user);
 	}
 
@@ -59,12 +59,12 @@ public class UserController {
 	public String findAll(HttpServletResponse response, Integer limit, Integer offset, String username) {
 
 		try {
-			
-			//解决跨域问题，这里需要设置头信息，不然客户端无法接收到返回值
+
+			// 解决跨域问题，这里需要设置头信息，不然客户端无法接收到返回值
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			response.setHeader("Access-Control-Allow-Methods", "GET");
 			response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
-			
+
 			if (limit == null || offset == null || username == null) {
 				return MessageUtil.getStateInfo("参数中不能存在null");
 			}
@@ -159,6 +159,16 @@ public class UserController {
 			msg = MessageUtil.ERROR_MESSAGE;
 		}
 		return msg;
+	}
+
+	/**
+	 * 重定向到用户登录页面
+	 * @return
+	 */
+	@RequestMapping(value = "/toUser.do", method = RequestMethod.GET)
+	public String toUser() {
+
+		return "redirect:/user/user.html";
 	}
 
 }

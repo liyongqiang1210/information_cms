@@ -46,7 +46,7 @@ public class LoginController {
 	 * @param checkCode 验证码
 	 * @return 返回相应的状态信息
 	 */
-	@RequestMapping(value = "/toLogin.do")
+	@RequestMapping(value = "/toLogin.do", method = RequestMethod.POST)
 	@ResponseBody
 	public JsonResult toLogin(HttpServletRequest request, HttpServletResponse response, String username, String password, boolean rememberMe,String checkCode) {
 		

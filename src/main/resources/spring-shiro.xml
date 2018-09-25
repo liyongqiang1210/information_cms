@@ -20,6 +20,14 @@
 		<property name="successUrl" value="html/index.html" />
 		<!-- 权限认证失败跳转的地址 ，用来提示当前用户没有操作权限，可以不需要 -->
 		<property name="unauthorizedUrl" value="/login.html" />
+	<!-- 此处配置的是自定义过滤器 -->
+	<!-- 	<property name="filters">
+			<map>
+				<entry key="ajax">
+					<bean class="com.maven.filter.AjaxFilter"/>
+				</entry>
+			</map>
+		</property> -->
 		<!-- Shiro连接约束配置,即过滤链的定义 -->
 		<property name="filterChainDefinitions">
 			<value>
@@ -30,13 +38,14 @@
 				/css/bootstrap.min.css=anon
 				/css/login.css=anon
 				/css/login.css=anon
+				/login.html=anon
 				/login/**=anon
-				/html/**=authc
 				/logout=logout
+				/html/**=authc
 				/user/**=authc,roles[admin]
 				/role/**=authc,roles[admin]
 				/resource/**=authc,roles[admin]
-				/**=user
+				/**=authc
 			</value>
 		</property>
 	</bean>
