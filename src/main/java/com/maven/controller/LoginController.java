@@ -36,7 +36,6 @@ import com.maven.util.json.JsonResult;
 @Controller
 @RequestMapping(value = "/login")
 public class LoginController {
-
 	/**
 	 * 用户登录
 	 * 
