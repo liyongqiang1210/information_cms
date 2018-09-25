@@ -17,9 +17,9 @@
 		<!-- 身份认证失败跳转的地址，没有登录当然就跳转到登录地址 -->
 		<property name="loginUrl" value="/login.html" />
 		<!-- 身份认证成功跳转的地址，一般登录成功后会跳转到系统首页 -->
-		<property name="successUrl" value="html/index.html" />
+		<property name="successUrl" value="/html/index.html" />
 		<!-- 权限认证失败跳转的地址 ，用来提示当前用户没有操作权限，可以不需要 -->
-		<property name="unauthorizedUrl" value="/login.html" />
+		<property name="unauthorizedUrl" value="/html/test.html" />
 	<!-- 此处配置的是自定义过滤器 -->
 	<!-- 	<property name="filters">
 			<map>
