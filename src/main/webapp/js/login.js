@@ -48,7 +48,7 @@ $(function() {
 																'http://localhost:8080/Information_cms/html/index.html');
 											} else { // 登录失败，提示错误信息
 												// 将错误信息输出到登录页面提示信息中
-												promptMessage(message);
+												promptMessage("form",message);
 											}
 										},
 										error : function(data) {
