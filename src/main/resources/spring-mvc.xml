@@ -62,9 +62,9 @@
 		<!-- 日志拦截器 -->
 		<mvc:interceptor>
 			<!-- 拦截器要拦截的路径 -->
-			<mvc:mapping path="/**" />
+			<mvc:mapping path="/login/login.do" />
 			<!-- 拦截器不拦截的路径 -->
-			<mvc:exclude-mapping path="/login/**" />
+			<!-- <mvc:exclude-mapping path="/login/**" /> -->
 			<!-- 定义在 mvc:interceptor 下面的 Interceptor，表示对特定的请求进行拦截 -->  
 			<bean class="com.maven.interceptor.UserLoginInterceptor" />
 		</mvc:interceptor>
