@@ -1,7 +1,6 @@
 package com.maven.filter;
 
 import java.io.IOException;
-import java.util.Enumeration;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -9,6 +8,9 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -24,6 +26,7 @@ import javax.servlet.ServletResponse;
  */
 public class LogFilter implements Filter {
 
+	private static final Logger log = LoggerFactory.getLogger(LogFilter.class);
 	@Override
 	public void destroy() {
 		// System.out.println("********************logFilter过滤器销毁********************");
@@ -43,7 +46,7 @@ public class LogFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		System.out.println("********************logFilter过滤器初始化********************");
+		log.debug("********************日志过滤器初始化********************");
 		// 获取过滤器的名字
 		// String filterName = filterConfig.getFilterName();
 		// 得到web.xml文件中配置的初始化参数

@@ -12,6 +12,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -27,6 +29,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class InvilidCharacterFilter implements Filter {
 
+	private static final Logger log = LoggerFactory.getLogger(InvilidCharacterFilter.class);
 	// 需要过滤的非法字符
 	private static String[] invalidCharacter = new String[] { "script", "select", "insert", "document", "window",
 			"function", "delete", "update", "prompt", "alert", "create", "alter", "drop", "iframe", "link", "where",
@@ -70,7 +73,7 @@ public class InvilidCharacterFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		System.out.println("********************InvilidCharacterFilter初始化********************");
+		log.debug("********************字符串过滤器初始化********************");
 
 	}
 
