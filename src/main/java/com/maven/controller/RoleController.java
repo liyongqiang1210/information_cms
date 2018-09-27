@@ -15,12 +15,33 @@ import com.alibaba.fastjson.JSONObject;
 import com.maven.model.pojo.Role;
 import com.maven.service.impl.RoleServiceImpl;
 
+/**
+ * <p>
+ * Title: RoleController
+ * </p>
+ * <p>
+ * Description: 角色控制器
+ * </p>
+ *
+ * @author Li Yongqiang
+ * @datetime 2018年9月27日 下午9:38:17
+ */
 @Controller
 @RequestMapping(value = "/role")
 public class RoleController {
 
 	@Autowired
 	private RoleServiceImpl roleServiceImpl;
+
+	/**
+	 * 跳转到角色页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/toRole.do", method = RequestMethod.GET)
+	public String toRole() {
+		return "forward:/user/role.html";
+	}
 
 	/**
 	 * 获取所有角色信息列表
