@@ -35,7 +35,7 @@ $(function() {
 							$
 									.ajax({
 										type : "POST",
-										url : "http://localhost:8080/Information_cms/login/toLogin.do",
+										url : "http://localhost:8080/Information_cms/login/login.do",
 										data : {
 											username : username,
 											password : password,
