@@ -112,7 +112,7 @@
 	
 	<!-- session失效时间 -->
 	<session-config>
-		<session-timeout>60</session-timeout>
+		<session-timeout>30</session-timeout>
 	</session-config>
 	
 	<!-- 错误页面配置 -->
