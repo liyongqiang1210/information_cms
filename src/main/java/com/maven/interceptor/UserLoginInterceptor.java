@@ -3,6 +3,8 @@ package com.maven.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -20,33 +22,23 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class UserLoginInterceptor implements HandlerInterceptor {
 
+	private static final Logger log = LoggerFactory.getLogger(UserLoginInterceptor.class);
+
 	// 在业务处理器处理请求之前被调用
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		// equalsIgnoreCase 与 equals的区别？
-		// if ("POST".equalsIgnoreCase(request.getMethod())) {
-		// // RequestUtil.saveRequest();
-		// }
-		System.out.println("****************UserLoginInterceptor开始执行****************");
+
+		log.debug("****************用户开始登录****************");
 		String requestUri = request.getRequestURI();
 		String contextPath = request.getContextPath();
 		String ip = getIp(request);
 		String url = requestUri.substring(contextPath.length());
-		System.out.println("ip: " + ip);
-		System.out.println("requestUri: " + requestUri);
-		System.out.println("contextPath: " + contextPath);
-		System.out.println("url: " + url);
+		log.debug("ip: " + ip);
+		log.debug("requestUri: " + requestUri);
+		log.debug("contextPath: " + contextPath);
+		log.debug("url: " + url);
 
-		// 判断用户是否登录
-		String username = (String) request.getSession().getAttribute("username");
-		if (username != null && !username.equals("")) {
-			System.out.println("****************用户名：" + username + "已登录****************");
-			return true;
-		} else {
-			// 跳转到登录页面
-			request.getRequestDispatcher("/login.html").forward(request, response);
-			return false;
-		}
+		return true;
 
 	}
 
@@ -78,15 +70,17 @@ public class UserLoginInterceptor implements HandlerInterceptor {
 	// 在业务处理器处理请求完成之后，生成视图之前执行
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-
-		System.out.println("****************开始生成视图****************");
+		// 获取用户名
+		String username = (String) request.getSession().getAttribute("username");
+		log.debug("****************用户名：" + username + "登录成功****************");
+		log.debug("****************开始生成视图****************");
 	}
 
 	// 在DispatcherServlet完全处理完请求之后被调用，可用于清理资源
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
 
-		System.out.println("****************UserLoginInterceptor执行结束****************");
+		log.debug("****************UserLoginInterceptor执行结束****************");
 	}
 
 }
