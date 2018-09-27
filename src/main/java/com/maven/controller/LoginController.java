@@ -29,31 +29,43 @@ import com.maven.util.CodeUtil;
 import com.maven.util.json.JsonResult;
 
 /**
- * 用户登录控制器
+ * <p>
+ * Title: LoginController
+ * </p>
+ * <p>
+ * Description: 用户登录控制器
+ * </p>
+ * 
  * @author liyongqiang
- *
+ * @date 2018年9月27日 下午3:30:51
  */
 @Controller
 @RequestMapping(value = "/login")
 public class LoginController {
+
+
 	/**
 	 * 用户登录
 	 * 
 	 * @param request
-	 * @param username 用户名
-	 * @param password 密码
-	 * @param checkCode 验证码
+	 * @param username
+	 *            用户名
+	 * @param password
+	 *            密码
+	 * @param checkCode
+	 *            验证码
 	 * @return 返回相应的状态信息
 	 */
-	@RequestMapping(value = "/toLogin.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/login.do", method = RequestMethod.POST)
 	@ResponseBody
-	public JsonResult toLogin(HttpServletRequest request, HttpServletResponse response, String username, String password, boolean rememberMe,String checkCode) {
-		
+	public JsonResult login(HttpServletRequest request, HttpServletResponse response, String username, String password,
+			boolean rememberMe, String checkCode) {
+
 		// 用户名或者密码非空校验
-		if(username == "" || username == null || password == "" || password == null) {
+		if (username == "" || username == null || password == "" || password == null) {
 			return JsonResult.buildFailedResult("用户名或者密码不能为空!");
 		}
-		
+
 		// 从session中读取验证码的实际值
 		HttpSession session = request.getSession(true);
 		String code = (String) session.getAttribute("code");
@@ -90,7 +102,7 @@ public class LoginController {
 			}
 		} else if (checkCode == "" || checkCode.equals("") || checkCode == null) {
 			return JsonResult.buildFailedResult("请输入验证码");
-		}else{
+		} else {
 			return JsonResult.buildFailedResult("验证码错误");
 		}
 	}
@@ -122,5 +134,5 @@ public class LoginController {
 			e.printStackTrace();
 		}
 	}
-	
+
 }
