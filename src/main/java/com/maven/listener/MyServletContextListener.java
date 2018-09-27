@@ -1,11 +1,10 @@
 package com.maven.listener;
 
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -22,13 +21,14 @@ import javax.servlet.ServletContextListener;
  */
 public class MyServletContextListener implements ServletContextListener {
 
+	private static final Logger log = LoggerFactory.getLogger(MyServletContextListener.class);
 
 	public void contextDestroyed(ServletContextEvent servletContextEvent) {
 
 	}
 
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
-		 System.out.println("********************MyServletContextListener监听器初始化********************");
+		 log.debug("********************MyServletContextListener监听器初始化********************");
 		// 获取项目根路径
 		// String contextPath =
 		// servletContextEvent.getServletContext().getRealPath("/");
