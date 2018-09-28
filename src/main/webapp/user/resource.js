@@ -45,9 +45,6 @@ $(function() {
 							"deleteSelectedUser()");
 				}
 			});
-	
-	// 初始化开关按钮 
-	$('.switch input').bootstrapSwitch();
 
 });
 
@@ -89,33 +86,63 @@ var TableInit = function() {
 			cardView : false, // 是否显示详细视图
 			detailView : false, // 是否显示父子表
 			columns : [ {
-				checkbox : true
+				checkbox : true,
+				valign : 'middle',
 			}, {
 				field : 'id',
-				title : '权限ID'
+				title : '权限ID',
+				valign : 'middle'
 			}, {
 				field : 'name',
-				title : '权限名'
+				title : '权限名',
+				valign : 'middle'
 			}, {
 				field : 'type',
-				title : '权限类型'
+				title : '权限类型',
+				valign : 'middle'
 			}, {
 				field : 'url',
-				title : '权限url'
+				title : '权限url',
+				valign : 'middle'
 			}, {
 				field : 'permission',
-				title : '权限字符串'
+				title : '权限字符串',
+				valign : 'middle'
 			}, {
 				field : 'available',
 				title : '是否启用',
+				width : '200px',
+				align : "center",// 数据对齐方式
+				halign : "center",// 表头的对齐方式
+				valign : 'middle',// 数据垂直居中方式
 				formatter : availableFormatter
 			}, {
 				field : 'operate',
 				title : '操作',
 				width : '400px',
+				align : "center",// 数据对齐方式
+				halign : "center",// 表头的对齐方式
+				valign : 'middle',// 数据垂直居中方式
 				events : operateEvents,
 				formatter : operateFormatter
-			}, ]
+			}, ],
+			onLoadSuccess : function() {
+				$('[name="my-checkbox"] input').bootstrapSwitch({
+					onText : "开启",
+					offText : "关闭",
+					onColor : "success",
+					offColor : "danger",
+					onSwitchChange : function(event, state) {
+						if (state == true) {
+							console.log('已打开');
+
+							console.log(this);
+						} else {
+							console.log('已关闭');
+						}
+					}
+				})
+			}
 		});
 	};
 	return oTableInit;
@@ -140,15 +167,19 @@ window.operateEvents = {
 
 function operateFormatter(value, row, index) {
 	return [
-			'<button type="button" onclick="editRole()" class="btn btn-success btn-xs">编辑</button> &nbsp;',
-			'<button type="button" onclick="deleteRole()" class="btn btn-danger btn-xs">删除</button> &nbsp;',
-			'<button type="button" onclick="addResource()" class="btn btn-info btn-xs">分配权限</button> &nbsp;' ]
+			'<button type="button" onclick="editRole()" class="btn btn-success btn-sm">编辑</button> &nbsp;',
+			'<button type="button" onclick="deleteRole()" class="btn btn-danger btn-sm">删除</button> &nbsp;',
+			'<button type="button" onclick="addResource()" class="btn btn-info btn-sm">分配权限</button> &nbsp;' ]
 			.join('');
 }
 
 function availableFormatter(value, row, index) {
-	return ['<div name="mySwitch" class="switch" data-on="success" data-off="warning"><input type="checkbox" checked /></div>'
-			].join('');
+	if (value == 0) {
+		return '<div name="my-checkbox" class="switch switch-small" data-on="success" data-off="warning"><input type="checkbox" checked></div>';
+	} else if (value == 1) {
+		return '<div name="my-checkbox" class="switch switch-small" data-on="success" data-off="warning"><input type="checkbox" checked></div>';
+	}
+
 }
 
 var ButtonInit = function() {

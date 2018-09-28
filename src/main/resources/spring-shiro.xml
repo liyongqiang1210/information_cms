@@ -38,14 +38,14 @@
 				/css/bootstrap.min.css=anon
 				/css/login.css=anon
 				/css/login.css=anon
-				/login.html=anon
+				<!-- /login.html=anon
 				/login/**=anon
 				/logout=logout
 				/html/**=authc
 				/user/**=authc,roles[admin]
-				/role/**=authc,roles[admin]
-				/resource/**=authc,roles[admin]
-				/**=authc
+				/role/**=authc,roles[admin] -->
+				<!-- /resource/**=authc,roles[admin]
+				/**=authc -->
 			</value>
 		</property>
 	</bean>
