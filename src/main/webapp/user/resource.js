@@ -1,6 +1,5 @@
 $(function() {
-	
-	
+
 	// 1.初始化Table
 	var oTable = new TableInit();
 	oTable.Init();
@@ -37,13 +36,18 @@ $(function() {
 						function(row) {
 							return row;
 						});
-				
+
 				if (getSelectRows.length == 0) {
-					window.parent.openPromptBox("请选择要删除的数据","panel-warning","icon-warning-circle");
+					window.parent.openPromptBox("请选择要删除的数据", "panel-warning",
+							"icon-warning-circle");
 				} else {
-					openModal("删除选中权限", "确认删除选中的权限吗？", "btn-danger", "deleteSelectedUser()");
+					openModal("删除选中权限", "确认删除选中的权限吗？", "btn-danger",
+							"deleteSelectedUser()");
 				}
 			});
+	
+	// 初始化开关按钮 
+	$('.switch input').bootstrapSwitch();
 
 });
 
@@ -78,7 +82,7 @@ var TableInit = function() {
 			showColumns : true, // 是否显示所有的列
 			showRefresh : true, // 是否显示刷新按钮
 			minimumCountColumns : 2, // 最少允许的列数
-			clickToSelect : true, // 是否启用点击选中行
+			clickToSelect : false, // 是否启用点击选中行
 			height : 600, // 行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
 			uniqueId : "ID", // 每一行的唯一标识，一般为主键列
 			showToggle : false, // 是否显示详细视图和列表视图的切换按钮
@@ -103,7 +107,9 @@ var TableInit = function() {
 				title : '权限字符串'
 			}, {
 				field : 'available',
-				title : '是否启用'
+				title : '是否启用',
+				events : availableEvents,
+				formatter : availableFormatter
 			}, {
 				field : 'operate',
 				title : '操作',
@@ -137,8 +143,17 @@ function operateFormatter(value, row, index) {
 	return [
 			'<button type="button" onclick="editRole()" class="btn btn-success btn-xs">编辑</button> &nbsp;',
 			'<button type="button" onclick="deleteRole()" class="btn btn-danger btn-xs">删除</button> &nbsp;',
-			'<button type="button" onclick="addResource()" class="btn btn-info btn-xs">分配权限</button> &nbsp;']
+			'<button type="button" onclick="addResource()" class="btn btn-info btn-xs">分配权限</button> &nbsp;' ]
 			.join('');
+}
+
+window.availableEvents = {
+		
+		};
+
+function availableFormatter(value, row, index) {
+	return ['<div name="mySwitch" class="switch" data-on="success" data-off="warning"><input type="checkbox" checked /></div>'
+			].join('');
 }
 
 var ButtonInit = function() {
@@ -179,7 +194,7 @@ function addUser() {
 			success : function(data) { // 添加成功
 				closeModal();
 				openPromptBox("权限添加成功", "panel-success", "icon-check-circle");
-				
+
 			},
 			error : function(data) { // 添加失败
 				promptMessage("#addRole", "添加失败");
@@ -218,25 +233,25 @@ function checkFrom() {
 
 }
 
-function deleteSelectedUser(){
-	
+function deleteSelectedUser() {
+
 	// 获取选中行的数据
 	var getSelectRows = $("#table").bootstrapTable('getSelections',
 			function(row) {
 				return row;
 			});
-	
+
 	$.ajax({
-		type:"POST",
-		url:"",
-		data:"",
-		dataType:"json",
-		success:function(data){
-			
+		type : "POST",
+		url : "",
+		data : "",
+		dataType : "json",
+		success : function(data) {
+
 		},
-		error:function(){
-			
+		error : function() {
+
 		}
-		
+
 	});
 }
