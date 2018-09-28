@@ -53,7 +53,7 @@ var TableInit = function() {
 	// 初始化Table
 	oTableInit.Init = function() {
 		$('#table').bootstrapTable({
-			url : 'http://localhost:8080/Information_cms/role/findAllRole.do', // 请求后台的URL（*）
+			url : 'http://localhost:8080/Information_cms/role/getAllRole.do', // 请求后台的URL（*）
 			method : 'get', // 请求方式（*）
 			toolbar : '#toolbar', // 工具按钮用哪个容器
 			striped : true, // 是否显示行间隔色
@@ -65,7 +65,7 @@ var TableInit = function() {
 				var temp = { // 这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
 					limit : params.limit, // 页面大小
 					offset : params.offset, // 页码
-					username : $("#search_rolename").val()
+					rolename : $("#search_role_name").val()
 				};
 				return temp;
 			}, // 传递参数（*）
@@ -90,10 +90,10 @@ var TableInit = function() {
 				field : 'id',
 				title : '角色ID'
 			}, {
-				field : 'rolename',
+				field : 'roleName',
 				title : '角色名'
 			}, {
-				field : 'role_desc',
+				field : 'roleDesc',
 				title : '角色描述'
 			}, {
 				field : 'available',
@@ -131,7 +131,7 @@ function operateFormatter(value, row, index) {
 	return [
 			'<button type="button" onclick="editRole()" class="btn btn-success btn-xs">编辑</button> &nbsp;',
 			'<button type="button" onclick="deleteRole()" class="btn btn-danger btn-xs">删除</button> &nbsp;',
-			'<button type="button" onclick="addResource()" class="btn btn-info btn-xs">分配资源</button> &nbsp;']
+			'<button type="button" onclick="addResource()" class="btn btn-info btn-xs">分配权限</button> &nbsp;']
 			.join('');
 }
 
