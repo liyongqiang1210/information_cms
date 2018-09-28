@@ -108,7 +108,6 @@ var TableInit = function() {
 			}, {
 				field : 'available',
 				title : '是否启用',
-				events : availableEvents,
 				formatter : availableFormatter
 			}, {
 				field : 'operate',
@@ -146,10 +145,6 @@ function operateFormatter(value, row, index) {
 			'<button type="button" onclick="addResource()" class="btn btn-info btn-xs">分配权限</button> &nbsp;' ]
 			.join('');
 }
-
-window.availableEvents = {
-		
-		};
 
 function availableFormatter(value, row, index) {
 	return ['<div name="mySwitch" class="switch" data-on="success" data-off="warning"><input type="checkbox" checked /></div>'
