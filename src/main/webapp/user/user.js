@@ -134,7 +134,7 @@ function operateFormatter(value, row, index) {
 	return [
 			'<button type="button" onclick="editUser()" class="btn btn-success btn-xs">编辑</button> &nbsp;',
 			'<button type="button" onclick="deleteUser()" class="btn btn-danger btn-xs">删除</button> &nbsp;',
-			'<button type="button" onclick="addRole()" class="btn btn-info btn-xs">分配权限</button> &nbsp;']
+			'<button type="button" onclick="addRole()" class="btn btn-info btn-xs">分配角色</button> &nbsp;']
 			.join('');
 }
 
