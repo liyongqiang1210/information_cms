@@ -23,9 +23,6 @@ public class QueryUser implements Serializable {
 	}
 
 	public void setLimit(Integer limit) {
-		if(limit.equals("")){
-			limit = 0;
-		}
 		this.limit = limit;
 	}
 
@@ -34,9 +31,6 @@ public class QueryUser implements Serializable {
 	}
 
 	public void setOffset(Integer offset) {
-		if(offset.equals("")){
-			offset = 0;
-		}
 		this.offset = offset * limit;
 	}
 
