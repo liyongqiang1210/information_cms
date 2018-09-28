@@ -127,7 +127,7 @@ var TableInit = function() {
 				formatter : operateFormatter
 			}, ],
 			onLoadSuccess : function() {
-				$('[name="my-checkbox"] input').bootstrapSwitch({
+				$('[name="my-checkbox"]').bootstrapSwitch({
 					onText : "开启",
 					offText : "关闭",
 					onColor : "success",
@@ -175,9 +175,9 @@ function operateFormatter(value, row, index) {
 
 function availableFormatter(value, row, index) {
 	if (value == 0) {
-		return '<div name="my-checkbox" class="switch switch-small" data-on="success" data-off="warning"><input type="checkbox" checked></div>';
+		return '<input name="my-checkbox" type="checkbox" class="switch switch-small">';
 	} else if (value == 1) {
-		return '<div name="my-checkbox" class="switch switch-small" data-on="success" data-off="warning"><input type="checkbox" checked></div>';
+		return '<input name="my-checkbox" type="checkbox" class="switch switch-small" checked>';
 	}
 
 }
