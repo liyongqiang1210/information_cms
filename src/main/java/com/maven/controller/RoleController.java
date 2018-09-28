@@ -3,6 +3,7 @@ package com.maven.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.maven.model.pojo.Role;
 import com.maven.service.impl.RoleServiceImpl;
+import com.maven.util.MessageUtil;
 
 /**
  * <p>
@@ -48,16 +50,22 @@ public class RoleController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/getAllRole.do", produces = "text/html;charset=UTF-8;", method = RequestMethod.GET)
+	@RequestMapping(value = "/getAllRole.do", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@ResponseBody
-	public String getAllRole(HttpServletRequest request) {
-		JSONArray jsonArray = new JSONArray();
-		// 获取角色列表
-		List<Role> findAll = roleServiceImpl.findAll();
-		for (Role role : findAll) {
-			jsonArray.add(role);
+	public String getAllRole(HttpServletRequest request, HttpServletResponse response, Integer limit, Integer offset,
+			String rolename) {
+		// 解决跨域问题，这里需要设置头信息，不然客户端无法接收到返回值
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Methods", "GET");
+		response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+
+		if (limit == null || offset == null || rolename == null) {
+			return MessageUtil.getStateInfo("参数中存在空值");
 		}
-		return jsonArray.toJSONString();
+		// 获取角色列表
+		List<Role> list = roleServiceImpl.findAll(limit, offset, rolename);
+		int total = list.size();
+		return MessageUtil.getJsonArrry(total, JSONArray.toJSONString(list));
 	}
 
 	/**

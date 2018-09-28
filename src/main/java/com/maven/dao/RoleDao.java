@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.maven.model.pojo.Role;
+import com.maven.model.query.QueryRole;
 
 /**
  * 
@@ -20,7 +21,7 @@ public interface RoleDao {
 
 	public String findRoleNameById(int roleId);
 
-	public List<Role> findAll();
+	public List<Role> findAll(QueryRole qr);
 
 	public Set<String> findRoles(String username);
 

@@ -20,7 +20,7 @@ public interface RoleService {
 
 	public Role findRoleById(int roleId);
 
-	public List<Role> findAll();
+	public List<Role> findAll(Integer limit, Integer offset, String rolename);
 	
 	public String findRoleNameByUserName(String username);
 

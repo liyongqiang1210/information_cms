@@ -11,6 +11,7 @@ import com.maven.dao.RoleDao;
 import com.maven.dao.UserDao;
 import com.maven.model.pojo.Role;
 import com.maven.model.pojo.User;
+import com.maven.model.query.QueryRole;
 import com.maven.service.RoleService;
 
 @Service
@@ -41,8 +42,12 @@ public class RoleServiceImpl implements RoleService {
 		return roleDao.findRoleById(roleId);
 	}
 
-	public List<Role> findAll() {
-		return roleDao.findAll();
+	public List<Role> findAll(Integer limit, Integer offset, String rolename) {
+		QueryRole qr = new QueryRole();
+		qr.setLimit(limit);
+		qr.setOffset(offset);
+		qr.setRolename(rolename);
+		return roleDao.findAll(qr);
 	}
 
 	public Set<String> findRoles(String username) {
