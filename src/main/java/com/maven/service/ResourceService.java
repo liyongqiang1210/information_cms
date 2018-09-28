@@ -13,7 +13,7 @@ public interface ResourceService {
 
 	public void deleteResource(int resourceId);
 
-	public List<Resource> findAll();
+	public List<Resource> findAll(Integer limit, Integer offset, String resourceName);
 
 	/**
 	 * 得到资源对应的权限字符串
@@ -30,6 +30,6 @@ public interface ResourceService {
 	 * @return
 	 */
 	List<Resource> findMenus(Set<String> permissions);
-	
+
 	public List<Resource> findResourceByName(Resource resource);
 }

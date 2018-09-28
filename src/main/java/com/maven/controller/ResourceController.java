@@ -3,6 +3,7 @@ package com.maven.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,15 +11,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONArray;
 import com.maven.model.pojo.Resource;
 import com.maven.service.impl.ResourceServiceImpl;
 import com.maven.util.MessageUtil;
 
 /**
- * 资源控制层
+ * <p>
+ * Title: ResourceController
+ * </p>
+ * <p>
+ * Description:权限控制器
+ * </p>
  * 
- * @author Li Yongqiang
- *
+ * @author liyongqiang
+ * @datetime 2018年9月28日 下午3:22:48
+ */
+/**
+ * <p>
+ * Title: ResourceController
+ * </p>
+ * <p>
+ * Description:
+ * </p>
+ * 
+ * @author liyongqiang
+ * @datetime 2018年9月28日 下午3:26:42
  */
 @Controller
 @RequestMapping(value = "/resource")
@@ -26,6 +44,17 @@ public class ResourceController {
 
 	@Autowired
 	private ResourceServiceImpl resourceServiceImpl;
+
+	/**
+	 * 跳转到权限页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/toResource.do", method = RequestMethod.GET)
+	public String toResource() {
+
+		return "forward:/user/resource.html";
+	}
 
 	/**
 	 * 创建资源
@@ -89,18 +118,24 @@ public class ResourceController {
 	}
 
 	/**
-	 * 查询全部资源信息
+	 * 根据条件查询权限
 	 * 
 	 * @param request
+	 * @param response
+	 * @param limit
+	 * @param offset
+	 * @param resourceName
 	 * @return
 	 */
 	@RequestMapping(value = "/findAll.do", method = RequestMethod.GET)
 	@ResponseBody
-	public String findAll(HttpServletRequest request) {
+	public String findAll(HttpServletRequest request, HttpServletResponse response, Integer limit, Integer offset,
+			String resourceName) {
 
 		try {
-			List<Resource> list = resourceServiceImpl.findAll();
-			return MessageUtil.getJsonArrry(list);
+			List<Resource> list = resourceServiceImpl.findAll(limit,offset,resourceName);
+			int total = list.size();
+			return MessageUtil.getJsonArrry(total,JSONArray.toJSONString(list));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return MessageUtil.ERROR_MESSAGE;
@@ -137,7 +172,8 @@ public class ResourceController {
 	/**
 	 * 根据资源名搜索
 	 * 
-	 * @param resource 资源对象
+	 * @param resource
+	 *            资源对象
 	 * @return 返回json字符串
 	 */
 	@RequestMapping(value = "/findResourceByName.do", method = RequestMethod.POST)

@@ -4,8 +4,12 @@
 <mapper namespace="com.maven.dao.ResourceDao">
 
 	<!-- 查询全部 -->
-	<select id="findAll" resultType="com.maven.model.pojo.Resource">
-		select * from sys_resource
+	<select id="findAll" resultType="com.maven.model.pojo.Resource" parameterType="com.maven.model.query.QueryResource">
+		select * from sys_resource where 1=1
+		<if test="resourceName!=null and resourceName!=''">
+			and name like CONCAT(CONCAT('%', #{resourceName}),'%');
+		</if>
+		limit #{offset},#{limit}
 	</select>
 
 	<!-- 根据资源id查询权限信息 -->

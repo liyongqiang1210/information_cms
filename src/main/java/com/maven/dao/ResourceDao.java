@@ -3,6 +3,7 @@ package com.maven.dao;
 import java.util.List;
 
 import com.maven.model.pojo.Resource;
+import com.maven.model.query.QueryResource;
 
 /**
  * 
@@ -19,7 +20,7 @@ public interface ResourceDao {
 
 	public String findPermissionById(int resourceId);
 
-	public List<Resource> findAll();
+	public List<Resource> findAll(QueryResource qr);
 
 	public List<Resource> findResourceByName(Resource resource);
 }
