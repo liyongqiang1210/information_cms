@@ -32,4 +32,6 @@ public interface ResourceService {
 	List<Resource> findMenus(Set<String> permissions);
 
 	public List<Resource> findResourceByName(Resource resource);
+
+	public void updateResourceState(Resource resource);
 }

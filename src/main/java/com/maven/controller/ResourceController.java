@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.maven.model.pojo.Resource;
 import com.maven.service.impl.ResourceServiceImpl;
 import com.maven.util.MessageUtil;
+import com.maven.util.json.JsonResult;
 
 /**
  * <p>
@@ -133,9 +134,9 @@ public class ResourceController {
 			String resourceName) {
 
 		try {
-			List<Resource> list = resourceServiceImpl.findAll(limit,offset,resourceName);
+			List<Resource> list = resourceServiceImpl.findAll(limit, offset, resourceName);
 			int total = list.size();
-			return MessageUtil.getJsonArrry(total,JSONArray.toJSONString(list));
+			return MessageUtil.getJsonArrry(total, JSONArray.toJSONString(list));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return MessageUtil.ERROR_MESSAGE;
@@ -179,9 +180,7 @@ public class ResourceController {
 	@RequestMapping(value = "/findResourceByName.do", method = RequestMethod.POST)
 	@ResponseBody
 	public String findResourceByName(Resource resource) {
-
 		try {
-
 			List<Resource> list = resourceServiceImpl.findResourceByName(resource);
 			return MessageUtil.getJsonArrry(list);
 		} catch (Exception e) {
@@ -189,6 +188,23 @@ public class ResourceController {
 			return MessageUtil.ERROR_MESSAGE;
 		}
 
+	}
+	
+	/**
+	 * 根据id修改权限状态
+	 * 
+	 * @param id
+	 * @param available
+	 * @return
+	 */
+	@RequestMapping(value = "/updateResourceState.do", method = RequestMethod.POST)
+	public JsonResult updateResourceState(Resource resource) {
+		try {
+			resourceServiceImpl.updateResourceState(resource);
+			return JsonResult.buildSuccessResult("状态更新成功");
+		} catch (Exception e) {
+			return JsonResult.buildFailedResult("状态更新失败");
+		}
 	}
 
 }

@@ -23,4 +23,6 @@ public interface ResourceDao {
 	public List<Resource> findAll(QueryResource qr);
 
 	public List<Resource> findResourceByName(Resource resource);
+
+	public void updateResourceState(Resource resource);
 }

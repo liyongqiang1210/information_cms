@@ -88,4 +88,9 @@ public class ResourceServiceImpl implements ResourceService {
 		return resourceDao.findResourceByName(resource);
 	}
 
+	public void updateResourceState(Resource resource) {
+		
+		resourceDao.updateResourceState(resource);
+	}
+
 }
