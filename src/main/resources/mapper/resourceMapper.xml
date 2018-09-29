@@ -45,4 +45,11 @@
 			and name like CONCAT(CONCAT('%', #{name}),'%');
 		</if>
 	</select>
+	
+	<!-- 根据id修改权限状态 -->
+	<update id="updateResourceState" parameterType="com.maven.model.pojo.Resource">
+		update sys_resource
+		set available = #{available} where id = #{id}
+	</update>
+	
 </mapper>

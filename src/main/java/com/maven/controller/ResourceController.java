@@ -5,6 +5,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,23 +30,14 @@ import com.maven.util.json.JsonResult;
  * @author liyongqiang
  * @datetime 2018年9月28日 下午3:22:48
  */
-/**
- * <p>
- * Title: ResourceController
- * </p>
- * <p>
- * Description:
- * </p>
- * 
- * @author liyongqiang
- * @datetime 2018年9月28日 下午3:26:42
- */
 @Controller
 @RequestMapping(value = "/resource")
 public class ResourceController {
 
 	@Autowired
 	private ResourceServiceImpl resourceServiceImpl;
+	
+	private static final Logger log = LoggerFactory.getLogger(ResourceController.class);
 
 	/**
 	 * 跳转到权限页面
@@ -72,7 +65,7 @@ public class ResourceController {
 			resourceServiceImpl.createResource(resource);
 			return MessageUtil.SUCCESS_MESSAGE;
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug(e.getMessage());
 			return MessageUtil.ERROR_MESSAGE;
 		}
 
@@ -93,7 +86,7 @@ public class ResourceController {
 			resourceServiceImpl.updateResource(resource);
 			return MessageUtil.SUCCESS_MESSAGE;
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug(e.getMessage());
 			return MessageUtil.ERROR_MESSAGE;
 		}
 	}
@@ -113,7 +106,7 @@ public class ResourceController {
 			resourceServiceImpl.deleteResource(resourceId);
 			return MessageUtil.SUCCESS_MESSAGE;
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug(e.getMessage());
 			return MessageUtil.ERROR_MESSAGE;
 		}
 	}
@@ -138,7 +131,7 @@ public class ResourceController {
 			int total = list.size();
 			return MessageUtil.getJsonArrry(total, JSONArray.toJSONString(list));
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug(e.getMessage());
 			return MessageUtil.ERROR_MESSAGE;
 		}
 	}
@@ -164,7 +157,7 @@ public class ResourceController {
 			}
 			return MessageUtil.SUCCESS_MESSAGE;
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug(e.getMessage());
 			return MessageUtil.ERROR_MESSAGE;
 		}
 
@@ -184,7 +177,7 @@ public class ResourceController {
 			List<Resource> list = resourceServiceImpl.findResourceByName(resource);
 			return MessageUtil.getJsonArrry(list);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug(e.getMessage());
 			return MessageUtil.ERROR_MESSAGE;
 		}
 
@@ -198,11 +191,13 @@ public class ResourceController {
 	 * @return
 	 */
 	@RequestMapping(value = "/updateResourceState.do", method = RequestMethod.POST)
+	@ResponseBody
 	public JsonResult updateResourceState(Resource resource) {
 		try {
 			resourceServiceImpl.updateResourceState(resource);
 			return JsonResult.buildSuccessResult("状态更新成功");
 		} catch (Exception e) {
+			log.debug(e.getMessage());
 			return JsonResult.buildFailedResult("状态更新失败");
 		}
 	}
