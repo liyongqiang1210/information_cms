@@ -51,4 +51,9 @@
 		select role_name from sys_role where id = (select role_ids
 		from sys_user where username = #{username})
 	</select>
+	
+	<!-- 根据id更新角色状态 -->
+	<update id="updateRoleState" parameterType="com.maven.model.pojo.Role">
+		update sys_role set available = #{available} where id = #{id}
+	</update>
 </mapper>

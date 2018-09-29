@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.maven.model.pojo.Role;
 import com.maven.service.impl.RoleServiceImpl;
 import com.maven.util.MessageUtil;
+import com.maven.util.json.JsonResult;
 
 /**
  * <p>
@@ -187,5 +188,22 @@ public class RoleController {
 		}
 
 		return "{\"rolename\":\"" + rolename + "\"}";
+	}
+
+	/**
+	 * 根据角色id更新角色状态
+	 * 
+	 * @param role
+	 * @return
+	 */
+	@RequestMapping(value = "/updateRoleState.do", method = RequestMethod.POST)
+	@ResponseBody
+	public JsonResult updateRoleState(Role role) {
+		try {
+			roleServiceImpl.updateRoleState(role);
+		} catch (Exception e) {
+			return JsonResult.buildFailedResult("failed");
+		}
+		return JsonResult.buildSuccessResult("success");
 	}
 }

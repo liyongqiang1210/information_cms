@@ -84,4 +84,9 @@ public class RoleServiceImpl implements RoleService {
 		return roleDao.findRoleNameByUserName(username);
 	}
 
+	public void updateRoleState(Role role) {
+		
+		roleDao.updateRoleState(role);
+	}
+
 }

@@ -109,10 +109,11 @@ var TableInit = function() {
 										width : '200px',
 										align : "center",// 数据对齐方式
 										formatter : function(value, row, index) {
+											var id = row.id;// 获取当前行数据的id
 											if (value == 0) {
-												return '<input type="checkbox" class="switch switch-small" name="my-checkbox" checked>';
+												return '<input type="checkbox" class="status" name="status-close" data-id="'+id+'" data-status="0" />';
 											} else if (value == 1) {
-												return '<input type="checkbox" class="switch switch-small" name="my-checkbox">';
+												return '<input type="checkbox" class="status" name="status-open" data-id="'+id+'" data-status="1" />';
 											}
 										}
 									}, {
@@ -122,21 +123,40 @@ var TableInit = function() {
 										events : operateEvents,
 										formatter : operateFormatter
 									}, ],
-							onLoadSuccess : function() {
-								$('[name="my-checkbox"]').bootstrapSwitch({
-									onText : "开启",
-									offText : "关闭",
-									onColor : "success",
-									offColor : "danger",
-									onSwitchChange : function(event, state) {
-										if (state == true) {
-											console.log('已打开');
+									onPostBody : function() {
+										// 用于开关组件初始化        
+										$('.status').each(function(){
 											
-										} else {
-											console.log('已关闭');
-										}
-									}
-								})
+											var status = $(this).data('status');             
+											$(this).bootstrapSwitch({                
+												onColor : "success",                
+												offColor : "warning",
+											}).bootstrapSwitch('size', "mini").bootstrapSwitch('state', status);
+										});
+										
+										// 监听开关按钮,按钮状态发生变化时触发此事件
+										// 此事件不能与开关按钮组件初始化放到一起，否则会造成事件的重复调用
+										$('.status').bootstrapSwitch('onSwitchChange',function(event,state){
+											var id = $(this).data('id');// 当前行数据id
+											// 修改状态
+											var available = 1;
+											if(!state){
+												available = 0;
+											}
+											$.ajax({
+												url : "http://localhost:8080/Information_cms/role/updateRoleState.do",
+												data : {id : id, available : available},
+												type : "POST",
+												dataType : "json",
+												success : function(data){
+													console.log(data.message);
+												},
+												error : function(data){
+													console.log(data.message);
+												}
+												
+											});
+										});
 							}
 						});
 	};
@@ -162,9 +182,9 @@ window.operateEvents = {
 
 function operateFormatter(value, row, index) {
 	return [
-			'<button type="button" onclick="editRole()" class="btn btn-success btn-sm">编辑</button> &nbsp;',
-			'<button type="button" onclick="deleteRole()" class="btn btn-danger btn-sm">删除</button> &nbsp;',
-			'<button type="button" onclick="addResource()" class="btn btn-info btn-sm">分配权限</button> &nbsp;' ]
+			'<button type="button" onclick="editRole()" class="btn btn-success btn-xs">编辑</button> &nbsp;',
+			'<button type="button" onclick="deleteRole()" class="btn btn-danger btn-xs">删除</button> &nbsp;',
+			'<button type="button" onclick="addResource()" class="btn btn-info btn-xs">分配权限</button> &nbsp;' ]
 			.join('');
 }
 

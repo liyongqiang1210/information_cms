@@ -39,4 +39,6 @@ public interface RoleService {
 	 * @return
 	 */
 	Set<String> findPermissions(String[] roleIds);
+	
+	public void updateRoleState(Role role);
 }
