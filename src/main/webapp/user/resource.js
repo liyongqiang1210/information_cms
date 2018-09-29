@@ -126,7 +126,7 @@ var TableInit = function() {
 				events : operateEvents,
 				formatter : operateFormatter
 			}, ],
-			onLoadSuccess : function() {
+			onPostBody : function() {
 				
 				// 用于开关组件初始化        
 				$('.status').each(function(){
