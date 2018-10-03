@@ -106,8 +106,7 @@ var TableInit = function() {
 									{
 										field : 'available',
 										title : '是否启用',
-										width : '200px',
-										align : "center",// 数据对齐方式
+										width : '150px',
 										formatter : function(value, row, index) {
 											var id = row.id;// 获取当前行数据的id
 											if (value == 0) {

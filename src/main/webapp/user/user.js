@@ -100,7 +100,15 @@ var TableInit = function() {
 				title : '手机号'
 			}, {
 				field : 'sex',
-				title : '性别'
+				title : '性别',
+				formatter : function(value, row, index){
+					console.log(value);
+					if(value==1){
+						return '男';
+					}else{
+						return '女';
+					}
+				}
 			}, {
 				field : 'operate',
 				title : '操作',
