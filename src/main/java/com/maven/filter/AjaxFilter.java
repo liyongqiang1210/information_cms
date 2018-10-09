@@ -3,7 +3,6 @@ package com.maven.filter;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -27,13 +26,12 @@ public class AjaxFilter extends AdviceFilter {
 	private static final Logger log = LoggerFactory.getLogger(AjaxFilter.class);
 
 	/**
-	 * 请求前处理
-	 * 拦截到请求判断是否为ajax请求
+	 * 请求前处理 拦截到请求判断是否为ajax请求
 	 */
 	@Override
 	protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
 		HttpServletRequest req = (HttpServletRequest) request;
-		HttpServletResponse res = (HttpServletResponse) response;
+		// HttpServletResponse res = (HttpServletResponse) response;
 		// 如果请求头中包含X-Requested-With参数那么这个请求就是ajax请求
 		String requestType = req.getHeader("X-Requested-With");
 		// 那么我们根据X-Requested-With参数的值来判断是否为ajax请求
@@ -61,7 +59,7 @@ public class AjaxFilter extends AdviceFilter {
 	protected void postHandle(ServletRequest request, ServletResponse response) throws Exception {
 		super.postHandle(request, response);
 	}
-	
+
 	/**
 	 * 最终处理方法,一定会执行的方法,一般用于释放资源
 	 */

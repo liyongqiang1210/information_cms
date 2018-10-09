@@ -1,6 +1,5 @@
 package com.maven.listener;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
