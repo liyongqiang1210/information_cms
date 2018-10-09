@@ -111,17 +111,13 @@ var TableInit = function() {
 			}, {
 				field : 'available',
 				title : '是否启用',
-				width : '200px',
-				align : "center",// 数据对齐方式
-				halign : "center",// 表头的对齐方式
+				width : '150px',
 				valign : 'middle',// 数据垂直居中方式
 				formatter : availableFormatter
 			}, {
 				field : 'operate',
 				title : '操作',
 				width : '400px',
-				align : "center",// 数据对齐方式
-				halign : "center",// 表头的对齐方式
 				valign : 'middle',// 数据垂直居中方式
 				events : operateEvents,
 				formatter : operateFormatter

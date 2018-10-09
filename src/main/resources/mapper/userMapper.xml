@@ -33,7 +33,7 @@
 	<select id="findAll" parameterType="com.maven.model.query.QueryUser" resultType="com.maven.model.pojo.User">
 	
 		select
-		u.id as id,u.username as
+		u.id as id,u.sex as sex,u.username as
 		username,u.phone as phone,u.email as email,r.role_name as
 		roleName,u.create_time as createTime,u.locked as locked
 		from sys_user u
