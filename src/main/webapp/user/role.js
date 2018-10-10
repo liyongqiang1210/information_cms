@@ -7,25 +7,36 @@ $(function() {
 	// 2.初始化Button的点击事件
 	var oButtonInit = new ButtonInit();
 	oButtonInit.Init();
+	
+
+	//弹出一个页面层
+	$('#btn_add').on('click', function(){
+	  layer.open({
+	    type: 1,
+	    area: ['600px', '360px'],
+	    shadeClose: true, //点击遮罩关闭
+	    content: '\<\div style="padding:20px;">自定义内容\<\/div>'
+	  });
+	});
 
 	// 添加角色弹框
-	$("#btn_add")
-			.on(
-					"click",
-					function() {
-						// 弹出框标题
-						var title = "添加角色";
-						// 弹出框内容
-						var content = "<form id='addUser' class='form-horizontal' role='form'> <div class='form-group'> <label for='username' class='col-lg-2 col-lg-offset-1 control-label'>角色名:</label> <div class='col-lg-8'><input type='text' class='form-control' id='username' placeholder='请输入角色名'></div> </div>"
-								+ " <div class=' form-group'> <label for='password' class='col-lg-2 col-lg-offset-1 control-label'>密码:</label> <div class='col-lg-8'><input type='password' class='form-control' id='password' placeholder='请输入密码'> </div></div> "
-								+ "<div class='form-group'> <label for='password' class='col-lg-2 col-lg-offset-1 control-label'>确认密码:</label> <div class='col-lg-8'><input type='password' class='form-control' id='password2' placeholder='请再次输入密码'> </div></div>"
-								+ " <div class='form-group'> <label for='email' class='col-lg-2 col-lg-offset-1 control-label'>邮箱:</label> <div class='col-lg-8'><input type='text' class='form-control' id='email' placeholder='请输入邮箱'> </div></div>"
-								+ " <div class='form-group'> <label for='sex' class='col-lg-2 col-lg-offset-1 control-label'>性别:</label> <div class='col-lg-8'><input type='radio' name='sex' value='0' checked> 男  <input type='radio' name='sex' value='1'> 女 </div> </div>"
-								+ " <div class='form-group'> <label for='phone' class='col-lg-2 col-lg-offset-1 control-label'>手机号:</label> <div class='col-lg-8'><input type='text' class='form-control' id='phone' placeholder='请输入手机号'> </div></div> </form>"
-
-						openModal(title, content, "", "addUser()");
-
-					});
+//	$("#btn_add")
+//			.on(
+//					"click",
+//					function() {
+//						// 弹出框标题
+//						var title = "添加角色";
+//						// 弹出框内容
+//						var content = "<form id='addUser' class='form-horizontal' role='form'> <div class='form-group'> <label for='username' class='col-lg-2 col-lg-offset-1 control-label'>角色名:</label> <div class='col-lg-8'><input type='text' class='form-control' id='username' placeholder='请输入角色名'></div> </div>"
+//								+ " <div class=' form-group'> <label for='password' class='col-lg-2 col-lg-offset-1 control-label'>密码:</label> <div class='col-lg-8'><input type='password' class='form-control' id='password' placeholder='请输入密码'> </div></div> "
+//								+ "<div class='form-group'> <label for='password' class='col-lg-2 col-lg-offset-1 control-label'>确认密码:</label> <div class='col-lg-8'><input type='password' class='form-control' id='password2' placeholder='请再次输入密码'> </div></div>"
+//								+ " <div class='form-group'> <label for='email' class='col-lg-2 col-lg-offset-1 control-label'>邮箱:</label> <div class='col-lg-8'><input type='text' class='form-control' id='email' placeholder='请输入邮箱'> </div></div>"
+//								+ " <div class='form-group'> <label for='sex' class='col-lg-2 col-lg-offset-1 control-label'>性别:</label> <div class='col-lg-8'><input type='radio' name='sex' value='0' checked> 男  <input type='radio' name='sex' value='1'> 女 </div> </div>"
+//								+ " <div class='form-group'> <label for='phone' class='col-lg-2 col-lg-offset-1 control-label'>手机号:</label> <div class='col-lg-8'><input type='text' class='form-control' id='phone' placeholder='请输入手机号'> </div></div> </form>"
+//
+//						openModal(title, content, "", "addUser()");
+//
+//					});
 
 	// 删除选中角色
 	$("#btn_delete_select").on(
@@ -81,7 +92,7 @@ var TableInit = function() {
 							showColumns : true, // 是否显示所有的列
 							showRefresh : true, // 是否显示刷新按钮
 							minimumCountColumns : 2, // 最少允许的列数
-							clickToSelect : true, // 是否启用点击选中行
+							clickToSelect : false, // 是否启用点击选中行
 							height : 600, // 行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
 							uniqueId : "ID", // 每一行的唯一标识，一般为主键列
 							showToggle : false, // 是否显示详细视图和列表视图的切换按钮
@@ -200,7 +211,7 @@ var ButtonInit = function() {
 
 // 编辑角色按钮事件
 function editRole() {
-	openModal();
+	window.location.href = "http://localhost:8080/Information_cms/user/role_edit.html";
 }
 
 // 删除角色按钮事件
