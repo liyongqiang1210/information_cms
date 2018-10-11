@@ -1,12 +1,9 @@
 $(function() {
-
 	productsearch();
 });
 var limit = 10; // 页面数据条数
 var offset = 1; // 当前页数
-
 function productsearch() {
-
 	layui
 			.use(
 					[ 'table', 'laypage', 'form' ],
@@ -95,64 +92,60 @@ function productsearch() {
 							console.log(status);
 						});
 
-						// // 表格的重载
-						// table
-						// .reload(
-						// '#role_table_id',
-						// {
-						// height : 600,
-						// url :
-						// 'http://localhost:8080/Information_cms/role/getAll.do?offset=1&limit=30&rolename=',
-						// // 数据接口
-						// page : true, // 开启分页
-						// cols : [ [ // 表头
-						// {
-						// type : 'checkbox',
-						// fixed : 'left'
-						// },
-						// {
-						// field : 'id',
-						// title : 'ID',
-						// width : 80,
-						// sort : true,
-						// fixed : 'left'
-						// },
-						// {
-						// field : 'roleName',
-						// title : '角色名',
-						// width : 150
-						// },
-						// {
-						// field : 'roleDesc',
-						// title : '角色描述',
-						// width : 500
-						// },
-						// {
-						// field : 'available',
-						// title : '是否可用',
-						// width : 150,
-						// align : 'center',
-						// templet : function(d) {
-						// if (d.available == 1) {
-						// return '<input type="checkbox" id="'
-						// + d.id
-						// + '" lay-skin="switch" lay-filter="available"
-						// lay-text="开启|关闭" checked>';
-						// } else {
-						// return '<input type="checkbox" id="'
-						// + d.id
-						// + '" lay-skin="switch" lay-filter="available"
-						// lay-text="开启|关闭">';
-						// }
-						// }
-						// },
-						// {
-						// field : 'operate',
-						// title : '操作',
-						// align : 'center',
-						// toolbar : '#operate_toolBar'
-						// } ] ]
-						// });
+						// 表格的重载
+						table
+								.reload(
+										'#role_table',
+										{
+											height : 600,
+											url : 'http://localhost:8080/Information_cms/role/getAll.do?offset=1&limit=30&rolename=', // 数据接口
+											page : true, // 开启分页
+											cols : [ [ // 表头
+													{
+														type : 'checkbox',
+														fixed : 'left'
+													},
+													{
+														field : 'id',
+														title : 'ID',
+														width : 80,
+														sort : true,
+														fixed : 'left'
+													},
+													{
+														field : 'roleName',
+														title : '角色名',
+														width : 150
+													},
+													{
+														field : 'roleDesc',
+														title : '角色描述',
+														width : 500
+													},
+													{
+														field : 'available',
+														title : '是否可用',
+														width : 150,
+														align : 'center',
+														templet : function(d) {
+															if (d.available == 1) {
+																return '<input type="checkbox" id="'
+																		+ d.id
+																		+ '" lay-skin="switch" lay-filter="available" lay-text="开启|关闭" checked>';
+															} else {
+																return '<input type="checkbox" id="'
+																		+ d.id
+																		+ '" lay-skin="switch" lay-filter="available" lay-text="开启|关闭">';
+															}
+														}
+													},
+													{
+														field : 'operate',
+														title : '操作',
+														align : 'center',
+														toolbar : '#operate_toolBar'
+													} ] ]
+										});
 
 					});
 }
