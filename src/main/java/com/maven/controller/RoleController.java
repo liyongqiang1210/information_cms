@@ -206,4 +206,22 @@ public class RoleController {
 		}
 		return JsonResult.buildSuccessResult("success");
 	}
+
+	@RequestMapping(value = "/getAll.do", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	@ResponseBody
+	public String getAll(HttpServletResponse response, Integer limit, Integer offset, String rolename) {
+		// 解决跨域问题，这里需要设置头信息，不然客户端无法接收到返回值
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Methods", "GET");
+		response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+
+		if (limit == null || offset == null || rolename == null) {
+			return MessageUtil.getStateInfo("参数中存在空值");
+		}
+		// 获取角色列表
+		List<Role> list = roleServiceImpl.findAll(limit, offset, rolename);
+		List<Role> findAll = roleServiceImpl.findAll(30, 1, "");
+		int total = findAll.size();
+		return MessageUtil.getLayuiJson(total, list);
+	}
 }

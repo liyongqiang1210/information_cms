@@ -36,7 +36,7 @@ public class QueryRole implements Serializable {
 	}
 
 	public void setOffset(Integer offset) {
-		this.offset = offset * limit;
+		this.offset = (offset-1) * limit;
 	}
 
 	public String getRolename() {

@@ -1,7 +1,10 @@
 package com.maven.util;
 
+import java.util.List;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.maven.model.pojo.Role;
 
 /**
  * 服务器返回信息工具类 格式都是json字符串格式
@@ -14,8 +17,8 @@ public class MessageUtil {
 	public static final String SUCCESS_MESSAGE = "{\"msg\":\"success\"}"; // 请求成功时返回的状态信息
 	public static final String ERROR_MESSAGE = "{\"msg\":\"error\"}"; // 请求失败返回的状态信息
 
-	public static String getLayuiJson(Integer total, String rows) {
-		return layuiJson(total, rows);
+	public static String getLayuiJson(Integer total, List<Role> list) {
+		return layuiJson(total, list);
 	}
 
 	/**
@@ -25,12 +28,12 @@ public class MessageUtil {
 	 * @param rows
 	 * @return
 	 */
-	private static String layuiJson(Integer total, String rows) {
+	private static String layuiJson(Integer total, List<Role> list) {
 		JSONObject json = new JSONObject();
-		json.put("code", 200);
+		json.put("code", 0);
 		json.put("msg", "成功");
 		json.put("count", total);
-		json.put("data", rows);
+		json.put("data", list);
 		return json.toJSONString();
 	}
 

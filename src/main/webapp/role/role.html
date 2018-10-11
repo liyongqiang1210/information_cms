@@ -5,16 +5,46 @@
 <meta charset="UTF-8">
 <title>角色管理</title>
 <link rel="stylesheet" href="../plugin/layui-v2.4.3/layui/css/layui.css">
+<script src="../js/jquery.min.js"></script>
 <!-- layui -->
 <script src="../plugin/layui-v2.4.3/layui/layui.js"></script>
 <script src="../role/role.js"></script>
 </head>
 
 <body>
-	<table id="role_table" lay-filter="role_table"></table>
-	 <div class="layui-tab-item">
-      <div id="pageDemo"></div>
-    </div>
+	<div class="layui-card">
+		<div class="layui-card-header">角色信息表</div>
+		<div class="layui-card-body">
+			<form class="layui-form" action="">
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<div class="layui-input-inline">
+							<input type="text" name="" placeholder="请输入角色名"
+								autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<select name="available">
+							<option value="">请选择角色状态</option>
+							<option value="0">启用</option>
+							<option value="1">关闭</option>
+						</select>
+					</div>
+					<div class="layui-inline">
+						<button class="layui-btn" lay-submit lay-filter="submit">查询</button>
+					</div>
+				</div>
+			</form>
+			<table id="role_table" lay-filter="role_table"></table>
+			<div id="laypage"></div>
+		</div>
+	</div>
+
 </body>
+<script type="text/html" id="operate_toolBar">
+<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
 
 </html>
