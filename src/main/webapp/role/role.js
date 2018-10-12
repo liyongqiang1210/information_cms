@@ -109,11 +109,11 @@ function layuiTable(limit, offset) {
 
 						// 监听操作列按钮
 						table.on('tool(role_table)', function(obj) { // 注：tool是工具条事件名，test是table原始容器的属性
-																		// lay-filter="对应的值"
+							// lay-filter="对应的值"
 							var id = obj.data.id; // 获得当前行数据
 							var layEvent = obj.event; // 获得 lay-event
-														// 对应的值（也可以是表头的 event
-														// 参数对应的值）
+							// 对应的值（也可以是表头的 event
+							// 参数对应的值）
 							var tr = obj.tr; // 获得当前行 tr 的DOM对象
 
 							if (layEvent === 'detail') { // 查看
@@ -122,6 +122,8 @@ function layuiTable(limit, offset) {
 								layer.confirm('确认删除这个角色信息吗？', function(index) {
 									// 向服务端发送删除指令
 									bindingDelEvent(id, obj, index);
+									// 重新加载表格
+									table.reload('role_table', {});
 								});
 							} else if (layEvent === 'edit') { // 编辑
 								// do something
@@ -133,66 +135,6 @@ function layuiTable(limit, offset) {
 								});
 							}
 						});
-
-						// 表格的重载
-						// table
-						// .reload(
-						// '#role_table',
-						// {
-						// height : 600,
-						// url :
-						// 'http://localhost:8080/Information_cms/role/getAll.do?offset=1&limit=30&rolename=',
-						// // 数据接口
-						// page : true, // 开启分页
-						// cols : [ [ // 表头
-						// {
-						// type : 'checkbox',
-						// fixed : 'left'
-						// },
-						// {
-						// field : 'id',
-						// title : 'ID',
-						// width : 80,
-						// sort : true,
-						// fixed : 'left'
-						// },
-						// {
-						// field : 'roleName',
-						// title : '角色名',
-						// width : 150
-						// },
-						// {
-						// field : 'roleDesc',
-						// title : '角色描述',
-						// width : 500
-						// },
-						// {
-						// field : 'available',
-						// title : '是否可用',
-						// width : 150,
-						// align : 'center',
-						// templet : function(d) {
-						// if (d.available == 1) {
-						// return '<input type="checkbox" id="'
-						// + d.id
-						// + '" lay-skin="switch" lay-filter="available"
-						// lay-text="开启|关闭" checked>';
-						// } else {
-						// return '<input type="checkbox" id="'
-						// + d.id
-						// + '" lay-skin="switch" lay-filter="available"
-						// lay-text="开启|关闭">';
-						// }
-						// }
-						// },
-						// {
-						// field : 'operate',
-						// title : '操作',
-						// align : 'center',
-						// toolbar : '#operate_toolBar'
-						// } ] ]
-						// });
-
 					});
 }
 
@@ -327,15 +269,17 @@ function bindingDelEvent(id, obj, index) {
 		},
 		dataType : 'json',
 		success : function(data) {
-			layer.alert('删除成功', {
-				icon : 6
+			layer.msg('删除成功', {
+				icon : 6,
+				time : 1000
 			});
 			obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
 			layer.close(index);
 		},
 		error : function(data) {
-			layer.alert('获取信息出现异常,请稍后再试', {
-				icon : 5
+			layer.msg('删除失败', {
+				icon : 5,
+				time : 1000
 			});
 		}
 	});
