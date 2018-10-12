@@ -27,18 +27,18 @@ public class RoleServiceImpl implements RoleService {
 	}
 
 	public void updateRole(Role role) {
-		
+
 		roleDao.updateRole(role);
 	}
 
 	public void deleteRole(int roleId) {
-		
+
 		roleDao.deleteRole(roleId);
 
 	}
 
 	public Role findRoleById(int roleId) {
-		
+
 		return roleDao.findRoleById(roleId);
 	}
 
@@ -51,18 +51,18 @@ public class RoleServiceImpl implements RoleService {
 	}
 
 	public Set<String> findRoles(String username) {
-		
+
 		// 获取角色id字符串
 		User user = userDao.findByUsername(username);
 		String roleIds = user.getRoleIds();
-		
+
 		// 根据角色id查询角色名
 		Set<String> roleSet = new HashSet<String>();
 		try {
 			String[] ids = roleIds.split(",");
-			for(String str : ids){
+			for (String str : ids) {
 				Integer id = Integer.valueOf(str);
-				if(id !=null && id != 0){
+				if (id != null && id != 0) {
 					String roleName = roleDao.findRoleNameById(id);
 					roleSet.add(roleName);
 				}
@@ -70,23 +70,28 @@ public class RoleServiceImpl implements RoleService {
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
-		
+
 		return roleSet;
 	}
 
 	public Set<String> findPermissions(String[] roleIds) {
-		
+
 		return null;
 	}
 
 	public String findRoleNameByUserName(String username) {
-		
+
 		return roleDao.findRoleNameByUserName(username);
 	}
 
 	public void updateRoleState(Role role) {
-		
+
 		roleDao.updateRoleState(role);
+	}
+
+	public int queryRoleCount() {
+
+		return roleDao.queryRoleCount();
 	}
 
 }

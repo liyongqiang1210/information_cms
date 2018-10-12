@@ -16,7 +16,13 @@
 		<if test="rolename!=null and rolename!=''">
 			and rolename like CONCAT(CONCAT('%', #{rolename}),'%');
 		</if>
+		<if test="offset!=null and limit!=null">
 		limit #{offset},#{limit}
+		</if>
+	</select>
+	
+	<select id="queryRoleCount" resultType="int">
+		select count(*) from sys_role
 	</select>
 
 	<insert id="createRole" parameterType="com.maven.model.pojo.Role">

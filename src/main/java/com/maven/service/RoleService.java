@@ -21,7 +21,7 @@ public interface RoleService {
 	public Role findRoleById(int roleId);
 
 	public List<Role> findAll(Integer limit, Integer offset, String rolename);
-	
+
 	public String findRoleNameByUserName(String username);
 
 	/**
@@ -39,6 +39,8 @@ public interface RoleService {
 	 * @return
 	 */
 	Set<String> findPermissions(String[] roleIds);
-	
+
 	public void updateRoleState(Role role);
+
+	public int queryRoleCount();
 }

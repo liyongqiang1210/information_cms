@@ -30,4 +30,6 @@ public interface RoleDao {
 	public String findRoleNameByUserName(String username);
 
 	public void updateRoleState(Role role);
+
+	public int queryRoleCount();
 }
