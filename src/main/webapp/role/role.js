@@ -26,6 +26,9 @@ function layuiTable(limit, offset) {
 									url : 'http://localhost:8080/Information_cms/role/getAll.do?offset='
 											+ offset + '&limit=' + limit, // 数据接口
 									page : false, // 不开启分页
+									toolbar : '<div class="layui-btn-container">'
+											+ '<button class="layui-btn layui-btn-sm" lay-event="add">添加角色</button></div>',
+									defaultToolbar : [],
 									cols : [ [ // 表头
 											{
 												type : 'checkbox',
@@ -93,8 +96,12 @@ function layuiTable(limit, offset) {
 											}
 										})
 									}
-
 								});
+
+						//头工具栏事件
+						table.on('toolbar(role_table)', function(obj) {
+							bindingAddEvent();
+						});
 
 						// 监听开关按钮
 						form.on('switch(available)', function(data) {
@@ -127,7 +134,7 @@ function layuiTable(limit, offset) {
 								});
 							} else if (layEvent === 'edit') { // 编辑
 								// do something
-
+								bindingEditEvent(id);
 								// 同步更新缓存对应的值
 								obj.update({
 									username : '123',
@@ -139,7 +146,23 @@ function layuiTable(limit, offset) {
 }
 
 /**
- * 更新角色状态方法
+ * 数据操作工具栏
+ * 
+ * @param obj
+ * @returns
+ */
+function operateToolBar(obj) {
+	var id = obj.id;
+	var toolBar = '<a class="layui-btn layui-btn-xs" id='
+			+ id
+			+ ' name="edit" lay-event="edit">编辑</a><a class="layui-btn layui-btn-danger layui-btn-xs" id='
+			+ id + ' name="del" lay-event="del">删除</a>';
+	return toolBar;
+
+}
+
+/**
+ * 编辑角色状态方法
  * 
  * @param id
  *            角色id
@@ -173,38 +196,59 @@ function updateRoleAvailable(id, available) {
 }
 
 /**
- * 数据操作工具栏
+ * 添加角色
  * 
- * @param obj
  * @returns
  */
-function operateToolBar(obj) {
-	var id = obj.id;
-	var toolBar = '<a class="layui-btn layui-btn-primary layui-btn-xs"  id='
-			+ id
-			+ ' name="detail" lay-event="detail">查看</a><a class="layui-btn layui-btn-xs" id='
-			+ id
-			+ ' name="edit" lay-event="edit">编辑</a><a class="layui-btn layui-btn-danger layui-btn-xs" id='
-			+ id + ' name="del" lay-event="del">删除</a>';
-	return toolBar;
+function bindingAddEvent() {
+	layer.open({
+		type : 0,
+		area : [ '500px', '500px' ],
+		shadeClose : true, // 点击遮罩关闭
+		content : '<div style="padding:20px;">自定义内容</div>'
+	});
+
+	//	$.ajax({
+	//		type : 'POST',
+	//		url : '',
+	//		data : {
+	//			id : id
+	//		},
+	//		dataType : 'json',
+	//		success : function(data) {
+	//			layer.open({
+	//				type : 0,
+	//				area : [ '500px', '500px' ],
+	//				shadeClose : true, // 点击遮罩关闭
+	//				content : '<div style="padding:20px;">自定义内容</div>'
+	//			});
+	//		},
+	//		error : function(data) {
+	//			layer.alert('获取信息出现异常,请稍后再试', {
+	//				icon : 5
+	//			});
+	//		}
+	//	});
 
 }
 
 /**
- * 绑定查看按钮事件
+ * 绑定编辑按钮事件
  * 
+ * @param id
+ * @param obj
+ * @param index
  * @returns
  */
-function bindingDetailEvent(id) {
+function bindingEditEvent(id) {
 	$.ajax({
 		type : 'POST',
 		url : '',
 		data : {
-			roleId : id
+			id : id
 		},
 		dataType : 'json',
 		success : function(data) {
-
 			layer.open({
 				type : 0,
 				area : [ '500px', '500px' ],
@@ -217,44 +261,10 @@ function bindingDetailEvent(id) {
 				icon : 5
 			});
 		}
-
 	});
+
 }
 
-/**
- * 绑定编辑按钮事件
- * 
- * @returns
- */
-function bindingEditEvent() {
-	// 绑定编辑按钮点击事件
-	$(document).on('click', '[name="edit"]', function() {
-		var id = $(this).attr("id"); // 获取当前按钮id
-		$.ajax({
-			type : 'POST',
-			url : '',
-			data : {
-				id : id
-			},
-			dataType : 'json',
-			success : function(data) {
-
-				layer.open({
-					type : 0,
-					area : [ '500px', '500px' ],
-					shadeClose : true, // 点击遮罩关闭
-					content : '<div style="padding:20px;">自定义内容</div>'
-				});
-			},
-			error : function(data) {
-				layer.alert('获取信息出现异常,请稍后再试', {
-					icon : 5
-				});
-			}
-		});
-
-	});
-}
 /**
  * 绑定删除按钮事件
  * 
@@ -269,12 +279,12 @@ function bindingDelEvent(id, obj, index) {
 		},
 		dataType : 'json',
 		success : function(data) {
+			obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
+			layer.close(index);
 			layer.msg('删除成功', {
 				icon : 6,
 				time : 1000
 			});
-			obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
-			layer.close(index);
 		},
 		error : function(data) {
 			layer.msg('删除失败', {
