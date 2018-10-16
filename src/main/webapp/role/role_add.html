@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>添加角色</title>
+<link rel="stylesheet" href="../plugin/layui-v2.4.3/layui/css/layui.css">
+<script src="../js/jquery.min.js"></script>
+<!-- layui -->
+<script src="../plugin/layui-v2.4.3/layui/layui.js"></script>
+</head>
+
+<body>
+	<form class="layui-form" action="">
+		<div class="layui-form-item">
+			<label class="layui-form-label">角色名</label>
+			<div class="layui-input-block">
+				<input type="text" id="rolename" required lay-verify="required"
+					placeholder="请输入角色名" autocomplete="off" class="layui-input">
+			</div>
+			<div class="layui-form-item layui-form-text">
+				<label class="layui-form-label">角色描述</label>
+				<div class="layui-input-block">
+					<textarea id="roledesc" required lay-verify="required"
+						placeholder="请输入角色描述" class="layui-textarea"></textarea>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">是否启用</label>
+				<div class="layui-input-block">
+					<input type="checkbox" id="available" lay-skin="switch"
+						lay-text="开启|关闭" checked>
+				</div>
+			</div>
+			<div class="layui-form-item" hidden>
+				<div class="layui-input-block">
+					<button id="addRole" class="layui-btn" lay-submit
+						lay-filter="formDemo">提交</button>
+				</div>
+			</div>
+	</form>
+</body>
+
+</html>

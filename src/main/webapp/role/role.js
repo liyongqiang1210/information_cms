@@ -11,12 +11,17 @@ $(function() {
  * @returns
  */
 function layuiTable(limit, offset) {
+	layui.config({
+		base : '../plugin/layui-v2.4.3/extends/',
+	}).extend({
+		authtree : 'authtree',
+	});
 	// layui模块初始化
 	layui
 			.use(
-					[ 'table', 'laypage', 'form', 'layer' ],
+					[ 'authtree', 'table', 'laypage', 'form', 'layer' ],
 					function() {
-						var table = layui.table, laypage = layui.laypage, form = layui.form, layer = layui.layer;
+						var table = layui.table, laypage = layui.laypage, form = layui.form, layer = layui.layer, authtree = layui.authtree;
 
 						// 渲染表格
 						table
@@ -27,7 +32,8 @@ function layuiTable(limit, offset) {
 											+ offset + '&limit=' + limit, // 数据接口
 									page : false, // 不开启分页
 									toolbar : '<div class="layui-btn-container">'
-											+ '<button class="layui-btn layui-btn-sm" lay-event="add">添加角色</button></div>',
+											+ '<button class="layui-btn layui-btn-sm" lay-event="add">添加角色</button>'
+											+ '<button class="layui-btn layui-btn-sm" lay-event="delSelected">删除选中</button></div>',
 									defaultToolbar : [],
 									cols : [ [ // 表头
 											{
@@ -98,9 +104,19 @@ function layuiTable(limit, offset) {
 									}
 								});
 
-						//头工具栏事件
+						// 头工具栏事件
 						table.on('toolbar(role_table)', function(obj) {
-							bindingAddEvent();
+							var checkStatus = table.checkStatus(obj.config.id);
+							switch (obj.event) {
+							case 'add': // 添加角色
+								bindingAddEvent(form, authtree);
+								break;
+							case 'delSelected': // 删除选中
+								var data = checkStatus.data;
+								layer.alert(JSON.stringify(data));
+								break;
+							}
+
 						});
 
 						// 监听开关按钮
@@ -198,37 +214,126 @@ function updateRoleAvailable(id, available) {
 /**
  * 添加角色
  * 
+ * @param form
+ * @param html
  * @returns
  */
-function bindingAddEvent() {
-	layer.open({
-		type : 0,
-		area : [ '500px', '500px' ],
-		shadeClose : true, // 点击遮罩关闭
-		content : '<div style="padding:20px;">自定义内容</div>'
-	});
+function bindingAddEvent(form, authtree) {
 
-	//	$.ajax({
-	//		type : 'POST',
-	//		url : '',
-	//		data : {
-	//			id : id
-	//		},
-	//		dataType : 'json',
-	//		success : function(data) {
-	//			layer.open({
-	//				type : 0,
-	//				area : [ '500px', '500px' ],
-	//				shadeClose : true, // 点击遮罩关闭
-	//				content : '<div style="padding:20px;">自定义内容</div>'
-	//			});
-	//		},
-	//		error : function(data) {
-	//			layer.alert('获取信息出现异常,请稍后再试', {
-	//				icon : 5
-	//			});
-	//		}
-	//	});
+	var html = '<form class="layui-form" action="" style="margin:20px;">'
+			+ '<div class="layui-form-item"><label class="layui-form-label">角色名</label><div class="layui-input-block"><input type="text" id="roleName" lay-verify="roleName" placeholder="请输入角色名" autocomplete="off" class="layui-input"></div></div>'
+			+ '<div class="layui-form-item layui-form-text"><label class="layui-form-label">角色描述</label><div class="layui-input-block"><textarea id="roleDesc" required  lay-verify="roleDesc" placeholder="请输入角色描述" class="layui-textarea"></textarea></div></div>'
+			+ '<div class="layui-form-item"><label class="layui-form-label">选择权限</label><div class="layui-input-block"><div id="LAY-auth-tree-index"></div></div></div>'
+			+ '<div class="layui-form-item"><label class="layui-form-label">是否启用</label><div class="layui-input-block"><input type="checkbox" id="available" lay-skin="switch" lay-text="开启|关闭" checked></div></div>'
+			+ '<div class="layui-form-item" hidden><div class="layui-input-block"><button id="addRole" class="layui-btn" lay-submit lay-filter="formDemo">提交</button></div></div>'
+			+ '</form>';
+
+	layer.open({
+		type : 1,
+		title : '添加角色',
+		area : [ '500px', '600px' ],
+		shadeClose : true, // 点击遮罩关闭
+		content : html,
+		btn : [ '保存', '取消' ],
+		success : function(index, layero) { // 成功弹出后回调
+			// 初始化
+			$.ajax({
+				url : 'http://localhost:8080/Information_cms/role/tree.json',
+				dataType : 'json',
+				success : function(data) {
+					$(".auth-icon").css('margin-top','20px');
+					// 渲染时传入渲染目标ID，树形结构数据（具体结构看样例，checked表示默认选中），以及input表单的名字
+					authtree.render('#LAY-auth-tree-index', data.data.trees, {
+						inputname : 'authids[]',
+						layfilter : 'lay-check-auth'
+						// ,autoclose: false
+						// ,autochecked: false
+						// ,openchecked: true
+						// ,openall: true
+						,
+						autowidth : true
+					});
+
+					// 使用 authtree.on() 不会有冒泡延迟
+					authtree.on('change(lay-check-auth)', function(data) {
+						console.log('监听 authtree 触发事件数据', data);
+						// 获取所有节点
+						var all = authtree.getAll('#LAY-auth-tree-index');
+						console.log('all', all);
+						// 获取所有已选中节点
+						var checked = authtree
+								.getChecked('#LAY-auth-tree-index');
+						console.log('checked', checked);
+						// 获取所有未选中节点
+						var notchecked = authtree
+								.getNotChecked('#LAY-auth-tree-index');
+						console.log('notchecked', notchecked);
+						// 获取选中的叶子节点
+						var leaf = authtree.getLeaf('#LAY-auth-tree-index');
+						console.log('leaf', leaf);
+						// 获取最新选中
+						var lastChecked = authtree
+								.getLastChecked('#LAY-auth-tree-index');
+						console.log('lastChecked', lastChecked);
+						// 获取最新取消
+						var lastNotChecked = authtree
+								.getLastNotChecked('#LAY-auth-tree-index');
+						console.log('lastNotChecked', lastNotChecked);
+					});
+					authtree.on('deptChange(lay-check-auth)', function(data) {
+						console.log('监听到显示层数改变', data);
+					});
+				}
+			});
+			form.render('checkbox'); // 刷新checkbox开关渲染(否则开关按钮会不显示)
+		},
+		yes : function(index, layero) { // 确认按钮回调函数
+			var roleName = $('#roleName').val();
+			var roleDesc = $('#roleDesc').val();
+			var available = $('#available').val();
+			layero.find('#addRole').click(function() {
+				$.ajax({
+					type : 'POST',
+					url : '',
+					data : {
+						roleName : roleName,
+						roleDesc : roleDesc,
+						available : available,
+					},
+					dataType : 'json',
+					success : function(data) {
+						layer.alert('添加成功', {
+							icon : 5
+						});
+					},
+					error : function(data) {
+						layer.alert('出现异常,请稍后再试', {
+							icon : 5
+						});
+					}
+				});
+			});
+		},
+		btn2 : function(index, layero) { // 取消按钮回调函数
+			layer.close(index); // 关闭弹出层
+		}
+	});
+	// 表单验证
+	form
+			.verify({
+				roleName : function(value, item) {
+					if (!new RegExp("^[a-zA-Z0-9_|\u4e00-\u9fa5\]{1,10}$")
+							.test(value)) {
+						return '角色名必须为2-10位且不能有特殊字符';
+					}
+				},
+				roleDesc : function(value, item) {
+					if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\]{2,200}$")
+							.test(value)) {
+						return '角色描述必须为2-200位且不能有特殊字符';
+					}
+				}
+			});
 
 }
 
