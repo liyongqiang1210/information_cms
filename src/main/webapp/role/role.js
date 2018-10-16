@@ -241,7 +241,6 @@ function bindingAddEvent(form, authtree) {
 				url : 'http://localhost:8080/Information_cms/role/tree.json',
 				dataType : 'json',
 				success : function(data) {
-					$(".auth-icon").css('margin-top','20px');
 					// 渲染时传入渲染目标ID，树形结构数据（具体结构看样例，checked表示默认选中），以及input表单的名字
 					authtree.render('#LAY-auth-tree-index', data.data.trees, {
 						inputname : 'authids[]',
@@ -288,31 +287,7 @@ function bindingAddEvent(form, authtree) {
 			form.render('checkbox'); // 刷新checkbox开关渲染(否则开关按钮会不显示)
 		},
 		yes : function(index, layero) { // 确认按钮回调函数
-			var roleName = $('#roleName').val();
-			var roleDesc = $('#roleDesc').val();
-			var available = $('#available').val();
-			layero.find('#addRole').click(function() {
-				$.ajax({
-					type : 'POST',
-					url : '',
-					data : {
-						roleName : roleName,
-						roleDesc : roleDesc,
-						available : available,
-					},
-					dataType : 'json',
-					success : function(data) {
-						layer.alert('添加成功', {
-							icon : 5
-						});
-					},
-					error : function(data) {
-						layer.alert('出现异常,请稍后再试', {
-							icon : 5
-						});
-					}
-				});
-			});
+			layero.find('#addRole').click();
 		},
 		btn2 : function(index, layero) { // 取消按钮回调函数
 			layer.close(index); // 关闭弹出层
