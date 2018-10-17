@@ -300,12 +300,10 @@ function bindingAddEvent(form, table) {
  * @returns
  */
 function bindingEditEvent(form, id, roleName, roleDesc) {
-	
 	var html = '<form class="layui-form" id="form" style="margin:20px;">'
 		+ '<div class="layui-form-item"><label class="layui-form-label">角色名</label><div class="layui-input-block"><input type="text" id="roleName" lay-verify="roleName" placeholder="请输入角色名" autocomplete="off" value='+roleName+' class="layui-input"></div></div>'
 		+ '<div class="layui-form-item layui-form-text"><label class="layui-form-label">角色描述</label><div class="layui-input-block"><textarea id="roleDesc" required  lay-verify="roleDesc" placeholder="请输入角色描述" class="layui-textarea">'+roleDesc+'</textarea></div></div>'
 		+ '</form>';
-	
 	layer
 	.open({
 		type : 1,
