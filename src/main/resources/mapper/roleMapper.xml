@@ -27,7 +27,7 @@
 
 	<insert id="createRole" parameterType="com.maven.model.pojo.Role">
 		insert into sys_role
-		(role_desc,role_name,available) values(#{roleDesc},#{roleName},1)
+		(role_desc,role_name,available) values(#{roleDesc},#{roleName},#{available})
 	</insert>
 
 	<delete id="deleteRole" parameterType="java.lang.Integer">

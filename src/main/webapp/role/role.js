@@ -104,7 +104,7 @@ function layuiTable(limit, offset) {
 							var checkStatus = table.checkStatus(obj.config.id);
 							switch (obj.event) {
 							case 'add': // 添加角色
-								bindingAddEvent(form);
+								bindingAddEvent(form, table);
 								break;
 							case 'delSelected': // 删除选中
 								var data = checkStatus.data;
@@ -123,38 +123,6 @@ function layuiTable(limit, offset) {
 							} else { // 关闭
 								updateRoleAvailable(id, 0);// 修改角色状态为关闭
 							}
-						});
-
-						// 监听提交按钮
-						form.on('submit(addRole)', function(data) {
-							layer.msg('监听到', {
-								icon : 6
-							});
-							var roleName = $('#roleName').val();
-							var roleDesc = $('#roleDesc').val();
-							var available = $('#available').val();
-							console.log(roleName + ',' + roleDesc + ','
-									+ available);
-							$.ajax({
-								type : 'POST',
-								url : 'createRole.do',
-								data : {
-									roleName : roleName,
-									roleDesc : roleDesc,
-									available : available
-								},
-								dataType : 'json',
-								success : function(data) {
-									layer.msg('角色添加成功', {
-										icon : 6
-									});
-								},
-								error : function(data) {
-									layer.msg('角色添加失败', {
-										icon : 5
-									});
-								}
-							});
 						});
 
 						// 监听操作列按钮
@@ -245,46 +213,94 @@ function updateRoleAvailable(id, available) {
  * @param html
  * @returns
  */
-function bindingAddEvent(form) {
+function bindingAddEvent(form, table) {
 
-	var html = '<form class="layui-form" style="margin:20px;">'
+	var html = '<form class="layui-form" id="form" style="margin:20px;">'
 			+ '<div class="layui-form-item"><label class="layui-form-label">角色名</label><div class="layui-input-block"><input type="text" id="roleName" lay-verify="roleName" placeholder="请输入角色名" autocomplete="off" class="layui-input"></div></div>'
 			+ '<div class="layui-form-item layui-form-text"><label class="layui-form-label">角色描述</label><div class="layui-input-block"><textarea id="roleDesc" required  lay-verify="roleDesc" placeholder="请输入角色描述" class="layui-textarea"></textarea></div></div>'
 			+ '<div class="layui-form-item"><label class="layui-form-label">是否启用</label><div class="layui-input-block"><input type="checkbox" id="available" lay-skin="switch" lay-text="开启|关闭" checked></div></div>'
-			+ '<div class="layui-form-item" hidden><div class="layui-input-block"><button id="addRole" lay-submit lay-filter="addRole" class="layui-btn layui-btn-sm layui-btn-normal" >提交</button><button type="button" class="layui-btn layui-btn-sm layui-btn-primary">关闭</button></div></div>'
 			+ '</form>';
 
-	layer.open({
-		type : 1,
-		title : '添加角色',
-		area : [ '500px', '350px' ],
-		shadeClose : true, // 点击遮罩关闭
-		content : html,
-		btn : [ '保存', '取消' ],
-		success : function(index, layero) { // 成功弹出后回调
-			form.render('checkbox'); // 刷新checkbox开关渲染(否则开关按钮会不显示)
-		},
-		yes : function(index, layero) { // 确认按钮回调函数
-			layero.find('#addRole').click();
-		},
-		btn2 : function(index, layero) { // 取消按钮回调函数
-			layer.close(index); // 关闭弹出层
-		}
-	});
-	// 表单验证
-	form
-			.verify({
-				roleName : function(value, item) {
-					if (!new RegExp("^[a-zA-Z0-9_|\u4e00-\u9fa5\]{1,10}$")
-							.test(value)) {
-						return '角色名必须为2-10位且不能有特殊字符';
-					}
+	layer
+			.open({
+				type : 1,
+				title : '添加角色',
+				area : [ '500px', '350px' ],
+				shadeClose : true, // 点击遮罩关闭
+				content : html,
+				btn : [ '保存', '取消' ],
+				success : function(layero, index) { // 成功弹出后回调
+					// 解决按enter键重复弹窗问题
+					$(':focus').blur();
+					// 添加form标识
+					layero.addClass('layui-form');
+					// 将保存按钮改变成提交按钮
+					layero.find('.layui-layer-btn0').attr({
+						'lay-filter' : 'addRole',
+						'lay-submit' : ''
+					});
+					// 表单验证
+					form.verify({
+						roleName : function(value, item) {
+							if (!new RegExp(
+									"^[a-zA-Z0-9_|\u4e00-\u9fa5\]{2,10}$")
+									.test(value)) {
+								return '角色名必须为2-10位且不能有特殊字符';
+							}
+						},
+						roleDesc : function(value, item) {
+							if (!new RegExp(
+									"^[a-zA-Z0-9_\u4e00-\u9fa5\]{2,200}$")
+									.test(value)) {
+								return '角色描述必须为2-200位且不能有特殊字符';
+							}
+						}
+					});
+					// 刷新渲染(否则开关按钮会不显示)
+					form.render('checkbox');
 				},
-				roleDesc : function(value, item) {
-					if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\]{2,200}$")
-							.test(value)) {
-						return '角色描述必须为2-200位且不能有特殊字符';
-					}
+				yes : function(index, layero) { // 保存按钮回调函数
+
+					var roleName = $('#roleName').val();
+					var roleDesc = $('#roleDesc').val();
+					var available = $('#available').is(':checked') === true ? 1
+							: 0;
+
+					// 监听提交按钮
+					form
+							.on(
+									'submit(addRole)',
+									function(data) {
+										$
+												.ajax({
+													type : 'POST',
+													url : 'http://localhost:8080/Information_cms/role/createRole.do',
+													data : {
+														roleName : roleName,
+														roleDesc : roleDesc,
+														available : available
+													},
+													dataType : 'json',
+													success : function(data) {
+														layer.msg('角色添加成功', {
+															time : 1000,
+															icon : 6
+														});
+														refreshTable();
+														layer.close(index); // 关闭弹出层
+													},
+													error : function(data) {
+														layer.msg('角色添加失败', {
+															time : 1000,
+															icon : 5
+														});
+														layer.close(index); // 关闭弹出层
+													}
+												});
+									});
+				},
+				btn2 : function(index, layero) { // 取消按钮回调函数
+					layer.close(index); // 关闭弹出层
 				}
 			});
 
@@ -337,7 +353,8 @@ function bindingDelEvent(id, obj, index) {
 		},
 		dataType : 'json',
 		success : function(data) {
-			obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
+			// obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
+			$(".layui-laypage-btn").click();
 			layer.close(index);
 			layer.msg('删除成功', {
 				icon : 6,
@@ -351,4 +368,24 @@ function bindingDelEvent(id, obj, index) {
 			});
 		}
 	});
+}
+
+/**
+ * 刷新表格
+ * @returns
+ */
+function refreshTable() {
+	// 点击确认按钮
+	$('.layui-laypage-btn').click();
+	// 获取数据总数
+	var str = $('.layui-laypage-count').text().length;
+	var count = $('.layui-laypage-count').text().substring(2, str - 2);
+	// 获取页面显示数据大小
+	var limit = $('.layui-laypage-limits>select>option:selected').val();
+	// 最后一页
+	var lastPage = Math.ceil((count + 1)/limit);
+	
+	$('.layui-laypage-skip>input').attr('value',lastPage);
+	$('.layui-laypage-btn').click();
+	
 }

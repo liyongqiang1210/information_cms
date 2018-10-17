@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.maven.model.pojo.Role;
 import com.maven.service.impl.RoleServiceImpl;
 import com.maven.util.MessageUtil;
@@ -82,10 +81,10 @@ public class RoleController {
 	 */
 	@RequestMapping(value = "/createRole.do", method = RequestMethod.POST)
 	@ResponseBody
-	public JsonResult createRole(Role role) {
+	public JsonResult createRole(String roleName, String roleDesc, int available) {
 
 		try {
-			roleServiceImpl.createRole(role);
+			roleServiceImpl.createRole(new Role(roleName, roleDesc, "", available));
 			return JsonResult.buildSuccessResult("角色添加成功");
 		} catch (Exception e) {
 			e.printStackTrace();
