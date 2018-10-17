@@ -11,17 +11,12 @@ $(function() {
  * @returns
  */
 function layuiTable(limit, offset) {
-	layui.config({
-		base : '../plugin/layui-v2.4.3/extends/',
-	}).extend({
-		authtree : 'authtree',
-	});
 	// layui模块初始化
 	layui
 			.use(
-					[ 'authtree', 'table', 'laypage', 'form', 'layer' ],
+					[ 'table', 'laypage', 'form', 'layer' ],
 					function() {
-						var table = layui.table, laypage = layui.laypage, form = layui.form, layer = layui.layer, authtree = layui.authtree;
+						var table = layui.table, laypage = layui.laypage, form = layui.form, layer = layui.layer;
 
 						// 渲染表格
 						table
@@ -109,7 +104,7 @@ function layuiTable(limit, offset) {
 							var checkStatus = table.checkStatus(obj.config.id);
 							switch (obj.event) {
 							case 'add': // 添加角色
-								bindingAddEvent(form, authtree);
+								bindingAddEvent(form);
 								break;
 							case 'delSelected': // 删除选中
 								var data = checkStatus.data;
@@ -128,6 +123,38 @@ function layuiTable(limit, offset) {
 							} else { // 关闭
 								updateRoleAvailable(id, 0);// 修改角色状态为关闭
 							}
+						});
+
+						// 监听提交按钮
+						form.on('submit(addRole)', function(data) {
+							layer.msg('监听到', {
+								icon : 6
+							});
+							var roleName = $('#roleName').val();
+							var roleDesc = $('#roleDesc').val();
+							var available = $('#available').val();
+							console.log(roleName + ',' + roleDesc + ','
+									+ available);
+							$.ajax({
+								type : 'POST',
+								url : 'createRole.do',
+								data : {
+									roleName : roleName,
+									roleDesc : roleDesc,
+									available : available
+								},
+								dataType : 'json',
+								success : function(data) {
+									layer.msg('角色添加成功', {
+										icon : 6
+									});
+								},
+								error : function(data) {
+									layer.msg('角色添加失败', {
+										icon : 5
+									});
+								}
+							});
 						});
 
 						// 监听操作列按钮
@@ -218,72 +245,23 @@ function updateRoleAvailable(id, available) {
  * @param html
  * @returns
  */
-function bindingAddEvent(form, authtree) {
+function bindingAddEvent(form) {
 
-	var html = '<form class="layui-form" action="" style="margin:20px;">'
+	var html = '<form class="layui-form" style="margin:20px;">'
 			+ '<div class="layui-form-item"><label class="layui-form-label">角色名</label><div class="layui-input-block"><input type="text" id="roleName" lay-verify="roleName" placeholder="请输入角色名" autocomplete="off" class="layui-input"></div></div>'
 			+ '<div class="layui-form-item layui-form-text"><label class="layui-form-label">角色描述</label><div class="layui-input-block"><textarea id="roleDesc" required  lay-verify="roleDesc" placeholder="请输入角色描述" class="layui-textarea"></textarea></div></div>'
-			+ '<div class="layui-form-item"><label class="layui-form-label">选择权限</label><div class="layui-input-block"><div id="LAY-auth-tree-index"></div></div></div>'
 			+ '<div class="layui-form-item"><label class="layui-form-label">是否启用</label><div class="layui-input-block"><input type="checkbox" id="available" lay-skin="switch" lay-text="开启|关闭" checked></div></div>'
-			+ '<div class="layui-form-item" hidden><div class="layui-input-block"><button id="addRole" class="layui-btn" lay-submit lay-filter="formDemo">提交</button></div></div>'
+			+ '<div class="layui-form-item" hidden><div class="layui-input-block"><button id="addRole" lay-submit lay-filter="addRole" class="layui-btn layui-btn-sm layui-btn-normal" >提交</button><button type="button" class="layui-btn layui-btn-sm layui-btn-primary">关闭</button></div></div>'
 			+ '</form>';
 
 	layer.open({
 		type : 1,
 		title : '添加角色',
-		area : [ '500px', '600px' ],
+		area : [ '500px', '350px' ],
 		shadeClose : true, // 点击遮罩关闭
 		content : html,
 		btn : [ '保存', '取消' ],
 		success : function(index, layero) { // 成功弹出后回调
-			// 初始化
-			$.ajax({
-				url : 'http://localhost:8080/Information_cms/role/tree.json',
-				dataType : 'json',
-				success : function(data) {
-					// 渲染时传入渲染目标ID，树形结构数据（具体结构看样例，checked表示默认选中），以及input表单的名字
-					authtree.render('#LAY-auth-tree-index', data.data.trees, {
-						inputname : 'authids[]',
-						layfilter : 'lay-check-auth'
-						// ,autoclose: false
-						// ,autochecked: false
-						// ,openchecked: true
-						// ,openall: true
-						,
-						autowidth : true
-					});
-
-					// 使用 authtree.on() 不会有冒泡延迟
-					authtree.on('change(lay-check-auth)', function(data) {
-						console.log('监听 authtree 触发事件数据', data);
-						// 获取所有节点
-						var all = authtree.getAll('#LAY-auth-tree-index');
-						console.log('all', all);
-						// 获取所有已选中节点
-						var checked = authtree
-								.getChecked('#LAY-auth-tree-index');
-						console.log('checked', checked);
-						// 获取所有未选中节点
-						var notchecked = authtree
-								.getNotChecked('#LAY-auth-tree-index');
-						console.log('notchecked', notchecked);
-						// 获取选中的叶子节点
-						var leaf = authtree.getLeaf('#LAY-auth-tree-index');
-						console.log('leaf', leaf);
-						// 获取最新选中
-						var lastChecked = authtree
-								.getLastChecked('#LAY-auth-tree-index');
-						console.log('lastChecked', lastChecked);
-						// 获取最新取消
-						var lastNotChecked = authtree
-								.getLastNotChecked('#LAY-auth-tree-index');
-						console.log('lastNotChecked', lastNotChecked);
-					});
-					authtree.on('deptChange(lay-check-auth)', function(data) {
-						console.log('监听到显示层数改变', data);
-					});
-				}
-			});
 			form.render('checkbox'); // 刷新checkbox开关渲染(否则开关按钮会不显示)
 		},
 		yes : function(index, layero) { // 确认按钮回调函数

@@ -82,23 +82,15 @@ public class RoleController {
 	 */
 	@RequestMapping(value = "/createRole.do", method = RequestMethod.POST)
 	@ResponseBody
-	public String createRole(HttpServletRequest request, String roleName, String roleDesc, String resourceIds) {
-
-		JSONObject jsonObject = new JSONObject();
-
-		Role role = new Role(roleName, roleDesc, resourceIds);
+	public JsonResult createRole(Role role) {
 
 		try {
-
 			roleServiceImpl.createRole(role);
-			jsonObject.put("msg", "success");
-
+			return JsonResult.buildSuccessResult("角色添加成功");
 		} catch (Exception e) {
-
-			jsonObject.put("msg", "error");
 			e.printStackTrace();
+			return JsonResult.buildFailedResult("角色添加失败");
 		}
-		return jsonObject.toJSONString();
 	}
 
 	/**
