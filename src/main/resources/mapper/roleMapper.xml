@@ -3,31 +3,40 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maven.dao.RoleDao">
 
-	<resultMap type="com.maven.model.pojo.Role" id="RoleResultMap">
+	<resultMap type="com.maven.model.pojo.Role"
+		id="RoleResultMap">
 		<result column="id" property="id" jdbcType="INTEGER" />
-		<result column="role_desc" property="roleDesc" jdbcType="VARCHAR" />
-		<result column="role_name" property="roleName" jdbcType="VARCHAR" />
-		<result column="resource_ids" property="resourceIds" jdbcType="VARCHAR" />
-		<result column="available" property="available" jdbcType="INTEGER" />
+		<result column="role_desc" property="roleDesc"
+			jdbcType="VARCHAR" />
+		<result column="role_name" property="roleName"
+			jdbcType="VARCHAR" />
+		<result column="resource_ids" property="resourceIds"
+			jdbcType="VARCHAR" />
+		<result column="available" property="available"
+			jdbcType="INTEGER" />
 	</resultMap>
 
-	<select id="findAll" resultMap="RoleResultMap" parameterType="com.maven.model.query.QueryRole">
+	<select id="findAll" resultMap="RoleResultMap"
+		parameterType="com.maven.model.query.QueryRole">
 		select * from sys_role where 1=1
 		<if test="rolename!=null and rolename!=''">
 			and rolename like CONCAT(CONCAT('%', #{rolename}),'%');
 		</if>
 		<if test="offset!=null and limit!=null">
-		limit #{offset},#{limit}
+			limit #{offset},#{limit}
 		</if>
 	</select>
-	
+
 	<select id="queryRoleCount" resultType="int">
-		select count(*) from sys_role
+		select count(*) from
+		sys_role
 	</select>
 
-	<insert id="createRole" parameterType="com.maven.model.pojo.Role">
+	<insert id="createRole"
+		parameterType="com.maven.model.pojo.Role">
 		insert into sys_role
-		(role_desc,role_name,available) values(#{roleDesc},#{roleName},#{available})
+		(role_desc,role_name,available)
+		values(#{roleDesc},#{roleName},#{available})
 	</insert>
 
 	<delete id="deleteRole" parameterType="java.lang.Integer">
@@ -35,19 +44,22 @@
 		id = #{id}
 	</delete>
 
-	<update id="updateRole" parameterType="com.maven.model.pojo.Role">
+	<update id="updateRole"
+		parameterType="com.maven.model.pojo.Role">
 		update sys_role set
-		role_name = #{roleName},role_desc = #{roleDesc}, resource_Ids=
-		#{resourceIds},available=#{available} where id = #{id}
+		role_name = #{roleName},role_desc =
+		#{roleDesc} where id = #{id}
 	</update>
 
 	<!-- 根据角色id查找资源id字符串 -->
-	<select id="findRoleNameById" parameterType="int" resultType="string">
+	<select id="findRoleNameById" parameterType="int"
+		resultType="string">
 		select role_name from sys_role where id = #{id}
 	</select>
 
 	<!-- 根据角色id查找角色 -->
-	<select id="findRoleById" parameterType="int" resultMap="RoleResultMap">
+	<select id="findRoleById" parameterType="int"
+		resultMap="RoleResultMap">
 		select *
 		from sys_role where id = #{id}
 	</select>
@@ -57,9 +69,11 @@
 		select role_name from sys_role where id = (select role_ids
 		from sys_user where username = #{username})
 	</select>
-	
+
 	<!-- 根据id更新角色状态 -->
-	<update id="updateRoleState" parameterType="com.maven.model.pojo.Role">
-		update sys_role set available = #{available} where id = #{id}
+	<update id="updateRoleState"
+		parameterType="com.maven.model.pojo.Role">
+		update sys_role set available = #{available} where id =
+		#{id}
 	</update>
 </mapper>

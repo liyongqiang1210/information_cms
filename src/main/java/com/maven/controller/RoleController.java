@@ -114,27 +114,22 @@ public class RoleController {
 	/**
 	 * 更新角色
 	 * 
-	 * @param request
 	 * @param roleId
 	 * @param roleName
 	 * @param roleDesc
-	 * @param resourceIds
-	 * @param available
 	 * @return
 	 */
-	@RequestMapping(value = "/updateRole.do", produces = "text/html;charset=UTF-8;", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateRole.do", method = RequestMethod.POST)
 	@ResponseBody
-	public String updateRole(HttpServletRequest request, Integer roleId, String roleName, String roleDesc,
-			String resourceIds, Integer available) {
+	public JsonResult updateRole(Integer roleId, String roleName, String roleDesc) {
 
 		try {
-			Role role = new Role(roleId, roleName, roleDesc, resourceIds, available);
+			Role role = new Role(roleId, roleName, roleDesc);
 			roleServiceImpl.updateRole(role);
-
-			return "{'msg':'success'}";
+			return JsonResult.buildSuccessResult("角色更新成功");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "{'msg':'error'}";
+			return JsonResult.buildFailedResult("角色更新失败");
 		}
 
 	}

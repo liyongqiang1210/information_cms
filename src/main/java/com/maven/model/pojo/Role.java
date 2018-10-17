@@ -66,6 +66,13 @@ public class Role implements Serializable {
 		this.resourceIds = resourceIds;
 		this.available = available;
 	}
+	
+	public Role(int id, String roleName, String roleDesc) {
+		super();
+		this.id = id;
+		this.roleName = roleName;
+		this.roleDesc = roleDesc;
+	}
 
 	public Role(String roleName, String roleDesc, String resourceIds) {
 		super();
