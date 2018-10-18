@@ -142,33 +142,45 @@ public class RoleController {
 	 */
 	@RequestMapping(value = "deleteSelectedRole.do", method = RequestMethod.POST)
 	@ResponseBody
-	public String deleteSelectedRole(HttpServletRequest request, String ids) {
+	public JsonResult deleteSelectedRole(HttpServletRequest request, String ids) {
 
 		try {
-			if (ids != null && !ids.equals("")) {
-				String[] split = ids.split(",");
-				for (String str : split) {
-					Integer roleId = Integer.valueOf(str);
-					roleServiceImpl.deleteRole(roleId);
-				}
+			if (ids == null || ids.equals("")) {
+				return JsonResult.buildFailedResult("要删除的角色为空");
 			}
-			return "{'msg':'success'}";
+			String[] split = ids.split(",");
+			for (String str : split) {
+				Integer roleId = Integer.valueOf(str);
+				roleServiceImpl.deleteRole(roleId);
+			}
+			return JsonResult.buildSuccessResult("删除成功");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "{'msg':'error'}";
+			return JsonResult.buildFailedResult("删除失败");
 		}
 	}
 
-	@RequestMapping(value = "/findRoleNameByUserName.do", method = RequestMethod.POST, produces = "text/html;charset=UTF-8;")
+	/**
+	 * 根据角色名查询角色名是否存在
+	 * 
+	 * @param rolename
+	 * @return
+	 */
+	@RequestMapping(value = "/queryRoleNameIsExist.do", method = RequestMethod.POST)
 	@ResponseBody
-	public String findRoleNameByUserName(String username) {
+	public JsonResult queryRoleNameIsExist(String roleName) {
 
-		String rolename = "";
-		if (username != null && username != "") {
-			rolename = roleServiceImpl.findRoleNameByUserName(username);
+		try {
+			// 获取角色名是否存在
+			int count = roleServiceImpl.queryRoleNameIsExist(roleName);
+			if (count > 0) {
+				return JsonResult.buildFailedResult("角色名已经存在");
+			}
+			return JsonResult.buildSuccessResult("角色名可用");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return JsonResult.buildFailedResult("出现异常");
 		}
-
-		return "{\"rolename\":\"" + rolename + "\"}";
 	}
 
 	/**
@@ -188,6 +200,15 @@ public class RoleController {
 		}
 	}
 
+	/**
+	 * 获取全部数据
+	 * 
+	 * @param response
+	 * @param limit
+	 * @param offset
+	 * @param rolename
+	 * @return
+	 */
 	@RequestMapping(value = "/getAll.do", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@ResponseBody
 	public JsonResult getAll(HttpServletResponse response, Integer limit, Integer offset, String rolename) {
@@ -202,4 +223,5 @@ public class RoleController {
 		int total = roleServiceImpl.queryRoleCount();
 		return JsonResult.buildSuccessLayuiResult(0, "成功", total, list);
 	}
+
 }

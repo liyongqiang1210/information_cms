@@ -85,6 +85,7 @@ function layuiTable(limit, offset) {
 											count : count,
 											curr : offset,
 											limit : limit,
+											groups : 3,
 											layout : [ 'prev', 'page', 'next',
 													'skip', 'count', 'limit' ],
 											jump : function(obj, first) {
@@ -268,7 +269,6 @@ function bindingAddEvent(form, table) {
 											dataType : 'json',
 											success : function(data) {
 												layer.msg('角色添加成功', {
-													time : 1500,
 													icon : 6
 												});
 												layer.close(index); // 关闭弹出层
@@ -276,7 +276,6 @@ function bindingAddEvent(form, table) {
 											},
 											error : function(data) {
 												layer.msg('角色添加失败', {
-													time : 1500,
 													icon : 5
 												});
 												layer.close(index); // 关闭弹出层
@@ -347,7 +346,6 @@ function bindingEditEvent(form, id, roleName, roleDesc) {
 									dataType : 'json',
 									success : function(data) {
 										layer.msg('角色更新成功', {
-											time : 1500,
 											icon : 6
 										});
 										// 关闭弹出层
@@ -357,7 +355,6 @@ function bindingEditEvent(form, id, roleName, roleDesc) {
 									},
 									error : function(data) {
 										layer.msg('角色更新失败', {
-											time : 1500,
 											icon : 5
 										});
 										// 关闭弹出层
@@ -390,7 +387,6 @@ function bindingDelEvent(id, obj, index) {
 		success : function(data) {
 			layer.msg('删除成功', {
 				icon : 6,
-				time : 1500
 			});
 			layer.close(index); // 关闭弹出层
 			delDataRefreshTable(); // 刷新表格
@@ -398,7 +394,6 @@ function bindingDelEvent(id, obj, index) {
 		error : function(data) {
 			layer.msg('删除失败', {
 				icon : 5,
-				time : 1500
 			});
 		}
 	});
@@ -418,6 +413,29 @@ function checkForm(form){
 					"^[a-zA-Z0-9_|\u4e00-\u9fa5\]{2,10}$")
 					.test(value)) {
 				return '角色名必须为2-10位且不能有特殊字符';
+			}else{
+				code = 0; // 用来判断角色名是否存在
+				$.ajax({
+					type:'POST',
+					url:'http://localhost:8080/Information_cms/role/queryRoleNameIsExist.do',
+					data:{roleName:value},
+					async:false,
+					dataType:'json',
+					success:function(data){
+						if(!data.success){ // 角色名已经存在
+							code = 1;
+						}
+					},
+					error:function(data){
+						code = 2;
+					}
+				});
+				// 根据code判断角色名是否存在
+				if(code == 1){
+					return '角色名已经存在,请更换';
+				}else if(code == 2){
+					return '出现异常,请联系管理员';
+				}
 			}
 		},
 		roleDesc : function(value, item) {

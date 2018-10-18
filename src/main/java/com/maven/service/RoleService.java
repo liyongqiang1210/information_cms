@@ -22,7 +22,7 @@ public interface RoleService {
 
 	public List<Role> findAll(Integer limit, Integer offset, String rolename);
 
-	public String findRoleNameByUserName(String username);
+	public int queryRoleNameIsExist(String username);
 
 	/**
 	 * 根据角色编号得到角色标识符列表

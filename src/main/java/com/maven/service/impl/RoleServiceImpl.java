@@ -79,9 +79,9 @@ public class RoleServiceImpl implements RoleService {
 		return null;
 	}
 
-	public String findRoleNameByUserName(String username) {
+	public int queryRoleNameIsExist(String rolename) {
 
-		return roleDao.findRoleNameByUserName(username);
+		return roleDao.queryRoleNameIsExist(rolename);
 	}
 
 	public void updateRoleState(Role role) {

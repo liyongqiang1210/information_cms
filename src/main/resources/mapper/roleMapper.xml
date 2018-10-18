@@ -69,6 +69,11 @@
 		select role_name from sys_role where id = (select role_ids
 		from sys_user where username = #{username})
 	</select>
+	<!-- 根据角色名查询角色名是否存在 -->
+	<select id="queryRoleNameIsExist" parameterType="string"
+		resultType="int">
+		select count(id) from sys_role where role_name = #{roleName}
+	</select>
 
 	<!-- 根据id更新角色状态 -->
 	<update id="updateRoleState"
