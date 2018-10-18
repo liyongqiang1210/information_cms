@@ -19,32 +19,45 @@ public class QueryRole implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Integer limit;
-	private Integer offset;
-	private String rolename;
+	private int limit;
+	private int offset;
+	private String roleName;
+	private int available;
 
-	public Integer getLimit() {
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+	public int getLimit() {
 		return limit;
 	}
 
-	public void setLimit(Integer limit) {
+	public void setLimit(int limit) {
 		this.limit = limit;
 	}
 
-	public Integer getOffset() {
+	public int getOffset() {
 		return offset;
 	}
 
-	public void setOffset(Integer offset) {
+	public void setOffset(int offset) {
 		this.offset = (offset-1) * limit;
 	}
 
-	public String getRolename() {
-		return rolename;
+	public String getRoleName() {
+		return roleName;
 	}
 
-	public void setRolename(String rolename) {
-		this.rolename = rolename;
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+
+	public int getAvailable() {
+		return available;
+	}
+
+	public void setAvailable(int available) {
+		this.available = available;
 	}
 
 }

@@ -15,7 +15,7 @@
 	<div class="layui-card">
 		<div class="layui-card-header">角色信息表</div>
 		<div class="layui-card-body">
-			<form class="layui-form" action="">
+			<form class="layui-form">
 				<div class="layui-form-item">
 					<div class="layui-inline">
 						<div class="layui-input-inline">
@@ -24,14 +24,14 @@
 						</div>
 					</div>
 					<div class="layui-inline">
-						<select name="available">
-							<option value="">请选择角色状态</option>
-							<option value="0">启用</option>
-							<option value="1">关闭</option>
+						<select id="available">
+							<option value="2">请选择角色状态</option>
+							<option value="1">启用</option>
+							<option value="0">关闭</option>
 						</select>
 					</div>
 					<div class="layui-inline">
-						<button class="layui-btn" lay-submit lay-filter="submit">查询</button>
+						<button type="button" class="layui-btn" id="search">查询</button>
 					</div>
 				</div>
 			</form>

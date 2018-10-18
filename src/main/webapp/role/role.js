@@ -103,6 +103,21 @@ function layuiTable(limit, offset) {
 									}
 								});
 						
+						
+						// 监听查询按钮
+						$("#search").on('click',function(){
+							layer.msg($('#available>option:selected').val());
+							// 执行重载
+						      table.reload('role_table', {
+						        where: {
+						          key: {
+						        	  roleName:$('#roleName').val(),
+						        	  available:$('#available>option:selected').val()
+						          }
+						        }
+						      });
+						});
+						
 						// 监听开关按钮
 						form.on('switch(available)', function(data) {
 							var status = data.elem.checked; // 得到开关的状态
@@ -323,7 +338,7 @@ function bindingDelSelectedEvent(ids){
 						});
 					}
 					layer.close(index);
-					delDataRefreshTable(500); // 刷新表格
+					delDataRefreshTable(); // 刷新表格
 				},
 				error:function(data){
 					layer.msg('删除失败',{
@@ -436,7 +451,7 @@ function bindingDelEvent(id, obj, index) {
 				icon : 6,
 			});
 			layer.close(index); // 关闭弹出层
-			delDataRefreshTable(100); // 刷新表格
+			delDataRefreshTable(); // 刷新表格
 		},
 		error : function(data) {
 			layer.msg('删除失败', {
@@ -496,38 +511,37 @@ function checkForm(form){
 }
 
 /**
- * 添加数据之后自动刷新表格方法
+ * 添加数据之后自动刷新表格并跳转到新添加数据那页的方法
  * 
  * @returns
  */
 function addDataRefreshTable() {
-	// 模拟点击确定按钮刷新页面数据
+	// 模拟点击确定按钮刷新页面数据确保当前页面时最新的数据
 	$('.layui-laypage-btn').click();
-	// 获取数据总数
+	// 获取当前数据总数
 	var str = $('.layui-laypage-count').text().length;
 	var count = parseInt($('.layui-laypage-count').text().substring(2, str - 2)) + 1;
-	// 获取页面显示数据大小
+	// 获取当前页面显示数据大小
 	var limit = parseInt($('.layui-laypage-limits>select>option:selected')
 			.val());
-	// 最后一页
+	// 计算出最后一页页码向上取整
 	var lastPage = Math.ceil(count / limit);
-	// 等待50ms页面加载完成后在第几页输入框中设置成最后一页然后点击确定跳转到最后一页
+	// 等待100ms页面加载完成后在跳转页数输入框中输入最后一页页码然后点击确定跳转到最后一页
 	setTimeout(() => {
 		$('.layui-laypage-skip>input').attr('value', lastPage);
 		$('.layui-laypage-btn').click();
 	}, 100);
-
 }
 
 /**
- * 删除数据之后自动刷新表格方法
+ * 删除数据之后自动刷新表格并跳转到最后一页的方法
  * 
  * @returns
  */
-function delDataRefreshTable(time){
+function delDataRefreshTable(){
 	$('.layui-laypage-btn').click();
 	// 等待100ms之后点击确定按钮刷新页面
 	setTimeout(() => {
 		$('.layui-laypage-btn').click();
-	}, time);
+	}, 100);
 }

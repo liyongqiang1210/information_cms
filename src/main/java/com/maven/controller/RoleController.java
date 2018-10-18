@@ -53,7 +53,7 @@ public class RoleController {
 	@RequestMapping(value = "/getAllRole.do", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@ResponseBody
 	public String getAllRole(HttpServletRequest request, HttpServletResponse response, Integer limit, Integer offset,
-			String rolename) {
+			String rolename, int available) {
 		// 解决跨域问题，这里需要设置头信息，不然客户端无法接收到返回值
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Methods", "GET");
@@ -63,7 +63,7 @@ public class RoleController {
 			return MessageUtil.getStateInfo("参数中存在空值");
 		}
 		// 获取角色列表
-		List<Role> list = roleServiceImpl.findAll(limit, offset, rolename);
+		List<Role> list = roleServiceImpl.findAll(limit, offset, rolename, available);
 		int total = list.size();
 		return MessageUtil.getJsonArrry(total, JSONArray.toJSONString(list));
 	}
@@ -204,14 +204,14 @@ public class RoleController {
 	 */
 	@RequestMapping(value = "/getAll.do", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@ResponseBody
-	public JsonResult getAll(HttpServletResponse response, Integer limit, Integer offset, String rolename) {
+	public JsonResult getAll(HttpServletResponse response, int limit, int offset, String roleName, int available) {
 		// 解决跨域问题，这里需要设置头信息，不然客户端无法接收到返回值
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Methods", "GET");
 		response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
 
 		// 获取角色列表
-		List<Role> list = roleServiceImpl.findAll(limit, offset, rolename);
+		List<Role> list = roleServiceImpl.findAll(limit, offset, roleName, available);
 		// 查询角色总数
 		int total = roleServiceImpl.queryRoleCount();
 		return JsonResult.buildSuccessLayuiResult(0, "成功", total, list);
