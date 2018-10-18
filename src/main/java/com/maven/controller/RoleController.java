@@ -142,17 +142,10 @@ public class RoleController {
 	 */
 	@RequestMapping(value = "deleteSelectedRole.do", method = RequestMethod.POST)
 	@ResponseBody
-	public JsonResult deleteSelectedRole(HttpServletRequest request, String ids) {
+	public JsonResult deleteSelectedRole(String ids) {
 
 		try {
-			if (ids == null || ids.equals("")) {
-				return JsonResult.buildFailedResult("要删除的角色为空");
-			}
-			String[] split = ids.split(",");
-			for (String str : split) {
-				Integer roleId = Integer.valueOf(str);
-				roleServiceImpl.deleteRole(roleId);
-			}
+			roleServiceImpl.deleteSelectedRole(ids);
 			return JsonResult.buildSuccessResult("删除成功");
 		} catch (Exception e) {
 			e.printStackTrace();

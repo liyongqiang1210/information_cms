@@ -16,14 +16,17 @@ function layuiTable(limit, offset) {
 			.use(
 					[ 'table', 'laypage', 'form', 'layer' ],
 					function() {
-						var table = layui.table, laypage = layui.laypage, form = layui.form, layer = layui.layer;
+						var table = layui.table, 
+							laypage = layui.laypage, 
+							form = layui.form, 
+							layer = layui.layer;
 
 						// 渲染表格
 						table
 								.render({
 									elem : '#role_table',
 									height : 600,
-									url : 'http://localhost:8080/Information_cms/role/getAll.do?offset='
+									url : 'getAll.do?offset='
 											+ offset + '&limit=' + limit, // 数据接口
 									page : false, // 不开启分页
 									toolbar : '<div class="layui-btn-container">'
@@ -85,7 +88,7 @@ function layuiTable(limit, offset) {
 											count : count,
 											curr : offset,
 											limit : limit,
-											groups : 3,
+											groups : 3, // 连续显示页数
 											layout : [ 'prev', 'page', 'next',
 													'skip', 'count', 'limit' ],
 											jump : function(obj, first) {
@@ -99,22 +102,7 @@ function layuiTable(limit, offset) {
 										})
 									}
 								});
-
-						// 头工具栏事件
-						table.on('toolbar(role_table)', function(obj) {
-							var checkStatus = table.checkStatus(obj.config.id);
-							switch (obj.event) {
-							case 'add': // 添加角色
-								bindingAddEvent(form, table);
-								break;
-							case 'delSelected': // 删除选中
-								var data = checkStatus.data;
-								layer.alert(JSON.stringify(data));
-								break;
-							}
-
-						});
-
+						
 						// 监听开关按钮
 						form.on('switch(available)', function(data) {
 							var status = data.elem.checked; // 得到开关的状态
@@ -124,6 +112,25 @@ function layuiTable(limit, offset) {
 							} else { // 关闭
 								updateRoleAvailable(id, 0);// 修改角色状态为关闭
 							}
+						});
+
+						// 头工具栏事件
+						table.on('toolbar(role_table)', function(obj) {
+							var checkStatus = table.checkStatus(obj.config.id);
+							switch (obj.event) {
+							case 'add': // 添加角色
+								bindingAddEvent(form, table);
+								break;
+							case 'delSelected': // 删除选中角色
+								var data = checkStatus.data;
+								var ids = ''; // 角色字符串
+								for(var i = 0; i < data.length; i++){
+									ids += data[i].id + ',';
+								}
+								bindingDelSelectedEvent(ids); // 删除选中角色
+								break;
+							}
+
 						});
 
 						// 监听操作列按钮
@@ -156,6 +163,25 @@ function layuiTable(limit, offset) {
 }
 
 /**
+ * 数据操作工具栏
+ * 
+ * @param obj
+ * @returns
+ */
+function operateToolBar(obj) {
+	var id = obj.id;
+	var toolBar = '<a class="layui-btn layui-btn-xs" id='
+			+ id
+			+ ' name="edit" lay-event="edit">编辑</a><a class="layui-btn layui-btn-danger layui-btn-xs" id='
+			+ id 
+			+ ' name="del" lay-event="del">删除</a><a class="layui-btn layui-btn-normal layui-btn-xs" id='
+			+ id 
+			+ ' name="del" lay-event="">分配权限</a>';
+	
+	return toolBar;
+}
+
+/**
  * 修改角色状态方法
  * 
  * @param id
@@ -167,7 +193,7 @@ function layuiTable(limit, offset) {
 function updateRoleAvailable(id, available) {
 	$.ajax({
 		type : 'POST',
-		url : 'http://localhost:8080/Information_cms/role/updateRoleState.do',
+		url : 'updateRoleState.do',
 		data : {
 			id : id,
 			available : available
@@ -187,25 +213,6 @@ function updateRoleAvailable(id, available) {
 			$('#' + id + '').prop('checked', ''); // 将状态改为关闭
 		}
 	});
-}
-
-/**
- * 数据操作工具栏
- * 
- * @param obj
- * @returns
- */
-function operateToolBar(obj) {
-	var id = obj.id;
-	var toolBar = '<a class="layui-btn layui-btn-xs" id='
-			+ id
-			+ ' name="edit" lay-event="edit">编辑</a><a class="layui-btn layui-btn-danger layui-btn-xs" id='
-			+ id 
-			+ ' name="del" lay-event="del">删除</a><a class="layui-btn layui-btn-normal layui-btn-xs" id='
-			+ id 
-			+ ' name="del" lay-event="">分配权限</a>';
-	
-	return toolBar;
 }
 
 /**
@@ -260,7 +267,7 @@ function bindingAddEvent(form, table) {
 								$
 										.ajax({
 											type : 'POST',
-											url : 'http://localhost:8080/Information_cms/role/createRole.do',
+											url : 'createRole.do',
 											data : {
 												roleName : roleName,
 												roleDesc : roleDesc,
@@ -287,6 +294,46 @@ function bindingAddEvent(form, table) {
 					layer.close(index); // 关闭弹出层
 				}
 			});
+}
+
+/**
+ * 删除选中角色
+ * 
+ * @param ids
+ * @returns
+ */
+function bindingDelSelectedEvent(ids){
+	if(null == ids || '' == ids){
+		layer.msg('请选择要删除的角色',{icon:7});
+	}else{
+		layer.confirm('确认删除选中的角色吗？', {icon: 6, title:'删除选中角色'}, function(index){
+			$.ajax({
+				type:'POST',
+				url:'deleteSelectedRole.do',
+				data:{ids:ids},
+				dataType:'json',
+				success:function(data){
+					if(data.success){
+						layer.msg('删除成功',{
+							icon:6
+						});
+					}else{
+						layer.msg('删除失败',{
+							icon:5
+						});
+					}
+					layer.close(index);
+					delDataRefreshTable(500); // 刷新表格
+				},
+				error:function(data){
+					layer.msg('删除失败',{
+						icon:5
+					});
+					layer.close(index);
+				}
+			});
+		});
+	}
 }
 
 /**
@@ -337,7 +384,7 @@ function bindingEditEvent(form, id, roleName, roleDesc) {
 						$
 								.ajax({
 									type : 'POST',
-									url : 'http://localhost:8080/Information_cms/role/updateRole.do',
+									url : 'updateRole.do',
 									data : {
 										roleId : id,
 										roleName : roleName,
@@ -379,7 +426,7 @@ function bindingEditEvent(form, id, roleName, roleDesc) {
 function bindingDelEvent(id, obj, index) {
 	$.ajax({
 		type : 'POST',
-		url : 'http://localhost:8080/Information_cms/role/deleteRole.do',
+		url : 'deleteRole.do',
 		data : {
 			roleId : id
 		},
@@ -389,7 +436,7 @@ function bindingDelEvent(id, obj, index) {
 				icon : 6,
 			});
 			layer.close(index); // 关闭弹出层
-			delDataRefreshTable(); // 刷新表格
+			delDataRefreshTable(100); // 刷新表格
 		},
 		error : function(data) {
 			layer.msg('删除失败', {
@@ -417,7 +464,7 @@ function checkForm(form){
 				code = 0; // 用来判断角色名是否存在
 				$.ajax({
 					type:'POST',
-					url:'http://localhost:8080/Information_cms/role/queryRoleNameIsExist.do',
+					url:'queryRoleNameIsExist.do',
 					data:{roleName:value},
 					async:false,
 					dataType:'json',
@@ -477,9 +524,10 @@ function addDataRefreshTable() {
  * 
  * @returns
  */
-function delDataRefreshTable(){
+function delDataRefreshTable(time){
+	$('.layui-laypage-btn').click();
 	// 等待100ms之后点击确定按钮刷新页面
 	setTimeout(() => {
 		$('.layui-laypage-btn').click();
-	}, 100);
+	}, time);
 }

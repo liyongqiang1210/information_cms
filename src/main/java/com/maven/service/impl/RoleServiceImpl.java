@@ -6,6 +6,8 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.maven.dao.RoleDao;
 import com.maven.dao.UserDao;
@@ -13,6 +15,7 @@ import com.maven.model.pojo.Role;
 import com.maven.model.pojo.User;
 import com.maven.model.query.QueryRole;
 import com.maven.service.RoleService;
+
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -92,6 +95,20 @@ public class RoleServiceImpl implements RoleService {
 	public int queryRoleCount() {
 
 		return roleDao.queryRoleCount();
+	}
+
+	@Transactional
+	public void deleteSelectedRole(String ids) {
+		try {
+			String[] split = ids.split(",");
+			for (String str : split) {
+				Integer roleId = Integer.valueOf(str);
+				roleDao.deleteRole(roleId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();// 手动回滚事务
+		}
 	}
 
 }
