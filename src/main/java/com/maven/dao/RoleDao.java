@@ -31,5 +31,5 @@ public interface RoleDao {
 
 	public void updateRoleState(Role role);
 
-	public int queryRoleCount();
+	public int queryRoleCount(QueryRole qr);
 }

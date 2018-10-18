@@ -49,6 +49,7 @@ public class RoleServiceImpl implements RoleService {
 		qr.setLimit(limit);
 		qr.setOffset(offset);
 		qr.setRoleName(roleName);
+		qr.setAvailable(available);
 		return roleDao.findAll(qr);
 	}
 
@@ -91,9 +92,11 @@ public class RoleServiceImpl implements RoleService {
 		roleDao.updateRoleState(role);
 	}
 
-	public int queryRoleCount() {
-
-		return roleDao.queryRoleCount();
+	public int queryRoleCount(String roleName, int available) {
+		QueryRole qr = new QueryRole();
+		qr.setRoleName(roleName);
+		qr.setAvailable(available);
+		return roleDao.queryRoleCount(qr);
 	}
 
 	@Transactional

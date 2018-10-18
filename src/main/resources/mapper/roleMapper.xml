@@ -20,19 +20,26 @@
 		parameterType="com.maven.model.query.QueryRole">
 		select * from sys_role where 1=1
 		<if test="roleName!=null and roleName!=''">
-			and rolename like CONCAT(CONCAT('%', #{roleName}),'%')
+			and role_name like CONCAT(CONCAT('%', #{roleName}),'%')
 		</if>
 		<if test="available!=2">
-			and available = #{avaiable}
+			and available = #{available}
 		</if>
 		<if test="offset!=null and limit!=null">
 			limit #{offset},#{limit}
 		</if>
 	</select>
 
-	<select id="queryRoleCount" resultType="int">
+	<select id="queryRoleCount" resultType="int"
+		parameterType="com.maven.model.query.QueryRole">
 		select count(*) from
-		sys_role
+		sys_role where 1=1
+		<if test="roleName!=null and roleName!=''">
+			and role_name like CONCAT(CONCAT('%', #{roleName}),'%')
+		</if>
+		<if test="available!=2">
+			and available = #{available}
+		</if>
 	</select>
 
 	<insert id="createRole"
@@ -75,7 +82,8 @@
 	<!-- 根据角色名查询角色名是否存在 -->
 	<select id="queryRoleNameIsExist" parameterType="string"
 		resultType="int">
-		select count(id) from sys_role where role_name = #{roleName}
+		select count(id) from sys_role where role_name =
+		#{roleName}
 	</select>
 
 	<!-- 根据id更新角色状态 -->

@@ -20,15 +20,17 @@ function layuiTable(limit, offset) {
 							laypage = layui.laypage, 
 							form = layui.form, 
 							layer = layui.layer;
-
+						
 						// 渲染表格
-						table
+						var tableIns = table
 								.render({
 									elem : '#role_table',
 									height : 600,
-									url : 'getAll.do?offset='
-											+ offset + '&limit=' + limit, // 数据接口
-									page : false, // 不开启分页
+									url : 'getAll.do', // 数据接口
+									page : {prev:'上一页',next:'下一页',groups:3,theme:'layui-laypage'}, // 开启分页
+									limit : 10,
+									limits : [10,20,30,40,50],
+									loading : true,
 									toolbar : '<div class="layui-btn-container">'
 											+ '<button class="layui-btn layui-btn-sm" lay-event="add">添加角色</button>'
 											+ '<button class="layui-btn layui-btn-sm" lay-event="delSelected">删除选中</button></div>',
@@ -83,37 +85,34 @@ function layuiTable(limit, offset) {
 											} ] ],
 									done : function(res, curr, count) { // 数据渲染完的回调函数
 										// 分页
-										laypage.render({
-											elem : 'laypage',
-											count : count,
-											curr : offset,
-											limit : limit,
-											groups : 3, // 连续显示页数
-											layout : [ 'prev', 'page', 'next',
-													'skip', 'count', 'limit' ],
-											jump : function(obj, first) {
-												// 首次不执行(这里必须加上这个判断)
-												if (!first) {
-													offset = obj.curr; // 当前页
-													limit = obj.limit; // 当前页面显示数据条数
-													layuiTable(limit, offset);
-												}
-											}
-										})
+//										laypage.render({
+//											elem : 'laypage',
+//											count : count,
+//											curr : offset,
+//											limit : limit,
+//											groups : 3, // 连续显示页数
+//											layout : [ 'prev', 'page', 'next',
+//													'skip', 'count', 'limit' ],
+//											jump : function(obj, first) {
+//												// 首次不执行(这里必须加上这个判断)
+//												if (!first) {
+//													offset = obj.curr; // 当前页
+//													limit = obj.limit; // 当前页面显示数据条数
+//													layuiTable(limit, offset);
+//												}
+//											}
+//										})
 									}
 								});
 						
 						
 						// 监听查询按钮
 						$("#search").on('click',function(){
-							layer.msg($('#available>option:selected').val());
 							// 执行重载
-						      table.reload('role_table', {
+							tableIns.reload({
 						        where: {
-						          key: {
-						        	  roleName:$('#roleName').val(),
-						        	  available:$('#available>option:selected').val()
-						          }
+					        	  roleName:$('#roleName').val(),
+					        	  available:$('#available>option:selected').val()
 						        }
 						      });
 						});

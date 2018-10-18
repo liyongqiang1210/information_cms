@@ -42,5 +42,5 @@ public interface RoleService {
 
 	public void updateRoleState(Role role);
 
-	public int queryRoleCount();
+	public int queryRoleCount(String roleName, int available);
 }

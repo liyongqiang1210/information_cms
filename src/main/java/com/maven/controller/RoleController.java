@@ -202,18 +202,21 @@ public class RoleController {
 	 * @param rolename
 	 * @return
 	 */
-	@RequestMapping(value = "/getAll.do", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	@RequestMapping(value = "/getAll.do", method = RequestMethod.GET)
 	@ResponseBody
-	public JsonResult getAll(HttpServletResponse response, int limit, int offset, String roleName, int available) {
+	public JsonResult getAll(HttpServletResponse response, int limit, int page, String roleName, Integer available) {
 		// 解决跨域问题，这里需要设置头信息，不然客户端无法接收到返回值
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Methods", "GET");
 		response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
-
+		// 如果available为null时给它赋默认值2
+		if (available == null) {
+			available = 2;
+		}
 		// 获取角色列表
-		List<Role> list = roleServiceImpl.findAll(limit, offset, roleName, available);
+		List<Role> list = roleServiceImpl.findAll(limit, page, roleName, available);
 		// 查询角色总数
-		int total = roleServiceImpl.queryRoleCount();
+		int total = roleServiceImpl.queryRoleCount(roleName, available);
 		return JsonResult.buildSuccessLayuiResult(0, "成功", total, list);
 	}
 
