@@ -288,7 +288,6 @@ function bindingAddEvent(form, table) {
 					layer.close(index); // 关闭弹出层
 				}
 			});
-
 }
 
 /**
