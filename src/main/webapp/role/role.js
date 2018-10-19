@@ -452,7 +452,6 @@ function bindingPermissionEvent(form, authtree, id) {
 					$(".auth-icon").css('color','#C8C8C8');
 					$('.auth-status').css('margin-top','10px');
 					$('.layui-unselect').css('margin-top','-2px');
-					
 					// 使用 authtree.on() 不会有冒泡延迟
 					authtree.on('change(lay-check-auth)', function(data) {
 						// 修改权限树的默认样式
