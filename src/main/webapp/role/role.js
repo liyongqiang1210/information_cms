@@ -448,37 +448,17 @@ function bindingPermissionEvent(form, authtree, id) {
 						layfilter : 'lay-check-auth',
 						autowidth : true
 					});
-					
 					// 修改权限树的默认样式
 					$(".auth-icon").css('color','#C8C8C8');
 					$('.auth-status').css('margin-top','10px');
 					$('.layui-unselect').css('margin-top','-2px');
-
+					
 					// 使用 authtree.on() 不会有冒泡延迟
 					authtree.on('change(lay-check-auth)', function(data) {
-						console.log('监听 authtree 触发事件数据', data);
-						// 获取所有节点
-						var all = authtree.getAll('#LAY-auth-tree-index');
-						console.log('all', all);
-						// 获取所有已选中节点
-						var checked = authtree
-								.getChecked('#LAY-auth-tree-index');
-						console.log('checked', checked);
-						// 获取所有未选中节点
-						var notchecked = authtree
-								.getNotChecked('#LAY-auth-tree-index');
-						console.log('notchecked', notchecked);
-						// 获取选中的叶子节点
-						var leaf = authtree.getLeaf('#LAY-auth-tree-index');
-						console.log('leaf', leaf);
-						// 获取最新选中
-						var lastChecked = authtree
-								.getLastChecked('#LAY-auth-tree-index');
-						console.log('lastChecked', lastChecked);
-						// 获取最新取消
-						var lastNotChecked = authtree
-								.getLastNotChecked('#LAY-auth-tree-index');
-						console.log('lastNotChecked', lastNotChecked);
+						// 修改权限树的默认样式
+						$(".auth-icon").css('color','#C8C8C8');
+						$('.auth-status').css('margin-top','10px');
+						$('.layui-unselect').css('margin-top','-2px');
 					});
 					authtree.on('deptChange(lay-check-auth)', function(data) {
 						console.log('监听到显示层数改变', data);
