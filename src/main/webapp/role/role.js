@@ -1,13 +1,22 @@
 // 记录当前页码,当前页显示数据条数和总数据数
 var page, limit, total;
+
+// 引入树插件
+layui.config({
+	base: '../plugin/layui-v2.4.3/extends/',
+}).extend({
+	authtree: 'authtree',
+});
+
 layui
 	.use(
-			[ 'table', 'laypage', 'form', 'layer' ],
+			[ 'authtree', 'table', 'laypage', 'form', 'layer' ],
 			function() {
 				var table = layui.table, 
 					laypage = layui.laypage, 
 					form = layui.form, 
-					layer = layui.layer;
+					layer = layui.layer,
+					authtree = layui.authtree;
 				
 				// 给选择框赋默认值
 				$('#available_search').val('2');
@@ -138,8 +147,8 @@ layui
 					var roleName = obj.data.roleName; // 获取roleName
 					var roleDesc = obj.data.roleDesc; // 获取roleDesc
 					switch (obj.event) {
-					case 'detail': // 查看
-						bindingDetailEvent(id);
+					case 'permission': // 分配权限
+						bindingPermissionEvent(form, authtree, id);
 						break;
 					case 'del': // 删除
 						layer.confirm('确认删除这个角色信息吗？', function(index) {
@@ -169,7 +178,7 @@ function operateToolBar(obj) {
 			+ id 
 			+ ' name="del" lay-event="del">删除</a><a class="layui-btn layui-btn-normal layui-btn-xs" id='
 			+ id 
-			+ ' name="del" lay-event="">分配权限</a>';
+			+ ' name="permission" lay-event="permission">分配权限</a>';
 	
 	return toolBar;
 }
@@ -232,15 +241,7 @@ function bindingAddEvent(form, table) {
 				content : html,
 				btn : [ '保存', '取消' ],
 				success : function(layero, index) { // 成功弹出后回调
-					// 解决按enter键重复弹窗问题
-					$(':focus').blur();
-					// 添加form标识
-					layero.addClass('layui-form');
-					// 将保存按钮改变成提交按钮
-					layero.find('.layui-layer-btn0').attr({
-						'lay-filter' : 'addRole',
-						'lay-submit' : ''
-					});
+					modifyButton(layero, 'addRole'); // 修改按钮为提交表单按钮
 					// 表单验证
 					checkForm(form);
 					// 刷新渲染(否则开关按钮会不显示)
@@ -299,6 +300,7 @@ function bindingAddEvent(form, table) {
  * @returns
  */
 function bindingDelSelectedEvent(ids, delCount){
+	
 	if(null === ids || '' === ids){
 		layer.msg('请选择要删除的角色',{icon:7});
 	}else{
@@ -342,10 +344,12 @@ function bindingDelSelectedEvent(ids, delCount){
  * @returns
  */
 function bindingEditEvent(form, id, roleName, roleDesc) {
+	
 	var html = '<form class="layui-form" id="form" style="margin:20px;">'
 		+ '<div class="layui-form-item"><label class="layui-form-label">角色名</label><div class="layui-input-block"><input type="text" id="roleName" lay-verify="roleName" placeholder="请输入角色名" autocomplete="off"  class="layui-input" value='+roleName+'><input type="text" id="roleNameDefault" value='+roleName+' hidden></div></div>'
 		+ '<div class="layui-form-item layui-form-text"><label class="layui-form-label">角色描述</label><div class="layui-input-block"><textarea id="roleDesc" required  lay-verify="roleDesc" placeholder="请输入角色描述" class="layui-textarea">'+roleDesc+'</textarea></div></div>'
 		+ '</form>';
+	
 	layer
 	.open({
 		type : 1,
@@ -355,15 +359,8 @@ function bindingEditEvent(form, id, roleName, roleDesc) {
 		content : html,
 		btn : [ '保存', '取消' ],
 		success : function(layero, index) { // 成功弹出后回调
-			// 解决按enter键重复弹窗问题
-			$(':focus').blur();
-			// 添加form标识
-			layero.addClass('layui-form');
-			// 将保存按钮改变成提交按钮
-			layero.find('.layui-layer-btn0').attr({
-				'lay-filter' : 'updateRole',
-				'lay-submit' : ''
-			});
+			// 修改保存按钮为表单提交按钮
+			modifyButton(layero, 'updateRole');
 			// 表单验证
 			checkForm(form);
 			// 刷新渲染(否则开关按钮会不显示)
@@ -399,6 +396,126 @@ function bindingEditEvent(form, id, roleName, roleDesc) {
 									},
 									error : function(data) {
 										layer.msg('角色更新失败', {
+											icon : 5
+										});
+										// 关闭弹出层
+										layer.close(index);
+									}
+								});
+					});
+		},
+		btn2 : function(index, layero) { // 取消按钮回调函数
+			layer.close(index); // 关闭弹出层
+		}
+	});
+
+}
+
+/**
+ * 分配权限
+ * 
+ * @param id
+ * @param obj
+ * @param index
+ * @returns
+ */
+function bindingPermissionEvent(form, authtree, id) {
+	
+	var html = '<form class="layui-form" id="form" style="margin:20px;">'
+		+ '<div class="layui-form-item"><label class="layui-form-label">选择权限</label><div class="layui-input-block"><div id="LAY-auth-tree-index"></div></div></div>'
+		+ '</form>';
+	
+	layer
+	.open({
+		type : 1,
+		title : '分配权限',
+		area : [ '500px', '700px' ],
+		shadeClose : true, // 点击遮罩关闭
+		content : html,
+		btn : [ '保存', '取消' ],
+		success : function(layero, index) { // 成功弹出后回调
+			modifyButton(layero, 'permission'); // 修改按钮
+			// 刷新渲染(否则开关按钮会不显示)
+			// form.render('checkbox');
+			// 初始化
+			$.ajax({
+				url : 'http://localhost:8080/Information_cms/role/tree.json',
+				dataType : 'json',
+				success : function(data) {
+					// 渲染时传入渲染目标ID，树形结构数据（具体结构看样例，checked表示默认选中），以及input表单的名字
+					authtree.render('#LAY-auth-tree-index', data.data.trees, {
+						inputname : 'authids[]',
+						layfilter : 'lay-check-auth',
+						autowidth : true
+					});
+					
+					// 修改权限树的默认样式
+					$(".auth-icon").css('color','#C8C8C8');
+					$('.auth-status').css('margin-top','10px');
+					$('.layui-unselect').css('margin-top','-2px');
+
+					// 使用 authtree.on() 不会有冒泡延迟
+					authtree.on('change(lay-check-auth)', function(data) {
+						console.log('监听 authtree 触发事件数据', data);
+						// 获取所有节点
+						var all = authtree.getAll('#LAY-auth-tree-index');
+						console.log('all', all);
+						// 获取所有已选中节点
+						var checked = authtree
+								.getChecked('#LAY-auth-tree-index');
+						console.log('checked', checked);
+						// 获取所有未选中节点
+						var notchecked = authtree
+								.getNotChecked('#LAY-auth-tree-index');
+						console.log('notchecked', notchecked);
+						// 获取选中的叶子节点
+						var leaf = authtree.getLeaf('#LAY-auth-tree-index');
+						console.log('leaf', leaf);
+						// 获取最新选中
+						var lastChecked = authtree
+								.getLastChecked('#LAY-auth-tree-index');
+						console.log('lastChecked', lastChecked);
+						// 获取最新取消
+						var lastNotChecked = authtree
+								.getLastNotChecked('#LAY-auth-tree-index');
+						console.log('lastNotChecked', lastNotChecked);
+					});
+					authtree.on('deptChange(lay-check-auth)', function(data) {
+						console.log('监听到显示层数改变', data);
+					});
+				}
+			});
+		},
+		yes : function(index, layero) { // 保存按钮回调函数
+
+			var roleName = $('#roleName').val();
+			var roleDesc = $('#roleDesc').val();
+			// 监听提交按钮
+			form
+			.on(
+					'submit(permission)',
+					function(data) {
+						$
+								.ajax({
+									type : 'POST',
+									url : 'allotPermission.do',
+									data : {
+										roleId : id,
+										roleName : roleName,
+										roleDesc : roleDesc
+									},
+									dataType : 'json',
+									success : function(data) {
+										layer.msg('权限分配成功', {
+											icon : 6
+										});
+										// 关闭弹出层
+										layer.close(index);
+										// 模拟点击确定按钮刷新页面数据
+										$('.layui-laypage-btn').click();
+									},
+									error : function(data) {
+										layer.msg('权限分配失败', {
 											icon : 5
 										});
 										// 关闭弹出层
@@ -507,12 +624,6 @@ function checkForm(form){
 function addDataRefreshTable() {
 	// 模拟点击确定按钮刷新页面数据确保当前页面时最新的数据
 	$('.layui-laypage-btn').click();
-	// 获取当前数据总数
-	var str = $('.layui-laypage-count').text().length;
-	var count = parseInt($('.layui-laypage-count').text().substring(2, str - 2)) + 1;
-	// 获取当前页面显示数据大小
-	var limit = parseInt($('.layui-laypage-limits>select>option:selected')
-			.val());
 	// 计算出最后一页页码向上取整
 	var lastPage = Math.ceil(count / limit);
 	// 等待100ms页面加载完成后在跳转页数输入框中输入最后一页页码然后点击确定跳转到最后一页
@@ -541,4 +652,24 @@ function delDataRefreshTable(delCount){
 	}else{ // 不是最后一页的情况
 		$('.layui-laypage-btn').click();
 	}
+}
+
+/**
+ * 此方法用于解决重复弹框并且将保存按钮类型变成提交
+ * 
+ * @param layero
+ * @param layFilter
+ *            lay-filter属性值
+ * @returns
+ */
+function modifyButton(layero, layFilter){
+	// 解决按enter键重复弹窗问题
+	$(':focus').blur();
+	// 添加form标识
+	layero.addClass('layui-form');
+	// 将保存按钮改变成提交按钮
+	layero.find('.layui-layer-btn0').attr({
+		'lay-filter' : layFilter,
+		'lay-submit' : ''
+	});
 }
