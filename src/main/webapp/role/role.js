@@ -435,8 +435,10 @@ function bindingPermissionEvent(form, authtree, id) {
 		btn : [ '保存', '取消' ],
 		success : function(layero, index) { // 成功弹出后回调
 			modifyButton(layero, 'permission'); // 修改按钮
-			// 刷新渲染(否则开关按钮会不显示)
-			// form.render('checkbox');
+			// 修改权限树的默认样式
+			$(".auth-icon").css('color','#C8C8C8');
+			$('.auth-status').css('margin-top','10px');
+			$('.layui-unselect').css('margin-top','-2px');
 			// 初始化
 			$.ajax({
 				url : 'http://localhost:8080/Information_cms/role/tree.json',
@@ -449,13 +451,12 @@ function bindingPermissionEvent(form, authtree, id) {
 						autowidth : true
 					});
 					
-					// 修改权限树的默认样式
-					$(".auth-icon").css('color','#C8C8C8');
-					$('.auth-status').css('margin-top','10px');
-					$('.layui-unselect').css('margin-top','-2px');
-
 					// 使用 authtree.on() 不会有冒泡延迟
 					authtree.on('change(lay-check-auth)', function(data) {
+						// 修改权限树的默认样式
+						$(".auth-icon").css('color','#C8C8C8');
+						$('.auth-status').css('margin-top','10px');
+						$('.layui-unselect').css('margin-top','-2px');
 						console.log('监听 authtree 触发事件数据', data);
 						// 获取所有节点
 						var all = authtree.getAll('#LAY-auth-tree-index');
