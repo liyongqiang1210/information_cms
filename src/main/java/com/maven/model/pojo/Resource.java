@@ -100,8 +100,8 @@ public class Resource implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Resource {id=" + id + ", name=" + name + ", type=" + type + ", url=" + url + ", parentId=" + parentId
-				+ ", parentIds=" + parentIds + ", permission=" + permission + ", available=" + available + "}";
+		return "{id:" + id + ", name:" + name + ", type:" + type + ", url:" + url + ", parentId:" + parentId
+				+ ", parentIds:" + parentIds + ", permission:" + permission + ", available:" + available + "}";
 	}
 
 }

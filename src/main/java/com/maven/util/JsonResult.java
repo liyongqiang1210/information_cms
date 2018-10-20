@@ -3,7 +3,6 @@ package com.maven.util;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
-import com.maven.model.pojo.Role;
 
 /**
  * 服务器返回数据统一处理类
@@ -122,18 +121,37 @@ public class JsonResult {
 	}
 
 	/**
-	 * layui所需的json格式数据
+	 * layui请求成功时所需的json格式数据
 	 * 
 	 * @param total
 	 * @param rows
 	 * @return
 	 */
-	public static JsonResult buildSuccessLayuiResult(Integer code, String msg, Integer total, List<Role> list) {
+	public static JsonResult buildSuccessLayuiResult(int code, String msg, int total,
+			@SuppressWarnings("rawtypes") List list) {
 		BasicJsonResult result = new BasicJsonResult();
+		result.setSuccess(true);
 		result.setData(list);
 		result.setCode(code);
 		result.setMessage(msg);
 		result.setCount(total);
+		return result;
+	}
+
+	/**
+	 * layui请求失败时返回的json
+	 * 
+	 * @param code
+	 * @param msg
+	 * @return
+	 */
+	public static JsonResult buildFailedLayuiResult(int code, String msg) {
+		BasicJsonResult result = new BasicJsonResult();
+		result.setSuccess(false);
+		result.setData("");
+		result.setCode(code);
+		result.setMessage(msg);
+		result.setCount(0);
 		return result;
 	}
 

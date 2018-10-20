@@ -7,13 +7,13 @@ import com.maven.model.pojo.Resource;
 
 public interface ResourceService {
 
-	public void createResource(Resource resource);
+	public void createPermission(Resource resource);
 
-	public void updateResource(Resource resource);
+	public boolean updatePermission(Resource resource);
 
-	public void deleteResource(int resourceId);
+	public boolean deletePermission(int permissionId);
 
-	public List<Resource> findAll(Integer limit, Integer offset, String resourceName);
+	public List<Resource> getAll(int limit, int offset, String name, String type);
 
 	/**
 	 * 得到资源对应的权限字符串
@@ -33,5 +33,5 @@ public interface ResourceService {
 
 	public List<Resource> findResourceByName(Resource resource);
 
-	public void updateResourceState(Resource resource);
+	public int updatePermissionState(Resource resource);
 }

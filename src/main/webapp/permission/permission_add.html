@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>权限管理</title>
+<link rel="stylesheet" href="../plugin/layui-v2.4.3/layui/css/layui.css">
+<!-- layui -->
+<script src="../plugin/layui-v2.4.3/layui/layui.js"></script>
+</head>
+
+<body>
+	<form class="layui-form" style="margin: 20px;">
+		<div class="layui-form-item">
+			<div class="layui-form-item" style="width: 450px;">
+				<label class="layui-form-label">权限名</label>
+				<div class="layui-input-block">
+					<input type="text" id="name" placeholder="请输入权限名"
+						autocomplete="off" class="layui-input" lay-verify="name">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">权限类型</label>
+				<div class="layui-input-block">
+					<input name="type" value="menu" title="菜单" checked type="radio">
+					<input name="type" value="button" title="按钮" type="radio">
+				</div>
+			</div>
+			<div class="layui-form-item" style="width: 450px;">
+				<label class="layui-form-label">权限路径</label>
+				<div class="layui-input-block">
+					<input type="text" id="url" placeholder="请输入权限路径"
+						autocomplete="off" class="layui-input" lay-verify="url">
+				</div>
+			</div>
+			<div class="layui-form-item" style="width: 300px;">
+				<label class="layui-form-label">父级功能</label>
+				<div class="layui-input-block">
+					<select id="url">
+						<option value="" selected="selected">请选择权限父级功能</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item" style="width: 450px;">
+				<label class="layui-form-label">功能字符串</label>
+				<div class="layui-input-block">
+					<input type="text" id="permission" placeholder="请输入功能字符串"
+						autocomplete="off" class="layui-input" required
+						lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">是否启用</label>
+				<div class="layui-input-block">
+					<input type="checkbox" checked lay-skin="switch" lay-text="启用|关闭">
+				</div>
+			</div>
+			<div class="layui-form-item" hidden>
+				<div class="layui-input-block">
+					<button id="permissionSubmit" class="layui-btn" lay-submit lay-filter="*">保存</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script>
+	// 初始化表单
+	layui.use([ 'form', 'layer' ], function() {
+		var form = layui.form, table = layui.layer;
+		form.render();
+		form.verify({
+			name : function(value, item) {
+				return '成功';
+			},
+			url : function(value, item) {
+
+			},
+			permission : function(value, item) {
+
+			}
+		});
+	});
+</script>
+
+</html>

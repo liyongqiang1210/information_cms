@@ -11,9 +11,6 @@
                         http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
 
-	<!--添加注解驱动 -->
-	<!-- 启用SpringMVC的注解功能,它会自动注册HandlerMapping、HandlerAdapter、ExceptionResolver的相关实例 -->
-	<mvc:annotation-driven />
 	<!-- 静态资源默认servlet配置 (1)加入对静态资源的处理：js,gif,png (2)允许使用在web.xml文件中使用"/"做整体映射 -->
 	<!-- <mvc:default-servlet-handler /> -->
 
@@ -21,12 +18,16 @@
 	<!-- 它背后注册了很多用于解析注解的处理器,其中就包括<context:annotation-config/>配置的注解所使用的处理器 -->
 	<!-- 所以配置了<context:component-scan base-package="">之后,便无需再配置<context:annotation-config> -->
 
+	<!--添加注解驱动 -->
+	<!-- 启用SpringMVC的注解功能,它会自动注册HandlerMapping、HandlerAdapter、ExceptionResolver的相关实例 -->
+	<mvc:annotation-driven />
+	
 	<context:component-scan base-package="com.maven.controller" />
 	<bean
 		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		<property name="messageConverters">
 			<list>
-				<ref bean="mappingJacksonHttpMessageConverter" /> <!-- JSON转换器 -->
+				<ref bean="mappingFastjsonHttpMessageConverter" /> <!-- JSON转换器 -->
 			</list>
 		</property>
 	</bean>
@@ -38,7 +39,7 @@
 	</bean>
 
 	<!--避免IE执行AJAX时，返回JSON出现下载文件 -->
-	<bean id="fastJsonHttpMessageConverter"
+	<bean id="mappingFastjsonHttpMessageConverter"
 		class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
 		<property name="supportedMediaTypes">
 			<list>
@@ -56,7 +57,7 @@
 		<!-- 内存中的最大值 -->
 		<property name="maxInMemorySize" value="40960" />
 	</bean>
-	
+
 	<!-- 配置自定义拦截器 -->
 	<mvc:interceptors>
 		<!-- 日志拦截器 -->
@@ -65,7 +66,7 @@
 			<mvc:mapping path="/login/login.do" />
 			<!-- 拦截器不拦截的路径 -->
 			<!-- <mvc:exclude-mapping path="/login/**" /> -->
-			<!-- 定义在 mvc:interceptor 下面的 Interceptor，表示对特定的请求进行拦截 -->  
+			<!-- 定义在 mvc:interceptor 下面的 Interceptor，表示对特定的请求进行拦截 -->
 			<bean class="com.maven.interceptor.UserLoginInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>

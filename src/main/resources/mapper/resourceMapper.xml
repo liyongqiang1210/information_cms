@@ -3,13 +3,27 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maven.dao.ResourceDao">
 
-	<!-- 查询全部 -->
-	<select id="findAll" resultType="com.maven.model.pojo.Resource" parameterType="com.maven.model.query.QueryResource">
+	<!-- 根据条件查询全部 -->
+	<select id="getAll" resultType="com.maven.model.pojo.Resource" parameterType="com.maven.model.query.QueryResource">
 		select * from sys_resource where 1=1
-		<if test="resourceName!=null and resourceName!=''">
-			and name like CONCAT(CONCAT('%', #{resourceName}),'%');
+		<if test="name!=null and name!=''">
+			and name like CONCAT(CONCAT('%', #{name}),'%')
 		</if>
-		limit #{offset},#{limit}
+		<if test="type!=null and type!=''">
+			and type = #{type}
+		</if>
+		limit #{page},#{limit}
+	</select>
+	
+	<!-- 根据条件查询数据总数 -->
+	<select id="getAllCount" resultType="int" parameterType="com.maven.model.query.QueryResource">
+		select count(id) from sys_resource where 1=1
+		<if test="name!=null and name!=''">
+			and name like CONCAT(CONCAT('%', #{name}),'%')
+		</if>
+		<if test="type!=null and type!=''">
+			and type = #{type}
+		</if>
 	</select>
 
 	<!-- 根据资源id查询权限信息 -->
@@ -47,7 +61,7 @@
 	</select>
 	
 	<!-- 根据id修改权限状态 -->
-	<update id="updateResourceState" parameterType="com.maven.model.pojo.Resource">
+	<update id="updatePermissionState" parameterType="com.maven.model.pojo.Resource">
 		update sys_resource
 		set available = #{available} where id = #{id}
 	</update>

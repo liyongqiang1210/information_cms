@@ -9,15 +9,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSONArray;
 import com.maven.model.pojo.Resource;
 import com.maven.service.impl.ResourceServiceImpl;
+import com.maven.util.JsonResult;
 import com.maven.util.MessageUtil;
-import com.maven.util.json.JsonResult;
 
 /**
  * <p>
@@ -31,12 +31,13 @@ import com.maven.util.json.JsonResult;
  * @datetime 2018年9月28日 下午3:22:48
  */
 @Controller
-@RequestMapping(value = "/resource")
+// @RequestMapping(value = "/resource")
+@RequestMapping(value = "/permission")
 public class ResourceController {
 
 	@Autowired
 	private ResourceServiceImpl resourceServiceImpl;
-	
+
 	private static final Logger log = LoggerFactory.getLogger(ResourceController.class);
 
 	/**
@@ -57,12 +58,12 @@ public class ResourceController {
 	 * @param resource
 	 * @return
 	 */
-	@RequestMapping(value = "/createResource.do", method = RequestMethod.POST)
+	@PostMapping(value = "/createPermission.do")
 	@ResponseBody
-	public String createResource(HttpServletRequest request, Resource resource) {
+	public String createPermission(HttpServletRequest request, Resource resource) {
 
 		try {
-			resourceServiceImpl.createResource(resource);
+			resourceServiceImpl.createPermission(resource);
 			return MessageUtil.SUCCESS_MESSAGE;
 		} catch (Exception e) {
 			log.debug(e.getMessage());
@@ -78,12 +79,12 @@ public class ResourceController {
 	 * @param resource
 	 * @return
 	 */
-	@RequestMapping(value = "/updateResource.do", method = RequestMethod.POST)
+	@PostMapping(value = "/updatePermission.do")
 	@ResponseBody
-	public String updateResource(HttpServletRequest request, Resource resource) {
+	public String updatePermission(HttpServletRequest request, Resource resource) {
 
 		try {
-			resourceServiceImpl.updateResource(resource);
+			resourceServiceImpl.updatePermission(resource);
 			return MessageUtil.SUCCESS_MESSAGE;
 		} catch (Exception e) {
 			log.debug(e.getMessage());
@@ -92,23 +93,25 @@ public class ResourceController {
 	}
 
 	/**
-	 * 根据id删除资源
+	 * 根据id删除权限
 	 * 
 	 * @param request
-	 * @param resourceId
+	 * @param permissionId
 	 * @return
 	 */
-	@RequestMapping(value = "/deleteResource.do", method = RequestMethod.POST)
+	@PostMapping(value = "/deletePermission.do")
 	@ResponseBody
-	public String deleteResource(HttpServletRequest request, int resourceId) {
+	public JsonResult deletePermission(HttpServletRequest request, int permissionId) {
 
 		try {
-			resourceServiceImpl.deleteResource(resourceId);
-			return MessageUtil.SUCCESS_MESSAGE;
+			boolean state = resourceServiceImpl.deletePermission(permissionId);
+			if (state) {
+				return JsonResult.buildSuccessResult("删除成功");
+			}
 		} catch (Exception e) {
 			log.debug(e.getMessage());
-			return MessageUtil.ERROR_MESSAGE;
 		}
+		return JsonResult.buildFailedResult("删除失败");
 	}
 
 	/**
@@ -118,49 +121,45 @@ public class ResourceController {
 	 * @param response
 	 * @param limit
 	 * @param offset
-	 * @param resourceName
+	 * @param name
+	 * @param type
 	 * @return
 	 */
-	@RequestMapping(value = "/findAll.do", method = RequestMethod.GET)
+	@RequestMapping(value = "/getAll.do", method = RequestMethod.GET)
 	@ResponseBody
-	public String findAll(HttpServletRequest request, HttpServletResponse response, Integer limit, Integer offset,
-			String resourceName) {
+	public JsonResult getAll(HttpServletResponse response, int limit, int page, String name, String type) {
 
 		try {
-			List<Resource> list = resourceServiceImpl.findAll(limit, offset, resourceName);
-			int total = list.size();
-			return MessageUtil.getJsonArrry(total, JSONArray.toJSONString(list));
+			List<Resource> list = resourceServiceImpl.getAll(limit, page, name, type);
+			int total = resourceServiceImpl.getAllCount(name, type);
+			return JsonResult.buildSuccessLayuiResult(0, "success", total, list);
 		} catch (Exception e) {
-			log.debug(e.getMessage());
-			return MessageUtil.ERROR_MESSAGE;
+			e.getMessage();
+			return JsonResult.buildFailedLayuiResult(-1, "error");
 		}
+
 	}
 
 	/**
 	 * 删除选中选项
 	 * 
-	 * @param idStr
-	 *            id字符串
-	 * @return json字符串
+	 * @param ids
+	 *            要删除的id字符串
+	 * @return
 	 */
-	@RequestMapping(value = "deleteSelectedResource.do", method = RequestMethod.POST)
+	@PostMapping(value = "deleteSelectedPermission.do")
 	@ResponseBody
-	public String deleteSelectedResource(String idStr) {
+	public JsonResult deleteSelectedPermission(String ids) {
 
 		try {
-			if (!idStr.equals("") && idStr != null) {
-				String[] string = idStr.split(",");
-				for (String str : string) {
-					Integer id = Integer.valueOf(str);
-					resourceServiceImpl.deleteResource(id);
-				}
+			boolean state = resourceServiceImpl.deleteSelectedPermission(ids); // 删除选中
+			if (state) {
+				return JsonResult.buildSuccessResult("删除成功");
 			}
-			return MessageUtil.SUCCESS_MESSAGE;
 		} catch (Exception e) {
 			log.debug(e.getMessage());
-			return MessageUtil.ERROR_MESSAGE;
 		}
-
+		return JsonResult.buildFailedResult("删除失败");
 	}
 
 	/**
@@ -182,7 +181,7 @@ public class ResourceController {
 		}
 
 	}
-	
+
 	/**
 	 * 根据id修改权限状态
 	 * 
@@ -190,16 +189,19 @@ public class ResourceController {
 	 * @param available
 	 * @return
 	 */
-	@RequestMapping(value = "/updateResourceState.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/updatePermissionState.do", method = RequestMethod.POST)
 	@ResponseBody
-	public JsonResult updateResourceState(Resource resource) {
+	public JsonResult updatePermissionState(Resource resource) {
 		try {
-			resourceServiceImpl.updateResourceState(resource);
-			return JsonResult.buildSuccessResult("状态更新成功");
+			// 更新权限状态
+			int state = resourceServiceImpl.updatePermissionState(resource);
+			if (state == 1) {
+				return JsonResult.buildSuccessResult("状态更新成功");
+			}
 		} catch (Exception e) {
 			log.debug(e.getMessage());
-			return JsonResult.buildFailedResult("状态更新失败");
 		}
+		return JsonResult.buildFailedResult("状态更新失败");
 	}
 
 }

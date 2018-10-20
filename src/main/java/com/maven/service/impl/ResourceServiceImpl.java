@@ -6,6 +6,8 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.maven.dao.ResourceDao;
 import com.maven.dao.RoleDao;
@@ -26,27 +28,71 @@ public class ResourceServiceImpl implements ResourceService {
 	@Autowired
 	private RoleDao roleDao;
 
-	public void createResource(Resource resource) {
+	/**
+	 * 创建权限
+	 * 
+	 */
+	public void createPermission(Resource resource) {
 
-		resourceDao.createResource(resource);
+		resourceDao.createPermission(resource);
 	}
 
-	public void updateResource(Resource resource) {
+	/**
+	 * 更新权限信息
+	 * 
+	 */
+	public boolean updatePermission(Resource resource) {
 
-		resourceDao.updateResource(resource);
+		int count = resourceDao.updatePermission(resource);
+		if (count == 1) { // 更新成功
+			return true;
+		}
+		return false;
 	}
 
-	public void deleteResource(int resourceId) {
+	/**
+	 * 根据id删除权限
+	 */
+	public boolean deletePermission(int resourceId) {
 
-		resourceDao.deleteResource(resourceId);
+		int state = resourceDao.deletePermission(resourceId);
+		if (state == 1) {
+			return true;
+		}
+		return false;
 	}
 
-	public List<Resource> findAll(Integer limit, Integer offset, String resourceName) {
+	/**
+	 * 根据条件获取分页数据集合
+	 * 
+	 */
+	public List<Resource> getAll(int limit, int page, String name, String type) {
+		// 创建查询权限条件对象
 		QueryResource qr = new QueryResource();
 		qr.setLimit(limit);
-		qr.setOffset(offset);
-		qr.setResourceName(resourceName);
-		return resourceDao.findAll(qr);
+		qr.setPage(page);
+		qr.setName(name);
+		qr.setType(type);
+		// 根据条件获取查询到的权限集合
+		List<Resource> list = resourceDao.getAll(qr);
+		return list;
+	}
+
+	/**
+	 * 根据条件查询数据总数
+	 * 
+	 * @param name
+	 * @param type
+	 * @return
+	 */
+	public int getAllCount(String name, String type) {
+		// 创建查询权限条件对象
+		QueryResource qr = new QueryResource();
+		qr.setName(name);
+		qr.setType(type);
+		// 根据条件获取查询到的权限集合
+		int total = resourceDao.getAllCount(qr);
+		return total;
 	}
 
 	public Set<String> findPermissions(String username) {
@@ -88,9 +134,27 @@ public class ResourceServiceImpl implements ResourceService {
 		return resourceDao.findResourceByName(resource);
 	}
 
-	public void updateResourceState(Resource resource) {
-		
-		resourceDao.updateResourceState(resource);
+	public int updatePermissionState(Resource resource) {
+
+		return resourceDao.updatePermissionState(resource);
+	}
+
+	@Transactional
+	public boolean deleteSelectedPermission(String ids) {
+
+		try {
+			// 截取字符串获取id
+			String[] string = ids.split(",");
+			for (String str : string) {
+				Integer id = Integer.valueOf(str); // 将String转换成Integer
+				resourceDao.deletePermission(id); // 删除权限
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();// 手动回滚事务
+		}
+		return false;
 	}
 
 }

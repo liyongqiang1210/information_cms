@@ -111,7 +111,7 @@ layui.define(['jquery', 'form'], function(exports){
 				// '+new Array(dept * 4).join('&nbsp;')+'
 				str += '<div><div class="auth-status"> '+
 					(hasChild?'<span class="layui-icon auth-icon '+(openall?'active':'')+'" style="cursor:pointer;">'+(openall?obj.openIconContent:obj.closeIconContent)+'</span>':'<span class="layui-icon auth-leaf" style="opacity:0;">&#xe626;</span>')+
-					(dept > 0 ? '<span> </span>':'')+
+					(dept > 0 ? '<span></span>':'')+
 					'<input type="checkbox" name="'+inputname+'" title="'+item.name+'" value="'+item.value+'" lay-skin="primary" lay-filter="'+layfilter+'" '+
 					(item.checked?'checked="checked"':'')+'> </div>'+
 					' <div class="auth-child" style="'+(openall?'':'display:none;')+'padding-left:40px;"> '+append+'</div></div>'

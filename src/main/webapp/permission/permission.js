@@ -1,34 +1,26 @@
 // 记录当前页码,当前页显示数据条数和总数据数
 var page, limit, total;
 
-// 引入树插件
-layui.config({
-	base: '../plugin/layui-v2.4.3/extends/',
-}).extend({
-	authtree: 'authtree',
-});
-
 layui
 	.use(
-			[ 'authtree', 'table', 'laypage', 'form', 'layer' ],
+			[ 'table', 'laypage', 'form', 'layer' ],
 			function() {
 				var table = layui.table, 
 					laypage = layui.laypage, 
 					form = layui.form, 
-					layer = layui.layer,
-					authtree = layui.authtree;
+					layer = layui.layer;
 				
 				// 给选择框赋默认值
-				$('#available_search').val('2');
+				$('#permissionType').val('');
 				
 				// 表格顶部工具栏
 				var toolbarHtml = '<div class="layui-btn-container">'
-					+ '<button class="layui-btn layui-btn-sm" lay-event="add">添加角色</button>'
+					+ '<button class="layui-btn layui-btn-sm" lay-event="add">添加权限</button>'
 					+ '<button class="layui-btn layui-btn-sm" lay-event="delSelected">删除选中</button></div>';
 				// 首次渲染表格
 				var tableIns = table
 						.render({
-							elem : '#role_table',
+							elem : '#permissionTable',
 							height : 600,
 							url : 'getAll.do', // 数据接口
 							page : {prev:'上一页',next:'下一页',groups:3}, // 开启分页
@@ -50,18 +42,38 @@ layui
 										fixed : 'left'
 									},
 									{
-										field : 'roleName',
-										title : '角色名',
+										field : 'name',
+										title : '功能名称',
 										width : 150
 									},
 									{
-										field : 'roleDesc',
-										title : '角色描述',
-										width : 500
+										field : 'type',
+										title : '功能类型',
+										width : 200,
+										templet : function(d) {
+											if(d.type === 'menu'){
+												return '菜单';
+											}else{
+												return '按钮';
+											}
+										}
+									},
+									{
+										field : 'url',
+										title : '功能url路径',
+										width : 300
+									},{
+										field : 'parentId',
+										title : '父级功能',
+										width : 100
+									},{
+										field : 'permission',
+										title : '功能字符串',
+										width : 300
 									},
 									{
 										field : 'available',
-										title : '是否可用',
+										title : '是否启用',
 										width : 150,
 										align : 'center',
 										templet : function(d) {
@@ -101,8 +113,8 @@ layui
 					tableIns.reload({
 						// 重载条件
 						where: {
-			        	  roleName:$('#roleName_search').val(),
-			        	  available:$('#available_search>option:selected').val()
+			        	  name:$('#permissionName').val(),
+			        	  type:$('#permissionType>option:selected').val()
 				        },
 				        page : {
 				        	curr : 1,prev:'上一页',next:'下一页',groups:3
@@ -113,29 +125,29 @@ layui
 				// 监听开关按钮
 				form.on('switch(available)', function(data) {
 					var status = data.elem.checked; // 得到开关的状态
-					var id = data.elem.id; // 获取角色id
+					var id = data.elem.id; // 获取权限id
 					if (status) { // 启用
-						updateRoleAvailable(id, 1);// 修改角色状态为启用
+						updatePermissionAvailable(id, 1);// 修改权限状态为启用
 					} else { // 关闭
-						updateRoleAvailable(id, 0);// 修改角色状态为关闭
+						updatePermissionAvailable(id, 0);// 修改权限状态为关闭
 					}
 				});
 
 				// 监听头工具栏
-				table.on('toolbar(role_table)', function(obj) {
-					var checkStatus = table.checkStatus('role_table'); // 获取表格的选中行
+				table.on('toolbar(permissionTable)', function(obj) {
+					var checkStatus = table.checkStatus('permissionTable'); // 获取表格的选中行
 					switch (obj.event) {
-					case 'add': // 添加角色
+					case 'add': // 添加权限
 						bindingAddEvent(form, table);
 						break;
-					case 'delSelected': // 删除选中角色
-						var data = checkStatus.data; // 获取选中角色集合
-						var ids = ''; // 角色字符串
-						// 将选中角色id拼接到一起
+					case 'delSelected': // 删除选中权限
+						var data = checkStatus.data; // 获取选中权限集合
+						var ids = ''; // 权限字符串
+						// 将选中权限id拼接到一起
 						for(var i = 0; i < data.length; i++){
 							ids += data[i].id + ',';
 						}
-						bindingDelSelectedEvent(ids, data.length); // 删除选中角色
+						bindingDelSelectedEvent(ids, data.length); // 删除选中权限
 						break;
 					}
 
@@ -151,7 +163,7 @@ layui
 						bindingPermissionEvent(form, authtree, id);
 						break;
 					case 'del': // 删除
-						layer.confirm('确认删除这个角色信息吗？', function(index) {
+						layer.confirm('确认删除这个权限信息吗？', function(index) {
 							// 向服务端发送删除指令
 							bindingDelEvent(id,index);
 						});
@@ -184,18 +196,18 @@ function operateToolBar(obj) {
 }
 
 /**
- * 修改角色状态方法
+ * 修改权限状态方法
  * 
  * @param id
- *            角色id
+ *            权限id
  * @param available
- *            角色状态
+ *            权限状态
  * @returns
  */
-function updateRoleAvailable(id, available) {
+function updatePermissionAvailable(id, available) {
 	$.ajax({
 		type : 'POST',
-		url : 'updateRoleState.do',
+		url : 'updatePermissionState.do',
 		data : {
 			id : id,
 			available : available
@@ -218,7 +230,7 @@ function updateRoleAvailable(id, available) {
 }
 
 /**
- * 添加角色
+ * 添加权限
  * 
  * @param form
  * @param html
@@ -226,63 +238,22 @@ function updateRoleAvailable(id, available) {
  */
 function bindingAddEvent(form, table) {
 
-	var html = '<form class="layui-form" id="form" style="margin:20px;">'
-			+ '<div class="layui-form-item"><label class="layui-form-label">角色名</label><div class="layui-input-block"><input type="text" id="roleName" lay-verify="roleName" placeholder="请输入角色名" autocomplete="off" class="layui-input"></div></div>'
-			+ '<div class="layui-form-item layui-form-text"><label class="layui-form-label">角色描述</label><div class="layui-input-block"><textarea id="roleDesc" required  lay-verify="roleDesc" placeholder="请输入角色描述" class="layui-textarea"></textarea></div></div>'
-			+ '<div class="layui-form-item"><label class="layui-form-label">是否启用</label><div class="layui-input-block"><input type="checkbox" id="available" lay-skin="switch" lay-text="开启|关闭" checked></div></div>'
-			+ '</form>';
-
 	layer
 			.open({
-				type : 1,
-				title : '添加角色',
-				area : [ '500px', '350px' ],
+				type : 2,
+				title : '添加权限',
+				area : [ '500px', '450px' ],
+				offset : '160px',
 				shadeClose : true, // 点击遮罩关闭
-				content : html,
-				btn : [ '保存', '取消' ],
+				btn : ['保存','取消'],
+				content : 'permission_add.html',
 				success : function(layero, index) { // 成功弹出后回调
-					modifyButton(layero, 'addRole'); // 修改按钮为提交表单按钮
-					// 表单验证
-					checkForm(form);
-					// 刷新渲染(否则开关按钮会不显示)
-					form.render('checkbox');
+					
 				},
 				yes : function(index, layero) { // 保存按钮回调函数
-
-					var roleName = $('#roleName').val();
-					var roleDesc = $('#roleDesc').val();
-					var available = $('#available').is(':checked') === true ? 1
-							: 0;
-					// 监听提交按钮
-					form
-					.on(
-							'submit(addRole)',
-							function(data) {
-								$
-										.ajax({
-											type : 'POST',
-											url : 'createRole.do',
-											data : {
-												roleName : roleName,
-												roleDesc : roleDesc,
-												available : available
-											},
-											dataType : 'json',
-											success : function(data) {
-												layer.msg('角色添加成功', {
-													icon : 6
-												});
-												layer.close(index); // 关闭弹出层
-												addDataRefreshTable(); // 刷新表格
-											},
-											error : function(data) {
-												layer.msg('角色添加失败', {
-													icon : 5
-												});
-												layer.close(index); // 关闭弹出层
-											}
-										});
-							});
+				    var body = layer.getChildFrame('body', index);
+				    var iframeWin = window[layero.find('iframe')[0]['name']]; // 得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+				    console.log(body.html()) // 得到iframe页的body内容
 				},
 				btn2 : function(index, layero) { // 取消按钮回调函数
 					layer.close(index); // 关闭弹出层
@@ -291,20 +262,20 @@ function bindingAddEvent(form, table) {
 }
 
 /**
- * 删除选中角色
+ * 删除选中权限
  * 
  * @param ids
- *            角色id拼接的字符串
+ *            权限id拼接的字符串
  * @param delCount
- *            删除角色数量
+ *            删除权限数量
  * @returns
  */
 function bindingDelSelectedEvent(ids, delCount){
 	
 	if(null === ids || '' === ids){
-		layer.msg('请选择要删除的角色',{icon:7});
+		layer.msg('请选择要删除的权限',{icon:7});
 	}else{
-		layer.confirm('确认删除选中的角色吗？', {icon: 6, title:'删除选中角色'}, function(index){
+		layer.confirm('确认删除选中的权限吗？', {icon: 6, title:'删除选中权限'}, function(index){
 			$.ajax({
 				type:'POST',
 				url:'deleteSelectedRole.do',
@@ -336,7 +307,7 @@ function bindingDelSelectedEvent(ids, delCount){
 }
 
 /**
- * 编辑角色
+ * 编辑权限
  * 
  * @param id
  * @param obj
@@ -346,14 +317,14 @@ function bindingDelSelectedEvent(ids, delCount){
 function bindingEditEvent(form, id, roleName, roleDesc) {
 	
 	var html = '<form class="layui-form" id="form" style="margin:20px;">'
-		+ '<div class="layui-form-item"><label class="layui-form-label">角色名</label><div class="layui-input-block"><input type="text" id="roleName" lay-verify="roleName" placeholder="请输入角色名" autocomplete="off"  class="layui-input" value='+roleName+'><input type="text" id="roleNameDefault" value='+roleName+' hidden></div></div>'
-		+ '<div class="layui-form-item layui-form-text"><label class="layui-form-label">角色描述</label><div class="layui-input-block"><textarea id="roleDesc" required  lay-verify="roleDesc" placeholder="请输入角色描述" class="layui-textarea">'+roleDesc+'</textarea></div></div>'
+		+ '<div class="layui-form-item"><label class="layui-form-label">权限名</label><div class="layui-input-block"><input type="text" id="roleName" lay-verify="roleName" placeholder="请输入权限名" autocomplete="off"  class="layui-input" value='+roleName+'><input type="text" id="roleNameDefault" value='+roleName+' hidden></div></div>'
+		+ '<div class="layui-form-item layui-form-text"><label class="layui-form-label">权限描述</label><div class="layui-input-block"><textarea id="roleDesc" required  lay-verify="roleDesc" placeholder="请输入权限描述" class="layui-textarea">'+roleDesc+'</textarea></div></div>'
 		+ '</form>';
 	
 	layer
 	.open({
 		type : 1,
-		title : '编辑角色',
+		title : '编辑权限',
 		area : [ '500px', '350px' ],
 		shadeClose : true, // 点击遮罩关闭
 		content : html,
@@ -386,7 +357,7 @@ function bindingEditEvent(form, id, roleName, roleDesc) {
 									},
 									dataType : 'json',
 									success : function(data) {
-										layer.msg('角色更新成功', {
+										layer.msg('权限更新成功', {
 											icon : 6
 										});
 										// 关闭弹出层
@@ -395,7 +366,7 @@ function bindingEditEvent(form, id, roleName, roleDesc) {
 										$('.layui-laypage-btn').click();
 									},
 									error : function(data) {
-										layer.msg('角色更新失败', {
+										layer.msg('权限更新失败', {
 											icon : 5
 										});
 										// 关闭弹出层
@@ -550,45 +521,14 @@ function bindingDelEvent(id, index) {
 function checkForm(form){
 	// 表单验证
 	form.verify({
-		roleName : function(value, item) {
-			var roleNameDefault = $('#roleNameDefault').val(); // 获取编辑角色时角色的默认值
-			if(roleNameDefault !== value){ // 用来判断编辑角色时角色名是否改变,不改变的话不触发表单验证
-				if (!new RegExp(
-						"^[a-zA-Z0-9_|\u4e00-\u9fa5\]{2,10}$")
-						.test(value)) {
-					return '角色名必须为2-10位且不能有特殊字符';
-				}else{
-					code = 0; // 用来判断角色名是否存在
-					$.ajax({
-						type:'POST',
-						url:'queryRoleNameIsExist.do',
-						data:{roleName:value},
-						async:false,
-						dataType:'json',
-						success:function(data){
-							if(!data.success){ // 角色名已经存在
-								code = 1;
-							}
-						},
-						error:function(data){
-							code = 2;
-						}
-					});
-					// 根据code判断角色名是否存在
-					if(code == 1){
-						return '角色名已经存在,请更换';
-					}else if(code == 2){
-						return '出现异常,请联系管理员';
-					}
-				}
-			}
+		name : function(value, item) {
+			return '成功';
 		},
-		roleDesc : function(value, item) {
-			if (!new RegExp(
-					"^[a-zA-Z0-9_\u4e00-\u9fa5\]{2,200}$")
-					.test(value)) {
-				return '角色描述必须为2-200位且不能有特殊字符';
-			}
+		url : function(value, item) {
+			
+		},
+		permission : function(value, item) {
+
 		}
 	});
 }
