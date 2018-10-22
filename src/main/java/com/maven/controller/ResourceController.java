@@ -31,7 +31,7 @@ import com.maven.util.MessageUtil;
  * @datetime 2018年9月28日 下午3:22:48
  */
 @Controller
- @RequestMapping(value = "/permission")
+@RequestMapping(value = "/permission")
 public class ResourceController {
 
 	@Autowired
