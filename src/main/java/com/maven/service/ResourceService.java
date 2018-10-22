@@ -7,11 +7,11 @@ import com.maven.model.pojo.Resource;
 
 public interface ResourceService {
 
-	public void createPermission(Resource resource);
+	public void createResource(Resource resource);
 
-	public boolean updatePermission(Resource resource);
+	public boolean updateResource(Resource resource);
 
-	public boolean deletePermission(int permissionId);
+	public boolean deleteResource(int id);
 
 	public List<Resource> getAll(int limit, int offset, String name, String type);
 
@@ -21,17 +21,17 @@ public interface ResourceService {
 	 * @param username
 	 * @return
 	 */
-	Set<String> findPermissions(String username);
+	Set<String> findResources(String username);
 
 	/**
 	 * 根据用户权限得到菜单
 	 * 
-	 * @param permissions
+	 * @param resources
 	 * @return
 	 */
-	List<Resource> findMenus(Set<String> permissions);
+	List<Resource> findMenus(Set<String> resources);
 
 	public List<Resource> findResourceByName(Resource resource);
 
-	public int updatePermissionState(Resource resource);
+	public int updateResourceState(Resource resource);
 }

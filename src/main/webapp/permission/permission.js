@@ -68,7 +68,7 @@ layui
 										width : 100
 									},{
 										field : 'permission',
-										title : '功能字符串',
+										title : '权限字符串',
 										width : 300
 									},
 									{
@@ -127,9 +127,9 @@ layui
 					var status = data.elem.checked; // 得到开关的状态
 					var id = data.elem.id; // 获取权限id
 					if (status) { // 启用
-						updatePermissionAvailable(id, 1);// 修改权限状态为启用
+						updateResourceAvailable(id, 1);// 修改功能状态为启用
 					} else { // 关闭
-						updatePermissionAvailable(id, 0);// 修改权限状态为关闭
+						updateResourceAvailable(id, 0);// 修改功能状态为关闭
 					}
 				});
 
@@ -196,18 +196,18 @@ function operateToolBar(obj) {
 }
 
 /**
- * 修改权限状态方法
+ * 修改功能状态方法
  * 
  * @param id
- *            权限id
+ *            功能id
  * @param available
- *            权限状态
+ *            功能状态
  * @returns
  */
-function updatePermissionAvailable(id, available) {
+function updateResourceAvailable(id, available) {
 	$.ajax({
 		type : 'POST',
-		url : 'updatePermissionState.do',
+		url : 'updateResourceState.do',
 		data : {
 			id : id,
 			available : available
@@ -252,8 +252,7 @@ function bindingAddEvent(form, table) {
 				},
 				yes : function(index, layero) { // 保存按钮回调函数
 				    var body = layer.getChildFrame('body', index);
-				    var iframeWin = window[layero.find('iframe')[0]['name']]; // 得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-				    console.log(body.html()) // 得到iframe页的body内容
+				    body.find('#permissionSubmit').click();
 				},
 				btn2 : function(index, layero) { // 取消按钮回调函数
 					layer.close(index); // 关闭弹出层

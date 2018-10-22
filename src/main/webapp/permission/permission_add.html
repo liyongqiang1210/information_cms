@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 <meta charset="UTF-8">
 <title>权限管理</title>
@@ -10,27 +9,30 @@
 </head>
 
 <body>
-	<form class="layui-form" style="margin: 20px;">
+	<form class="layui-form" style="margin: 20px;"
+		action="createResource.do" method="post">
 		<div class="layui-form-item">
 			<div class="layui-form-item" style="width: 450px;">
-				<label class="layui-form-label">权限名</label>
+				<label class="layui-form-label">功能名</label>
 				<div class="layui-input-block">
-					<input type="text" id="name" placeholder="请输入权限名"
+					<input type="text" id="name" placeholder="请输入功能名"
 						autocomplete="off" class="layui-input" lay-verify="name">
+					<input type="text" id="defaultName" value='default' hidden>
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label">权限类型</label>
+				<label class="layui-form-label">功能类型</label>
 				<div class="layui-input-block">
 					<input name="type" value="menu" title="菜单" checked type="radio">
 					<input name="type" value="button" title="按钮" type="radio">
 				</div>
 			</div>
 			<div class="layui-form-item" style="width: 450px;">
-				<label class="layui-form-label">权限路径</label>
+				<label class="layui-form-label">功能路径</label>
 				<div class="layui-input-block">
-					<input type="text" id="url" placeholder="请输入权限路径"
-						autocomplete="off" class="layui-input" lay-verify="url">
+					<input type="text" id="url" placeholder="请输入功能路径"
+						autocomplete="off" class="layui-input" lay-verify="url"> <input
+						type="text" id="defaultUrl" value='default' hidden>
 				</div>
 			</div>
 			<div class="layui-form-item" style="width: 300px;">
@@ -42,11 +44,11 @@
 				</div>
 			</div>
 			<div class="layui-form-item" style="width: 450px;">
-				<label class="layui-form-label">功能字符串</label>
+				<label class="layui-form-label">权限字符串</label>
 				<div class="layui-input-block">
-					<input type="text" id="permission" placeholder="请输入功能字符串"
-						autocomplete="off" class="layui-input" required
-						lay-verify="required">
+					<input type="text" id="permission" placeholder="请输入权限字符串"
+						autocomplete="off" class="layui-input" lay-verify="permission">
+					<input type="text" id="defaultPermission" value='default' hidden>
 				</div>
 			</div>
 			<div class="layui-form-item">
@@ -57,7 +59,8 @@
 			</div>
 			<div class="layui-form-item" hidden>
 				<div class="layui-input-block">
-					<button id="permissionSubmit" class="layui-btn" lay-submit lay-filter="*">保存</button>
+					<button id="permissionSubmit" class="layui-btn" lay-submit
+						lay-filter="*">保存</button>
 				</div>
 			</div>
 		</div>
@@ -66,17 +69,109 @@
 <script>
 	// 初始化表单
 	layui.use([ 'form', 'layer' ], function() {
-		var form = layui.form, table = layui.layer;
+		var form = layui.form, table = layui.layer, $ = layui.$;
 		form.render();
 		form.verify({
-			name : function(value, item) {
-				return '成功';
+			name : function(value, item) { // 验证功能名
+				var defaultName = $('#defaultName').val(); // 默认的name
+				if (value !== defaultName || 'default' === defaultName) { // 判断功能名字是否发生改变
+					if (!new RegExp("^[a-zA-Z0-9|\u4e00-\u9fa5\]{2,10}$")
+							.test(value)) {
+						return '权限名必须是2-10位中英文或者数字的字符';
+					} else {
+						code = 0; // 用来判断功能名是否存在
+						$.ajax({
+							type : 'POST',
+							url : 'queryNameIsExist.do',
+							data : {
+								name : value
+							},
+							async : false,
+							dataType : 'json',
+							success : function(data) {
+								if (!data.success) { // 功能名已经存在
+									code = 1;
+								}
+							},
+							error : function(data) {
+								code = 2;
+							}
+						});
+						// 根据code判断角色名是否存在
+						if (code == 1) {
+							return '功能名已经存在,请更换';
+						} else if (code == 2) {
+							return '出现异常,请联系管理员';
+						}
+					}
+				}
 			},
-			url : function(value, item) {
-
+			url : function(value, item) { // 校验功能url
+				var defaultUrl = $('#defaultUrl').val(); // 默认的url
+				if (value !== defaultUrl || 'default' === defaultUrl) { // 判断功能url是否发生改变
+					if (!new RegExp("^[a-zA-Z0-9/]{5,30}$").test(value)) {
+						return 'url必须是5-30位英文和/组成的字符串';
+					} else {
+						code = 0; // 用来判断功能url是否存在
+						$.ajax({
+							type : 'POST',
+							url : 'queryUrlIsExist.do',
+							data : {
+								name : value
+							},
+							async : false,
+							dataType : 'json',
+							success : function(data) {
+								if (!data.success) { // 功能url已经存在
+									code = 1;
+								}
+							},
+							error : function(data) {
+								code = 2;
+							}
+						});
+						// 根据code判断功能url是否存在
+						if (code == 1) {
+							return '功能url已经存在';
+						} else if (code == 2) {
+							return '出现异常,请联系管理员';
+						}
+					}
+				}
 			},
-			permission : function(value, item) {
-
+			permission : function(value, item) { // 校验权限字符串
+				var defaultPermission = $('#defaultPermission').val(); // 默认的权限字符串
+				if (value !== defaultPermission
+						|| 'default' !== defaultPermission) { // 判断功能权限字符串是否发生改变
+					if (!new RegExp("^[a-zA-Z0-9]{2,20}$").test(value)) {
+						return '权限字符串必须是2-20位英文字符';
+					} else {
+						code = 0; // 用来判断功能权限字符串是否存在
+						$.ajax({
+							type : 'POST',
+							url : 'queryPermissionIsExist.do',
+							data : {
+								name : value
+							},
+							async : false,
+							dataType : 'json',
+							success : function(data) {
+								if (!data.success) { // 功能权限字符串已经存在
+									code = 1;
+								}
+							},
+							error : function(data) {
+								code = 2;
+							}
+						});
+						// 根据code判断功能权限字符串是否存在
+						if (code == 1) {
+							return '功能权限字符串已经存在';
+						} else if (code == 2) {
+							return '出现异常,请联系管理员';
+						}
+					}
+				}
 			}
 		});
 	});

@@ -49,7 +49,7 @@ public class MyRealm extends AuthorizingRealm {
 		authorizationInfo.setRoles(roleService.findRoles(username));
 
 		// 设置权限
-		authorizationInfo.setStringPermissions(resourceService.findPermissions(username));
+		authorizationInfo.setStringPermissions(resourceService.findResources(username));
 
 		return authorizationInfo;
 	}

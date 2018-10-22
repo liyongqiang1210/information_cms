@@ -31,8 +31,7 @@ import com.maven.util.MessageUtil;
  * @datetime 2018年9月28日 下午3:22:48
  */
 @Controller
-// @RequestMapping(value = "/resource")
-@RequestMapping(value = "/permission")
+ @RequestMapping(value = "/permission")
 public class ResourceController {
 
 	@Autowired
@@ -52,18 +51,18 @@ public class ResourceController {
 	}
 
 	/**
-	 * 创建资源
+	 * 创建功能
 	 * 
 	 * @param request
 	 * @param resource
 	 * @return
 	 */
-	@PostMapping(value = "/createPermission.do")
+	@PostMapping(value = "/createResource.do")
 	@ResponseBody
-	public String createPermission(HttpServletRequest request, Resource resource) {
+	public String createResource(HttpServletRequest request, Resource resource) {
 
 		try {
-			resourceServiceImpl.createPermission(resource);
+			resourceServiceImpl.createResource(resource);
 			return MessageUtil.SUCCESS_MESSAGE;
 		} catch (Exception e) {
 			log.debug(e.getMessage());
@@ -79,12 +78,12 @@ public class ResourceController {
 	 * @param resource
 	 * @return
 	 */
-	@PostMapping(value = "/updatePermission.do")
+	@PostMapping(value = "/updateResource.do")
 	@ResponseBody
-	public String updatePermission(HttpServletRequest request, Resource resource) {
+	public String updateResource(HttpServletRequest request, Resource resource) {
 
 		try {
-			resourceServiceImpl.updatePermission(resource);
+			resourceServiceImpl.updateResource(resource);
 			return MessageUtil.SUCCESS_MESSAGE;
 		} catch (Exception e) {
 			log.debug(e.getMessage());
@@ -96,15 +95,15 @@ public class ResourceController {
 	 * 根据id删除权限
 	 * 
 	 * @param request
-	 * @param permissionId
+	 * @param id
 	 * @return
 	 */
-	@PostMapping(value = "/deletePermission.do")
+	@PostMapping(value = "/deleteResource.do")
 	@ResponseBody
-	public JsonResult deletePermission(HttpServletRequest request, int permissionId) {
+	public JsonResult deleteResource(HttpServletRequest request, int id) {
 
 		try {
-			boolean state = resourceServiceImpl.deletePermission(permissionId);
+			boolean state = resourceServiceImpl.deleteResource(id);
 			if (state) {
 				return JsonResult.buildSuccessResult("删除成功");
 			}
@@ -147,12 +146,12 @@ public class ResourceController {
 	 *            要删除的id字符串
 	 * @return
 	 */
-	@PostMapping(value = "deleteSelectedPermission.do")
+	@PostMapping(value = "deleteSelectedResource.do")
 	@ResponseBody
-	public JsonResult deleteSelectedPermission(String ids) {
+	public JsonResult deleteSelectedResource(String ids) {
 
 		try {
-			boolean state = resourceServiceImpl.deleteSelectedPermission(ids); // 删除选中
+			boolean state = resourceServiceImpl.deleteSelectedResource(ids); // 删除选中
 			if (state) {
 				return JsonResult.buildSuccessResult("删除成功");
 			}
@@ -189,12 +188,12 @@ public class ResourceController {
 	 * @param available
 	 * @return
 	 */
-	@RequestMapping(value = "/updatePermissionState.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateResourceState.do", method = RequestMethod.POST)
 	@ResponseBody
-	public JsonResult updatePermissionState(Resource resource) {
+	public JsonResult updateResourceState(Resource resource) {
 		try {
 			// 更新权限状态
-			int state = resourceServiceImpl.updatePermissionState(resource);
+			int state = resourceServiceImpl.updateResourceState(resource);
 			if (state == 1) {
 				return JsonResult.buildSuccessResult("状态更新成功");
 			}

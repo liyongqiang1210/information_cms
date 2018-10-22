@@ -12,19 +12,19 @@ import com.maven.model.query.QueryResource;
  */
 public interface ResourceDao {
 	
-	public void createPermission(Resource resource);
+	public void createResource(Resource resource);
 
-	public int updatePermission(Resource resource);
+	public int updateResource(Resource resource);
 
-	public int deletePermission(int resourceId);
+	public int deleteResource(int id);
 
-	public String findPermissionById(int resourceId);
+	public String findResourceById(int id);
 
 	public List<Resource> getAll(QueryResource qr);
 
 	public List<Resource> findResourceByName(Resource resource);
 
-	public int updatePermissionState(Resource resource);
+	public int updateResourceState(Resource resource);
 
 	public int getAllCount(QueryResource qr);
 }

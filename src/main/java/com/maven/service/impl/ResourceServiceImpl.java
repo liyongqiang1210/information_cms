@@ -32,18 +32,18 @@ public class ResourceServiceImpl implements ResourceService {
 	 * 创建权限
 	 * 
 	 */
-	public void createPermission(Resource resource) {
+	public void createResource(Resource resource) {
 
-		resourceDao.createPermission(resource);
+		resourceDao.createResource(resource);
 	}
 
 	/**
 	 * 更新权限信息
 	 * 
 	 */
-	public boolean updatePermission(Resource resource) {
+	public boolean updateResource(Resource resource) {
 
-		int count = resourceDao.updatePermission(resource);
+		int count = resourceDao.updateResource(resource);
 		if (count == 1) { // 更新成功
 			return true;
 		}
@@ -53,9 +53,9 @@ public class ResourceServiceImpl implements ResourceService {
 	/**
 	 * 根据id删除权限
 	 */
-	public boolean deletePermission(int resourceId) {
+	public boolean deleteResource(int resourceId) {
 
-		int state = resourceDao.deletePermission(resourceId);
+		int state = resourceDao.deleteResource(resourceId);
 		if (state == 1) {
 			return true;
 		}
@@ -95,7 +95,7 @@ public class ResourceServiceImpl implements ResourceService {
 		return total;
 	}
 
-	public Set<String> findPermissions(String username) {
+	public Set<String> findResources(String username) {
 
 		Set<String> set = new HashSet<String>();
 
@@ -115,7 +115,7 @@ public class ResourceServiceImpl implements ResourceService {
 				String[] resourceIdsArray = resourceIds.split(",");
 				for (String resourceIdString : resourceIdsArray) {
 					Integer resourceId = Integer.valueOf(resourceIdString);
-					set.add(resourceDao.findPermissionById(resourceId));
+					set.add(resourceDao.findResourceById(resourceId));
 				}
 			}
 		} catch (NumberFormatException e) {
@@ -124,7 +124,7 @@ public class ResourceServiceImpl implements ResourceService {
 		return set;
 	}
 
-	public List<Resource> findMenus(Set<String> permissions) {
+	public List<Resource> findMenus(Set<String> resources) {
 
 		return null;
 	}
@@ -134,20 +134,20 @@ public class ResourceServiceImpl implements ResourceService {
 		return resourceDao.findResourceByName(resource);
 	}
 
-	public int updatePermissionState(Resource resource) {
+	public int updateResourceState(Resource resource) {
 
-		return resourceDao.updatePermissionState(resource);
+		return resourceDao.updateResourceState(resource);
 	}
 
 	@Transactional
-	public boolean deleteSelectedPermission(String ids) {
+	public boolean deleteSelectedResource(String ids) {
 
 		try {
 			// 截取字符串获取id
 			String[] string = ids.split(",");
 			for (String str : string) {
 				Integer id = Integer.valueOf(str); // 将String转换成Integer
-				resourceDao.deletePermission(id); // 删除权限
+				resourceDao.deleteResource(id); // 删除权限
 			}
 			return true;
 		} catch (Exception e) {
