@@ -43,6 +43,11 @@
 	<select id="findPermissionById" parameterType="int" resultType="string">
 		select permission from sys_resource where id = #{id}
 	</select>
+	
+	<!-- 根据资源id查询功能 -->
+	<select id="queryResourceById" parameterType="int" resultMap="resourceResultMap">
+		select * from sys_resource where id = #{id}
+	</select>
 
 	<!-- 创建 -->
 	<insert id="createResource" parameterType="com.maven.model.pojo.Resource"

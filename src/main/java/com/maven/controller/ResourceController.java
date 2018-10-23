@@ -219,7 +219,7 @@ public class ResourceController {
 			}
 			return JsonResult.buildFailedResult("此功能名已经存在");
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug(e.getMessage());
 			return JsonResult.buildFailedResult("出现异常");
 		}
 	}
@@ -240,7 +240,7 @@ public class ResourceController {
 			}
 			return JsonResult.buildFailedResult("此url已经存在");
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug(e.getMessage());
 			return JsonResult.buildFailedResult("出现异常");
 		}
 	}
@@ -262,7 +262,7 @@ public class ResourceController {
 			}
 			return JsonResult.buildFailedResult("此权限字符串已经存在");
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug(e.getMessage());
 			return JsonResult.buildFailedResult("出现异常");
 		}
 	}
@@ -278,11 +278,29 @@ public class ResourceController {
 	public JsonResult queryAllMenu(String type) {
 		List<Resource> queryAllMenu = null;
 		try {
-			queryAllMenu = resourceServiceImpl.queryAllMenu(type);
+			queryAllMenu = resourceServiceImpl.queryAllMenu(type); // 根据类型查询功能
 			return JsonResult.buildMessageAndDataResult("查询成功", true, queryAllMenu);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug(e.getMessage());
 			return JsonResult.buildMessageAndDataResult("出现异常", false, queryAllMenu);
+		}
+	}
+
+	/**
+	 * 根据id查询功能
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@PostMapping(value = "/queryResourceById.do")
+	@ResponseBody
+	public JsonResult queryResourceById(int id) {
+		try {
+			Resource resource = resourceServiceImpl.queryResourceById(id); // 根据id查询功能信息
+			return JsonResult.buildMessageAndDataResult("查询功能", true, resource);
+		} catch (Exception e) {
+			log.debug(e.getMessage());
+			return JsonResult.buildMessageAndDataResult("查询失败", false, null);
 		}
 	}
 

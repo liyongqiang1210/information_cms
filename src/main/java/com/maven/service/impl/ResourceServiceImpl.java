@@ -197,9 +197,26 @@ public class ResourceServiceImpl implements ResourceService {
 		return false;
 	}
 
+	/**
+	 * 根据功能类型获取功能列表
+	 * 
+	 * @param type
+	 * @return
+	 */
 	public List<Resource> queryAllMenu(String type) {
 		
 		return resourceDao.queryAllMenu(type);
+	}
+
+	/**
+	 * 根据id查询功能
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public Resource queryResourceById(int id) {
+		
+		return resourceDao.queryResourceById(id);
 	}
 
 }

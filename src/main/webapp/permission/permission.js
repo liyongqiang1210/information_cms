@@ -169,8 +169,7 @@ layui
 					// 监听操作列按钮
 					table.on('tool(resourceTable)', function(obj) { // 注：tool是工具条事件名，test是table原始容器的属性
 						var id = obj.data.id; // 获得当前行数据id
-						var roleName = obj.data.roleName; // 获取roleName
-						var roleDesc = obj.data.roleDesc; // 获取roleDesc
+						
 						switch (obj.event) {
 						case 'permission': // 分配权限
 							bindingPermissionEvent(form, authtree, id);
@@ -182,7 +181,7 @@ layui
 							});
 							break;
 						case 'edit': // 编辑
-							bindingEditEvent(form, id, roleName, roleDesc);
+							bindingEditEvent(form, obj);
 						}
 					});
 				});
@@ -327,8 +326,16 @@ function bindingDelSelectedEvent(ids, delCount) {
  * @param index
  * @returns
  */
-function bindingEditEvent(form, id, roleName, roleDesc) {
+function bindingEditEvent(form, obj) {
 
+	var id = obj.data.id; // 获得当前行数据id
+	var name = obj.data.name; // 获取name
+	var type = obj.data.type; // 获取type
+	var url = obj.data.url; // 获取url
+	var parentId = obj.data.parentId; // 获取父级功能
+	var permission = obj.data.permission; // 获取权限字符串
+	var avilable = obj.data.avilable; // 获取是否可用
+	
 	layer.open({
 		type : 2,
 		title : '编辑权限',
@@ -338,32 +345,7 @@ function bindingEditEvent(form, id, roleName, roleDesc) {
 		content : 'permission_edit.html',
 		btn : [ '保存', '取消' ],
 		success : function(layero, index) { // 成功弹出后回调
-			$.ajax({
-				type : 'POST',
-				url : 'updateRole.do',
-				data : {
-					roleId : id,
-					roleName : roleName,
-					roleDesc : roleDesc
-				},
-				dataType : 'json',
-				success : function(data) {
-					layer.msg('权限更新成功', {
-						icon : 6
-					});
-					// 关闭弹出层
-					layer.close(index);
-					// 模拟点击确定按钮刷新页面数据
-					$('.layui-laypage-btn').click();
-				},
-				error : function(data) {
-					layer.msg('权限更新失败', {
-						icon : 5
-					});
-					// 关闭弹出层
-					layer.close(index);
-				}
-			});
+			
 		},
 		yes : function(index, layero) { // 保存按钮回调函数
 

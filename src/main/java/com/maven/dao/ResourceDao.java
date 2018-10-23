@@ -35,4 +35,6 @@ public interface ResourceDao {
 	public int queryPermissionIsExist(String permission);
 
 	public List<Resource> queryAllMenu(String type);
+
+	public Resource queryResourceById(int id);
 }
