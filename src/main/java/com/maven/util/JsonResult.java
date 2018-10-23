@@ -155,4 +155,22 @@ public class JsonResult {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param message
+	 *            信息
+	 * @param success
+	 *            本次请求的状态
+	 * @param data
+	 *            数据对象
+	 * @return
+	 */
+	public static JsonResult buildMessageAndDataResult(String message, boolean success, Object data) {
+		JsonResult result = new JsonResult();
+		result.setSuccess(success);
+		result.setData(data);
+		result.setMessage(message);
+		return result;
+	}
+
 }
