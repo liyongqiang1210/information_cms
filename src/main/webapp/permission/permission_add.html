@@ -59,7 +59,7 @@
 			</div>
 			<div class="layui-form-item" hidden>
 				<div class="layui-input-block">
-					<button id="permissionSubmit" class="layui-btn" lay-submit
+					<button id="resourceSubmit" class="layui-btn" lay-submit
 						lay-filter="save">保存</button>
 				</div>
 			</div>
@@ -134,8 +134,8 @@
 			url : function(value, item) { // 校验功能url
 				var defaultUrl = $('#defaultUrl').val(); // 默认的url
 				if (value !== defaultUrl || 'default' === defaultUrl) { // 判断功能url是否发生改变
-					if (!new RegExp("^[a-zA-Z0-9/]{5,30}$").test(value)) {
-						return 'url必须是5-30位英文和/组成的字符串';
+					if (!new RegExp("^[a-zA-Z0-9/]{3,30}$").test(value)) {
+						return 'url必须是3-30位英文和/组成的字符串';
 					} else {
 						code = 0; // 用来判断功能url是否存在
 						$.ajax({
@@ -226,6 +226,7 @@
 						parent.layer.msg('添加成功', {
 							icon : 6,
 						});
+					 	parent.addDataRefreshTable(); // 执行添加完数据之后刷新表格的方法
 					} else { // 失败
 						// 失败提示框
 						parent.layer.msg('添加失败', {

@@ -131,10 +131,10 @@ public class ResourceController {
 		try {
 			List<Resource> list = resourceServiceImpl.getAll(limit, page, name, type);
 			int total = resourceServiceImpl.getAllCount(name, type);
-			return JsonResult.buildSuccessLayuiResult(0, "success", total, list);
+			return JsonResult.buildTableDataResult(0, true, "查询数据成功", total, list);
 		} catch (Exception e) {
 			log.debug(e.getMessage());
-			return JsonResult.buildFailedLayuiResult(-1, "error");
+			return JsonResult.buildTableDataResult(0, false, "查询数据失败", 0, null);
 		}
 
 	}

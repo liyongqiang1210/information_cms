@@ -9,7 +9,7 @@ layui
 
 					// 表格顶部工具栏
 					var toolbarHtml = '<div class="layui-btn-container">'
-							+ '<button class="layui-btn layui-btn-sm" lay-event="add">添加权限</button>'
+							+ '<button class="layui-btn layui-btn-sm" lay-event="add">添加功能</button>'
 							+ '<button class="layui-btn layui-btn-sm" lay-event="delSelected">删除选中</button></div>';
 					// 首次渲染表格
 					var tableIns = table
@@ -150,17 +150,17 @@ layui
 					table.on('toolbar(resourceTable)', function(obj) {
 						var checkStatus = table.checkStatus('resourceTable'); // 获取表格的选中行
 						switch (obj.event) {
-						case 'add': // 添加权限
+						case 'add': // 添加功能
 							bindingAddEvent(form, table);
 							break;
-						case 'delSelected': // 删除选中权限
-							var data = checkStatus.data; // 获取选中权限集合
-							var ids = ''; // 权限字符串
-							// 将选中权限id拼接到一起
+						case 'delSelected': // 删除选中功能
+							var data = checkStatus.data; // 获取选中功能集合
+							var ids = ''; // 功能id字符串
+							// 将选中功能id拼接到一起
 							for (var i = 0; i < data.length; i++) {
 								ids += data[i].id + ',';
 							}
-							bindingDelSelectedEvent(ids, data.length); // 删除选中权限
+							bindingDelSelectedEvent(ids, data.length); // 删除选中功能
 							break;
 						}
 
@@ -176,7 +176,7 @@ layui
 							bindingPermissionEvent(form, authtree, id);
 							break;
 						case 'del': // 删除
-							layer.confirm('确认删除这个权限信息吗？', function(index) {
+							layer.confirm('确认删除这个功能信息吗？', function(index) {
 								// 向服务端发送删除指令
 								bindingDelEvent(id, index);
 							});
@@ -260,7 +260,7 @@ function bindingAddEvent(form, table) {
 		},
 		yes : function(index, layero) { // 保存按钮回调函数
 			var body = layer.getChildFrame('body', index);
-			body.find('#permissionSubmit').click();
+			body.find('#resourceSubmit').click();
 		},
 		btn2 : function(index, layero) { // 取消按钮回调函数
 			layer.close(index); // 关闭弹出层
