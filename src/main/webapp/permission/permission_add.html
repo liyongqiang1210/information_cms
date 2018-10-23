@@ -9,13 +9,12 @@
 </head>
 
 <body>
-	<form class="layui-form" style="margin: 20px;"
-		action="createResource.do" method="post">
+	<form class="layui-form" id="form" style="margin: 20px;">
 		<div class="layui-form-item">
 			<div class="layui-form-item" style="width: 450px;">
 				<label class="layui-form-label">功能名</label>
 				<div class="layui-input-block">
-					<input type="text" id="name" placeholder="请输入功能名"
+					<input type="text" id="name" value="" placeholder="请输入功能名"
 						autocomplete="off" class="layui-input" lay-verify="name">
 					<input type="text" id="defaultName" value='default' hidden>
 				</div>
@@ -30,7 +29,7 @@
 			<div class="layui-form-item" style="width: 450px;">
 				<label class="layui-form-label">功能路径</label>
 				<div class="layui-input-block">
-					<input type="text" id="url" placeholder="请输入功能路径"
+					<input type="text" id="url" value="" placeholder="请输入功能路径"
 						autocomplete="off" class="layui-input" lay-verify="url"> <input
 						type="text" id="defaultUrl" value='default' hidden>
 				</div>
@@ -38,15 +37,15 @@
 			<div class="layui-form-item" style="width: 300px;">
 				<label class="layui-form-label">父级功能</label>
 				<div class="layui-input-block">
-					<select id="url">
-						<option value="" selected="selected">请选择权限父级功能</option>
-					</select>
+					<select id="parentId" lay-search lay-filter="parentId">
+						<option value="0" selected="selected">请选择</option>
+					</select> <input id="parentIdInput" hidden>
 				</div>
 			</div>
 			<div class="layui-form-item" style="width: 450px;">
 				<label class="layui-form-label">权限字符串</label>
 				<div class="layui-input-block">
-					<input type="text" id="permission" placeholder="请输入权限字符串"
+					<input type="text" id="permission" value="" placeholder="请输入权限字符串"
 						autocomplete="off" class="layui-input" lay-verify="permission">
 					<input type="text" id="defaultPermission" value='default' hidden>
 				</div>
@@ -54,13 +53,14 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">是否启用</label>
 				<div class="layui-input-block">
-					<input type="checkbox" checked lay-skin="switch" lay-text="启用|关闭">
+					<input type="checkbox" id="available" checked lay-skin="switch"
+						lay-text="启用|关闭">
 				</div>
 			</div>
 			<div class="layui-form-item" hidden>
 				<div class="layui-input-block">
 					<button id="permissionSubmit" class="layui-btn" lay-submit
-						lay-filter="*">保存</button>
+						lay-filter="save">保存</button>
 				</div>
 			</div>
 		</div>
@@ -69,8 +69,33 @@
 <script>
 	// 初始化表单
 	layui.use([ 'form', 'layer' ], function() {
-		var form = layui.form, table = layui.layer, $ = layui.$;
+		var form = layui.form, layer = layui.layer, $ = layui.$;
+		$.ajax({
+			type : 'POST',
+			url : 'queryAllMenu.do',
+			data : {
+				type : 'menu'
+			},
+			dataType : 'json',
+			success : function(data) {
+				var array = data.data; // 取出后台返回值中的数据
+				for (var i = 0; i < array.length; i++) {
+					// 为Select追加一个Option(下拉项)
+					$('#parentId').append(
+							'<option name="parentName" value="'+array[i].id+'">'
+									+ array[i].name + '</option>');
+				}
+				form.render('select');
+				// 设置下拉框高度
+				$('dl.layui-anim').css('max-height', '100px');
+			},
+			error : function(data) {
+				console.log('网络异常');
+			}
+		});
+		// 更新页面渲染，否则会造成页面加载元素不完整
 		form.render();
+		// 自定义表单验证
 		form.verify({
 			name : function(value, item) { // 验证功能名
 				var defaultName = $('#defaultName').val(); // 默认的name
@@ -173,6 +198,51 @@
 					}
 				}
 			}
+		});
+
+		// 监听下拉按钮
+		form.on('select(parentId)', function(data) {
+			$('#parentIdInput').val(data.value); //将下拉框选中值赋值给input用于下面取值
+		});
+
+		// 监听form表单提交
+		form.on('submit(save)', function(data) {
+			console.log(data.field);
+			$.ajax({
+				type : 'POST',
+				url : 'createResource.do',
+				data : {
+					name : $('#name').val(),
+					url : $('#url').val(),
+					type : $('input[name]:checked').val(),
+					parentId : $('#parentIdInput').val(),
+					permission : $('#permission').val(),
+					available : $('#available').is(':checked') === true ? 1 : 0
+				},
+				dataType : 'json',
+				success : function(data) {
+					if (data.success) { // 成功
+						// 成功提示框
+						parent.layer.msg('添加成功', {
+							icon : 6,
+						});
+					} else { // 失败
+						// 失败提示框
+						parent.layer.msg('添加失败', {
+							icon : 5,
+						});
+					}
+					parent.layer.closeAll('iframe'); //关闭弹框
+				},
+				error : function(data) {
+					// 异常提示
+					parent.layer.msg('出现网络故障', {
+						icon : 5
+					});
+					parent.layer.closeAll('iframe'); //关闭弹框
+				}
+			});
+			return false;
 		});
 	});
 </script>

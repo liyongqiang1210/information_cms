@@ -2,179 +2,193 @@
 var page, limit, total;
 
 layui
-	.use(
-			[ 'table', 'laypage', 'form', 'layer' ],
-			function() {
-				var table = layui.table, 
-					laypage = layui.laypage, 
-					form = layui.form, 
-					layer = layui.layer;
-				
-				// 给选择框赋默认值
-				$('#permissionType').val('');
-				
-				// 表格顶部工具栏
-				var toolbarHtml = '<div class="layui-btn-container">'
-					+ '<button class="layui-btn layui-btn-sm" lay-event="add">添加权限</button>'
-					+ '<button class="layui-btn layui-btn-sm" lay-event="delSelected">删除选中</button></div>';
-				// 首次渲染表格
-				var tableIns = table
-						.render({
-							elem : '#permissionTable',
-							height : 600,
-							url : 'getAll.do', // 数据接口
-							page : {prev:'上一页',next:'下一页',groups:3}, // 开启分页
-							limit : 10, // 页面显示数据量
-							limits : [10,20,30,40,50],
-							loading : true, // 是否显示加载效果
-							toolbar : toolbarHtml,
-							defaultToolbar : [],
-							cols : [ [ // 表头
-									{
-										type : 'checkbox',
-										fixed : 'left'
-									},
-									{
-										field : 'id',
-										title : 'ID',
-										width : 80,
-										sort : true,
-										fixed : 'left'
-									},
-									{
-										field : 'name',
-										title : '功能名称',
-										width : 150
-									},
-									{
-										field : 'type',
-										title : '功能类型',
-										width : 200,
-										templet : function(d) {
-											if(d.type === 'menu'){
-												return '菜单';
-											}else{
-												return '按钮';
-											}
-										}
-									},
-									{
-										field : 'url',
-										title : '功能url路径',
-										width : 300
-									},{
-										field : 'parentId',
-										title : '父级功能',
-										width : 100
-									},{
-										field : 'permission',
-										title : '权限字符串',
-										width : 300
-									},
-									{
-										field : 'available',
-										title : '是否启用',
-										width : 150,
-										align : 'center',
-										templet : function(d) {
-											var on = '<input type="checkbox" id="'
-													+ d.id
-													+ '" lay-skin="switch" lay-filter="available" lay-text="启用|关闭" checked>';
-											var off = '<input type="checkbox" id="'
-													+ d.id
-													+ '" lay-skin="switch" lay-filter="available" lay-text="启用|关闭">';
-											if (d.available === 1) {
-												return on;
-											} else {
-												return off;
-											}
-										}
-									}, {
-										field : 'operate',
-										title : '操作',
-										align : 'left',
-										templet : function(d) {
-											return operateToolBar(d);
-										}
-									} ] ],
-							done : function(res, curr, count) { // 数据渲染完的回调函数
-								// 当前页码
-								page = curr;
-								// 当前显示数据量
-								limit = parseInt($('.layui-laypage-limits>select>option:selected').val());
-								// 当前数据总数
-								total = count;
-							}
-						});
-				
-				// 查询按钮绑定点击事件
-				$("#search").on('click',function(){
-					// 执行重载
-					tableIns.reload({
-						// 重载条件
-						where: {
-			        	  name:$('#permissionName').val(),
-			        	  type:$('#permissionType>option:selected').val()
-				        },
-				        page : {
-				        	curr : 1,prev:'上一页',next:'下一页',groups:3
-				        }
-				      });
-				});
-				
-				// 监听开关按钮
-				form.on('switch(available)', function(data) {
-					var status = data.elem.checked; // 得到开关的状态
-					var id = data.elem.id; // 获取权限id
-					if (status) { // 启用
-						updateResourceAvailable(id, 1);// 修改功能状态为启用
-					} else { // 关闭
-						updateResourceAvailable(id, 0);// 修改功能状态为关闭
-					}
-				});
+		.use(
+				[ 'table', 'laypage', 'form', 'layer' ],
+				function() {
+					var table = layui.table, laypage = layui.laypage, form = layui.form, layer = layui.layer;
 
-				// 监听头工具栏
-				table.on('toolbar(permissionTable)', function(obj) {
-					var checkStatus = table.checkStatus('permissionTable'); // 获取表格的选中行
-					switch (obj.event) {
-					case 'add': // 添加权限
-						bindingAddEvent(form, table);
-						break;
-					case 'delSelected': // 删除选中权限
-						var data = checkStatus.data; // 获取选中权限集合
-						var ids = ''; // 权限字符串
-						// 将选中权限id拼接到一起
-						for(var i = 0; i < data.length; i++){
-							ids += data[i].id + ',';
+					// 给选择框赋默认值
+					$('#permissionType').val('');
+
+					// 表格顶部工具栏
+					var toolbarHtml = '<div class="layui-btn-container">'
+							+ '<button class="layui-btn layui-btn-sm" lay-event="add">添加权限</button>'
+							+ '<button class="layui-btn layui-btn-sm" lay-event="delSelected">删除选中</button></div>';
+					// 首次渲染表格
+					var tableIns = table
+							.render({
+								elem : '#permissionTable',
+								height : 600,
+								url : 'getAll.do', // 数据接口
+								page : {
+									prev : '上一页',
+									next : '下一页',
+									groups : 3
+								}, // 开启分页
+								limit : 10, // 页面显示数据量
+								limits : [ 10, 20, 30, 40, 50 ],
+								loading : true, // 是否显示加载效果
+								toolbar : toolbarHtml,
+								defaultToolbar : [],
+								cols : [ [ // 表头
+										{
+											type : 'checkbox',
+											fixed : 'left'
+										},
+										{
+											field : 'id',
+											title : 'ID',
+											width : 80,
+											sort : true,
+											fixed : 'left'
+										},
+										{
+											field : 'name',
+											title : '功能名称',
+											width : 150
+										},
+										{
+											field : 'type',
+											title : '功能类型',
+											width : 200,
+											templet : function(d) {
+												if (d.type === 'menu') {
+													return '菜单';
+												} else {
+													return '按钮';
+												}
+											}
+										},
+										{
+											field : 'url',
+											title : '功能url路径',
+											width : 300
+										},
+										{
+											field : 'parentId',
+											title : '父级功能',
+											width : 100
+										},
+										{
+											field : 'permission',
+											title : '权限字符串',
+											width : 300
+										},
+										{
+											field : 'available',
+											title : '是否启用',
+											width : 150,
+											align : 'center',
+											templet : function(d) {
+												var on = '<input type="checkbox" id="'
+														+ d.id
+														+ '" lay-skin="switch" lay-filter="available" lay-text="启用|关闭" checked>';
+												var off = '<input type="checkbox" id="'
+														+ d.id
+														+ '" lay-skin="switch" lay-filter="available" lay-text="启用|关闭">';
+												if (d.available === 1) {
+													return on;
+												} else {
+													return off;
+												}
+											}
+										}, {
+											field : 'operate',
+											title : '操作',
+											align : 'left',
+											templet : function(d) {
+												return operateToolBar(d);
+											}
+										} ] ],
+								done : function(res, curr, count) { // 数据渲染完的回调函数
+									// 当前页码
+									page = curr;
+									// 当前显示数据量
+									limit = parseInt($(
+											'.layui-laypage-limits>select>option:selected')
+											.val());
+									// 当前数据总数
+									total = count;
+								}
+							});
+
+					// 查询按钮绑定点击事件
+					$("#search")
+							.on(
+									'click',
+									function() {
+										// 执行重载
+										tableIns
+												.reload({
+													// 重载条件
+													where : {
+														name : $(
+																'#permissionName')
+																.val(),
+														type : $(
+																'#permissionType>option:selected')
+																.val()
+													},
+													page : {
+														curr : 1,
+														prev : '上一页',
+														next : '下一页',
+														groups : 3
+													}
+												});
+									});
+
+					// 监听开关按钮
+					form.on('switch(available)', function(data) {
+						var status = data.elem.checked; // 得到开关的状态
+						var id = data.elem.id; // 获取权限id
+						if (status) { // 启用
+							updateResourceAvailable(id, 1);// 修改功能状态为启用
+						} else { // 关闭
+							updateResourceAvailable(id, 0);// 修改功能状态为关闭
 						}
-						bindingDelSelectedEvent(ids, data.length); // 删除选中权限
-						break;
-					}
+					});
 
+					// 监听头工具栏
+					table.on('toolbar(permissionTable)', function(obj) {
+						var checkStatus = table.checkStatus('permissionTable'); // 获取表格的选中行
+						switch (obj.event) {
+						case 'add': // 添加权限
+							bindingAddEvent(form, table);
+							break;
+						case 'delSelected': // 删除选中权限
+							var data = checkStatus.data; // 获取选中权限集合
+							var ids = ''; // 权限字符串
+							// 将选中权限id拼接到一起
+							for (var i = 0; i < data.length; i++) {
+								ids += data[i].id + ',';
+							}
+							bindingDelSelectedEvent(ids, data.length); // 删除选中权限
+							break;
+						}
+
+					});
+
+					// 监听操作列按钮
+					table.on('tool(role_table)', function(obj) { // 注：tool是工具条事件名，test是table原始容器的属性
+						var id = obj.data.id; // 获得当前行数据id
+						var roleName = obj.data.roleName; // 获取roleName
+						var roleDesc = obj.data.roleDesc; // 获取roleDesc
+						switch (obj.event) {
+						case 'permission': // 分配权限
+							bindingPermissionEvent(form, authtree, id);
+							break;
+						case 'del': // 删除
+							layer.confirm('确认删除这个权限信息吗？', function(index) {
+								// 向服务端发送删除指令
+								bindingDelEvent(id, index);
+							});
+							break;
+						case 'edit': // 编辑
+							bindingEditEvent(form, id, roleName, roleDesc);
+						}
+					});
 				});
-
-				// 监听操作列按钮
-				table.on('tool(role_table)', function(obj) { // 注：tool是工具条事件名，test是table原始容器的属性
-					var id = obj.data.id; // 获得当前行数据id
-					var roleName = obj.data.roleName; // 获取roleName
-					var roleDesc = obj.data.roleDesc; // 获取roleDesc
-					switch (obj.event) {
-					case 'permission': // 分配权限
-						bindingPermissionEvent(form, authtree, id);
-						break;
-					case 'del': // 删除
-						layer.confirm('确认删除这个权限信息吗？', function(index) {
-							// 向服务端发送删除指令
-							bindingDelEvent(id,index);
-						});
-						break;
-					case 'edit': // 编辑
-						bindingEditEvent(form, id, roleName, roleDesc);
-					}
-				});
-			});
-
-
 
 /**
  * 数据操作工具栏
@@ -187,11 +201,10 @@ function operateToolBar(obj) {
 	var toolBar = '<a class="layui-btn layui-btn-xs" id='
 			+ id
 			+ ' name="edit" lay-event="edit">编辑</a><a class="layui-btn layui-btn-danger layui-btn-xs" id='
-			+ id 
+			+ id
 			+ ' name="del" lay-event="del">删除</a><a class="layui-btn layui-btn-normal layui-btn-xs" id='
-			+ id 
-			+ ' name="permission" lay-event="permission">分配权限</a>';
-	
+			+ id + ' name="permission" lay-event="permission">分配权限</a>';
+
 	return toolBar;
 }
 
@@ -212,7 +225,6 @@ function updateResourceAvailable(id, available) {
 			id : id,
 			available : available
 		},
-		async : true,
 		dataType : "json",
 		success : function(data) {
 			if (data.success) {
@@ -238,26 +250,25 @@ function updateResourceAvailable(id, available) {
  */
 function bindingAddEvent(form, table) {
 
-	layer
-			.open({
-				type : 2,
-				title : '添加权限',
-				area : [ '500px', '450px' ],
-				offset : '160px',
-				shadeClose : true, // 点击遮罩关闭
-				btn : ['保存','取消'],
-				content : 'permission_add.html',
-				success : function(layero, index) { // 成功弹出后回调
-					
-				},
-				yes : function(index, layero) { // 保存按钮回调函数
-				    var body = layer.getChildFrame('body', index);
-				    body.find('#permissionSubmit').click();
-				},
-				btn2 : function(index, layero) { // 取消按钮回调函数
-					layer.close(index); // 关闭弹出层
-				}
-			});
+	layer.open({
+		type : 2,
+		title : '添加权限',
+		area : [ '500px', '450px' ],
+		offset : '160px',
+		shadeClose : true, // 点击遮罩关闭
+		btn : [ '保存', '取消' ],
+		content : 'permission_add.html',
+		success : function(layero, index) { // 成功弹出后回调
+			
+		},
+		yes : function(index, layero) { // 保存按钮回调函数
+			var body = layer.getChildFrame('body', index);
+			body.find('#permissionSubmit').click();
+		},
+		btn2 : function(index, layero) { // 取消按钮回调函数
+			layer.close(index); // 关闭弹出层
+		}
+	});
 }
 
 /**
@@ -269,34 +280,40 @@ function bindingAddEvent(form, table) {
  *            删除权限数量
  * @returns
  */
-function bindingDelSelectedEvent(ids, delCount){
-	
-	if(null === ids || '' === ids){
-		layer.msg('请选择要删除的权限',{icon:7});
-	}else{
-		layer.confirm('确认删除选中的权限吗？', {icon: 6, title:'删除选中权限'}, function(index){
+function bindingDelSelectedEvent(ids, delCount) {
+
+	if (null === ids || '' === ids) {
+		layer.msg('请选择要删除的权限', {
+			icon : 7
+		});
+	} else {
+		layer.confirm('确认删除选中的权限吗？', {
+			icon : 6,
+			title : '删除选中权限'
+		}, function(index) {
 			$.ajax({
-				type:'POST',
-				url:'deleteSelectedRole.do',
-				data:{ids:ids},
-				dataType:'json',
-				success:function(data){
-					if(data.success){
-						layer.msg('删除成功',{
-							icon:6
+				type : 'POST',
+				url : 'deleteSelectedRole.do',
+				data : {
+					ids : ids
+				},
+				dataType : 'json',
+				success : function(data) {
+					if (data.success) {
+						layer.msg('删除成功', {
+							icon : 6
 						});
-					}else{
-						layer.msg('删除失败',{
-							icon:5
+					} else {
+						layer.msg('删除失败', {
+							icon : 5
 						});
 					}
 					layer.close(index);
-					console.log(ids.replace(',',''));
 					delDataRefreshTable(delCount); // 刷新表格
 				},
-				error:function(data){
-					layer.msg('删除失败',{
-						icon:5
+				error : function(data) {
+					layer.msg('删除失败', {
+						icon : 5
 					});
 					layer.close(index);
 				}
@@ -314,14 +331,17 @@ function bindingDelSelectedEvent(ids, delCount){
  * @returns
  */
 function bindingEditEvent(form, id, roleName, roleDesc) {
-	
+
 	var html = '<form class="layui-form" id="form" style="margin:20px;">'
-		+ '<div class="layui-form-item"><label class="layui-form-label">权限名</label><div class="layui-input-block"><input type="text" id="roleName" lay-verify="roleName" placeholder="请输入权限名" autocomplete="off"  class="layui-input" value='+roleName+'><input type="text" id="roleNameDefault" value='+roleName+' hidden></div></div>'
-		+ '<div class="layui-form-item layui-form-text"><label class="layui-form-label">权限描述</label><div class="layui-input-block"><textarea id="roleDesc" required  lay-verify="roleDesc" placeholder="请输入权限描述" class="layui-textarea">'+roleDesc+'</textarea></div></div>'
-		+ '</form>';
-	
-	layer
-	.open({
+			+ '<div class="layui-form-item"><label class="layui-form-label">权限名</label><div class="layui-input-block"><input type="text" id="roleName" lay-verify="roleName" placeholder="请输入权限名" autocomplete="off"  class="layui-input" value='
+			+ roleName
+			+ '><input type="text" id="roleNameDefault" value='
+			+ roleName
+			+ ' hidden></div></div>'
+			+ '<div class="layui-form-item layui-form-text"><label class="layui-form-label">权限描述</label><div class="layui-input-block"><textarea id="roleDesc" required  lay-verify="roleDesc" placeholder="请输入权限描述" class="layui-textarea">'
+			+ roleDesc + '</textarea></div></div>' + '</form>';
+
+	layer.open({
 		type : 1,
 		title : '编辑权限',
 		area : [ '500px', '350px' ],
@@ -341,38 +361,34 @@ function bindingEditEvent(form, id, roleName, roleDesc) {
 			var roleName = $('#roleName').val();
 			var roleDesc = $('#roleDesc').val();
 			// 监听提交按钮
-			form
-			.on(
-					'submit(updateRole)',
-					function(data) {
-						$
-								.ajax({
-									type : 'POST',
-									url : 'updateRole.do',
-									data : {
-										roleId : id,
-										roleName : roleName,
-										roleDesc : roleDesc
-									},
-									dataType : 'json',
-									success : function(data) {
-										layer.msg('权限更新成功', {
-											icon : 6
-										});
-										// 关闭弹出层
-										layer.close(index);
-										// 模拟点击确定按钮刷新页面数据
-										$('.layui-laypage-btn').click();
-									},
-									error : function(data) {
-										layer.msg('权限更新失败', {
-											icon : 5
-										});
-										// 关闭弹出层
-										layer.close(index);
-									}
-								});
-					});
+			form.on('submit(updateRole)', function(data) {
+				$.ajax({
+					type : 'POST',
+					url : 'updateRole.do',
+					data : {
+						roleId : id,
+						roleName : roleName,
+						roleDesc : roleDesc
+					},
+					dataType : 'json',
+					success : function(data) {
+						layer.msg('权限更新成功', {
+							icon : 6
+						});
+						// 关闭弹出层
+						layer.close(index);
+						// 模拟点击确定按钮刷新页面数据
+						$('.layui-laypage-btn').click();
+					},
+					error : function(data) {
+						layer.msg('权限更新失败', {
+							icon : 5
+						});
+						// 关闭弹出层
+						layer.close(index);
+					}
+				});
+			});
 		},
 		btn2 : function(index, layero) { // 取消按钮回调函数
 			layer.close(index); // 关闭弹出层
@@ -390,13 +406,12 @@ function bindingEditEvent(form, id, roleName, roleDesc) {
  * @returns
  */
 function bindingPermissionEvent(form, authtree, id) {
-	
+
 	var html = '<form class="layui-form" id="form" style="margin:20px;">'
-		+ '<div class="layui-form-item"><label class="layui-form-label">选择权限</label><div class="layui-input-block"><div id="LAY-auth-tree-index"></div></div></div>'
-		+ '</form>';
-	
-	layer
-	.open({
+			+ '<div class="layui-form-item"><label class="layui-form-label">选择权限</label><div class="layui-input-block"><div id="LAY-auth-tree-index"></div></div></div>'
+			+ '</form>';
+
+	layer.open({
 		type : 1,
 		title : '分配权限',
 		area : [ '500px', '700px' ],
@@ -417,15 +432,21 @@ function bindingPermissionEvent(form, authtree, id) {
 						autowidth : true
 					});
 					// 修改权限树的默认样式
-					$(".auth-icon").css({'color':'#C8C8C8','margin-right':'2px'});
-					$('.auth-status').css('margin-top','10px');
-					$('.layui-unselect').css('margin-top','-2px');
+					$(".auth-icon").css({
+						'color' : '#C8C8C8',
+						'margin-right' : '2px'
+					});
+					$('.auth-status').css('margin-top', '10px');
+					$('.layui-unselect').css('margin-top', '-2px');
 					// 使用 authtree.on() 不会有冒泡延迟
 					authtree.on('change(lay-check-auth)', function(data) {
 						// 修改权限树的默认样式
-						$(".auth-icon").css({'color':'#C8C8C8','margin-right':'2px'});
-						$('.auth-status').css('margin-top','10px');
-						$('.layui-unselect').css('margin-top','-2px');
+						$(".auth-icon").css({
+							'color' : '#C8C8C8',
+							'margin-right' : '2px'
+						});
+						$('.auth-status').css('margin-top', '10px');
+						$('.layui-unselect').css('margin-top', '-2px');
 					});
 					authtree.on('deptChange(lay-check-auth)', function(data) {
 						console.log('监听到显示层数改变', data);
@@ -438,39 +459,35 @@ function bindingPermissionEvent(form, authtree, id) {
 			var roleName = $('#roleName').val();
 			var roleDesc = $('#roleDesc').val();
 			// 监听提交按钮
-			form
-			.on(
-					'submit(permission)',
-					function(data) {
-						$
-								.ajax({
-									type : 'POST',
-									url : 'allotPermission.do',
-									data : {
-										roleId : id,
-										roleName : roleName,
-										roleDesc : roleDesc
-									},
-									dataType : 'json',
-									success : function(data) {
-										layer.msg('权限分配成功', {
-											icon : 6
-										});
-										// 关闭弹出层
-										layer.close(index);
-										// 模拟点击确定按钮刷新页面数据
-										$('.layui-laypage-btn').click();
-									},
-									error : function(data) {
-										layer.msg('权限分配失败', {
-											icon : 5
-										});
-										// 关闭弹出层
-										layer.close(index);
-										console.log(data);
-									}
-								});
-					});
+			form.on('submit(permission)', function(data) {
+				$.ajax({
+					type : 'POST',
+					url : 'allotPermission.do',
+					data : {
+						roleId : id,
+						roleName : roleName,
+						roleDesc : roleDesc
+					},
+					dataType : 'json',
+					success : function(data) {
+						layer.msg('权限分配成功', {
+							icon : 6
+						});
+						// 关闭弹出层
+						layer.close(index);
+						// 模拟点击确定按钮刷新页面数据
+						$('.layui-laypage-btn').click();
+					},
+					error : function(data) {
+						layer.msg('权限分配失败', {
+							icon : 5
+						});
+						// 关闭弹出层
+						layer.close(index);
+						console.log(data);
+					}
+				});
+			});
 		},
 		btn2 : function(index, layero) { // 取消按钮回调函数
 			layer.close(index); // 关闭弹出层
@@ -517,14 +534,14 @@ function bindingDelEvent(id, index) {
  * @param form
  * @returns
  */
-function checkForm(form){
+function checkForm(form) {
 	// 表单验证
 	form.verify({
 		name : function(value, item) {
 			return '成功';
 		},
 		url : function(value, item) {
-			
+
 		},
 		permission : function(value, item) {
 
@@ -541,9 +558,9 @@ function addDataRefreshTable() {
 	// 模拟点击确定按钮刷新页面数据确保当前页面时最新的数据
 	$('.layui-laypage-btn').click();
 	// 计算出最后一页页码向上取整
-	var lastPage = Math.ceil(count / limit);
+	var lastPage = Math.ceil((total + 1) / limit);
 	// 等待100ms页面加载完成后在跳转页数输入框中输入最后一页页码然后点击确定跳转到最后一页
-	setTimeout(() => {
+	setTimeout(function() {
 		$('.layui-laypage-skip>input').attr('value', lastPage);
 		$('.layui-laypage-btn').click();
 	}, 100);
@@ -556,16 +573,16 @@ function addDataRefreshTable() {
  * @param delCount
  *            删除数据条数
  */
-function delDataRefreshTable(delCount){
+function delDataRefreshTable(delCount) {
 	// 获取最后一页页码
 	var lastPage = Math.ceil(total / limit);
 	// 获取最后一页数据条数
 	var lastPageCount = total % limit;
 	// 如果删除的是最后一页的最后一条或者最后一页的所有数据的情况
-	if(page === lastPage && lastPageCount === delCount){
+	if (page === lastPage && lastPageCount === delCount) {
 		$('.layui-laypage-skip>input').attr('value', lastPage - 1);
 		$('.layui-laypage-btn').click();
-	}else{ // 不是最后一页的情况
+	} else { // 不是最后一页的情况
 		$('.layui-laypage-btn').click();
 	}
 }
@@ -578,7 +595,7 @@ function delDataRefreshTable(delCount){
  *            lay-filter属性值
  * @returns
  */
-function modifyButton(layero, layFilter){
+function modifyButton(layero, layFilter) {
 	// 解决按enter键重复弹窗问题
 	$(':focus').blur();
 	// 添加form标识

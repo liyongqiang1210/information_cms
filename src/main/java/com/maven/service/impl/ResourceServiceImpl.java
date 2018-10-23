@@ -157,4 +157,49 @@ public class ResourceServiceImpl implements ResourceService {
 		return false;
 	}
 
+	/**
+	 * 查询功能名是否存在
+	 * 
+	 * @param name
+	 */
+	public boolean queryNameIsExist(String name) {
+		int state = resourceDao.queryNameIsExist(name); // 查询是否存在
+		if (state == 0) { // 不存在
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 查询此url是否存在
+	 * 
+	 * @param url
+	 */
+	public boolean queryUrlIsExist(String url) {
+		int queryUrlIsExist = resourceDao.queryUrlIsExist(url); // 查询是否存在
+		if (queryUrlIsExist == 0) { // 不存在
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 查询此权限字符串是否存在
+	 * 
+	 * @param permission
+	 * @return
+	 */
+	public boolean queryPermissionIsExist(String permission) {
+		int queryPermissionIsExist = resourceDao.queryPermissionIsExist(permission); // 查询是否存在
+		if (queryPermissionIsExist == 0) { // 不存在
+			return true;
+		}
+		return false;
+	}
+
+	public List<Resource> queryAllMenu(String type) {
+		
+		return resourceDao.queryAllMenu(type);
+	}
+
 }

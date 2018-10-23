@@ -27,4 +27,12 @@ public interface ResourceDao {
 	public int updateResourceState(Resource resource);
 
 	public int getAllCount(QueryResource qr);
+
+	public int queryNameIsExist(String name);
+
+	public int queryUrlIsExist(String url);
+	
+	public int queryPermissionIsExist(String permission);
+
+	public List<Resource> queryAllMenu(String type);
 }

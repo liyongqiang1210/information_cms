@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.maven.model.pojo.Resource;
@@ -36,6 +36,7 @@ public class ResourceController {
 
 	@Autowired
 	private ResourceServiceImpl resourceServiceImpl;
+
 	private static final Logger log = LoggerFactory.getLogger(ResourceController.class);
 
 	/**
@@ -43,7 +44,7 @@ public class ResourceController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/toResource.do", method = RequestMethod.GET)
+	@GetMapping(value = "/toResource.do")
 	public String toResource() {
 
 		return "forward:/user/resource.html";
@@ -58,14 +59,14 @@ public class ResourceController {
 	 */
 	@PostMapping(value = "/createResource.do")
 	@ResponseBody
-	public String createResource(HttpServletRequest request, Resource resource) {
+	public JsonResult createResource(HttpServletRequest request, Resource resource) {
 
 		try {
 			resourceServiceImpl.createResource(resource);
-			return MessageUtil.SUCCESS_MESSAGE;
+			return JsonResult.buildSuccessResult("添加成功");
 		} catch (Exception e) {
 			log.debug(e.getMessage());
-			return MessageUtil.ERROR_MESSAGE;
+			return JsonResult.buildFailedResult("添加失败");
 		}
 
 	}
@@ -123,7 +124,7 @@ public class ResourceController {
 	 * @param type
 	 * @return
 	 */
-	@RequestMapping(value = "/getAll.do", method = RequestMethod.GET)
+	@GetMapping(value = "/getAll.do")
 	@ResponseBody
 	public JsonResult getAll(HttpServletResponse response, int limit, int page, String name, String type) {
 
@@ -132,7 +133,7 @@ public class ResourceController {
 			int total = resourceServiceImpl.getAllCount(name, type);
 			return JsonResult.buildSuccessLayuiResult(0, "success", total, list);
 		} catch (Exception e) {
-			e.getMessage();
+			log.debug(e.getMessage());
 			return JsonResult.buildFailedLayuiResult(-1, "error");
 		}
 
@@ -167,7 +168,7 @@ public class ResourceController {
 	 *            资源对象
 	 * @return 返回json字符串
 	 */
-	@RequestMapping(value = "/findResourceByName.do", method = RequestMethod.POST)
+	@PostMapping(value = "/findResourceByName.do")
 	@ResponseBody
 	public String findResourceByName(Resource resource) {
 		try {
@@ -187,7 +188,7 @@ public class ResourceController {
 	 * @param available
 	 * @return
 	 */
-	@RequestMapping(value = "/updateResourceState.do", method = RequestMethod.POST)
+	@PostMapping(value = "/updateResourceState.do")
 	@ResponseBody
 	public JsonResult updateResourceState(Resource resource) {
 		try {
@@ -200,6 +201,89 @@ public class ResourceController {
 			log.debug(e.getMessage());
 		}
 		return JsonResult.buildFailedResult("状态更新失败");
+	}
+
+	/**
+	 * 查询数据库是否存在此功能名
+	 * 
+	 * @param name
+	 * @return
+	 */
+	@PostMapping(value = "/queryNameIsExist.do")
+	@ResponseBody
+	public JsonResult queryNameIsExist(String name) {
+		try {
+			boolean queryNameIsExist = resourceServiceImpl.queryNameIsExist(name); // 查询是否存在
+			if (queryNameIsExist) { // 不存在
+				return JsonResult.buildSuccessResult("此功能名不存在");
+			}
+			return JsonResult.buildFailedResult("此功能名已经存在");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return JsonResult.buildFailedResult("出现异常");
+		}
+	}
+
+	/**
+	 * 查询数据库是否存在此url
+	 * 
+	 * @param url
+	 * @return
+	 */
+	@PostMapping(value = "/queryUrlIsExist.do")
+	@ResponseBody
+	public JsonResult queryUrlIsExist(String url) {
+		try {
+			boolean queryUrlIsExist = resourceServiceImpl.queryUrlIsExist(url); // 查询是否存在
+			if (queryUrlIsExist) { // 不存在
+				return JsonResult.buildSuccessResult("此url不存在");
+			}
+			return JsonResult.buildFailedResult("此url已经存在");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return JsonResult.buildFailedResult("出现异常");
+		}
+	}
+
+	/**
+	 * 查询数据库是否存在此条权限字符串
+	 * 
+	 * @param url
+	 * @return
+	 */
+	@PostMapping(value = "/queryPermissionIsExist.do")
+	@ResponseBody
+	public JsonResult queryPermissionIsExist(String url) {
+		try {
+			// 查询是否存在
+			boolean queryPermissionIsExist = resourceServiceImpl.queryPermissionIsExist(url);
+			if (queryPermissionIsExist) { // 不存在
+				return JsonResult.buildSuccessResult("此权限字符串不存在");
+			}
+			return JsonResult.buildFailedResult("此权限字符串已经存在");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return JsonResult.buildFailedResult("出现异常");
+		}
+	}
+
+	/**
+	 * 查询全部菜单
+	 * 
+	 * @param type
+	 * @return
+	 */
+	@PostMapping(value = "/queryAllMenu.do")
+	@ResponseBody
+	public JsonResult queryAllMenu(String type) {
+		List<Resource> queryAllMenu = null;
+		try {
+			queryAllMenu = resourceServiceImpl.queryAllMenu(type);
+			return JsonResult.buildMessageAndDataResult("查询成功", true, queryAllMenu);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return JsonResult.buildMessageAndDataResult("出现异常", false, queryAllMenu);
+		}
 	}
 
 }

@@ -3,8 +3,20 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maven.dao.ResourceDao">
 
+	<resultMap type="com.maven.model.pojo.Resource" id="resourceResultMap">
+		<result column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="url" property="url" jdbcType="VARCHAR" />
+		<result column="priority" property="priority" jdbcType="INTEGER" />
+		<result column="parent_id" property="parentId" jdbcType="INTEGER" />
+		<result column="parent_ids" property="parentIds" jdbcType="INTEGER" />
+		<result column="permission" property="permission" jdbcType="VARCHAR" />
+		<result column="available" property="available" jdbcType="INTEGER" />
+	</resultMap>
+
 	<!-- 根据条件查询全部 -->
-	<select id="getAll" resultType="com.maven.model.pojo.Resource" parameterType="com.maven.model.query.QueryResource">
+	<select id="getAll" resultMap="resourceResultMap" parameterType="com.maven.model.pojo.Resource">
 		select * from sys_resource where 1=1
 		<if test="name!=null and name!=''">
 			and name like CONCAT(CONCAT('%', #{name}),'%')
@@ -14,9 +26,10 @@
 		</if>
 		limit #{page},#{limit}
 	</select>
-	
+
 	<!-- 根据条件查询数据总数 -->
-	<select id="getAllCount" resultType="int" parameterType="com.maven.model.query.QueryResource">
+	<select id="getAllCount" resultType="int"
+		parameterType="com.maven.model.query.QueryResource">
 		select count(id) from sys_resource where 1=1
 		<if test="name!=null and name!=''">
 			and name like CONCAT(CONCAT('%', #{name}),'%')
@@ -35,7 +48,7 @@
 	<insert id="createResource" parameterType="com.maven.model.pojo.Resource"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into sys_resource
-		(name,url,type,permission,available)values(#{name},#{url},#{type},#{permission},#{available})
+		(name,url,type,parent_id,permission,available)values(#{name},#{url},#{type},#{parentId},#{permission},#{available})
 	</insert>
 
 	<!-- 更新 -->
@@ -59,11 +72,34 @@
 			and name like CONCAT(CONCAT('%', #{name}),'%');
 		</if>
 	</select>
-	
+
 	<!-- 根据id修改权限状态 -->
-	<update id="updatePermissionState" parameterType="com.maven.model.pojo.Resource">
-		update sys_resource
+	<update id="updateResourceState" parameterType="com.maven.model.pojo.Resource">
+		update
+		sys_resource
 		set available = #{available} where id = #{id}
 	</update>
-	
+
+	<!-- 根据功能名查询数据库是否存在 -->
+	<select id="queryNameIsExist" parameterType="string" resultType="int">
+		select count(id) from sys_resource where name = #{name}
+	</select>
+
+	<!-- 查询数据库是否存在此url -->
+	<select id="queryUrlIsExist" parameterType="string" resultType="int">
+		select count(id) from sys_resource where url = #{url}
+	</select>
+
+	<!-- 查询数据库是否存在此权限字符串 -->
+	<select id="queryPermissionIsExist" parameterType="string"
+		resultType="int">
+		select count(id) from sys_resource where permission =
+		#{permission}
+	</select>
+
+	<!-- 查询所有的父级功能 -->
+	<select id="queryAllMenu" resultType="com.maven.model.pojo.Resource"
+		parameterType="string">
+		select * from sys_resource where type = #{type}
+	</select>
 </mapper>

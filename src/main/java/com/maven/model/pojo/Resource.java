@@ -12,6 +12,7 @@ public class Resource implements Serializable {
 	private String name; // 资源名称
 	private String type; // 资源类型 按钮或菜单
 	private String url; // 资源url
+	private int priority; // 显示顺序
 	private int parentId; // 父编号
 	private String parentIds; // 父编号列表
 	private String permission; // 权限字符串
@@ -81,13 +82,26 @@ public class Resource implements Serializable {
 		this.available = available;
 	}
 
-	public Resource(int id, String name, String type, String url, int parentId, String parentIds, String permission,
-			int available) {
+	public int getPriority() {
+		return priority;
+	}
+
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public Resource(int id, String name, String type, String url, int priority, int parentId, String parentIds,
+			String permission, int available) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.type = type;
 		this.url = url;
+		this.priority = priority;
 		this.parentId = parentId;
 		this.parentIds = parentIds;
 		this.permission = permission;
@@ -100,8 +114,9 @@ public class Resource implements Serializable {
 
 	@Override
 	public String toString() {
-		return "{id:" + id + ", name:" + name + ", type:" + type + ", url:" + url + ", parentId:" + parentId
-				+ ", parentIds:" + parentIds + ", permission:" + permission + ", available:" + available + "}";
+		return "{id:" + id + ", name:" + name + ", type:" + type + ", url:" + url + ", priority:" + priority
+				+ ", parentId:" + parentId + ", parentIds:" + parentIds + ", permission:" + permission + ", available:"
+				+ available + "}";
 	}
 
 }
