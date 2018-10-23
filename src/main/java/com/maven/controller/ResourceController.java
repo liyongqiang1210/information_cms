@@ -36,7 +36,6 @@ public class ResourceController {
 
 	@Autowired
 	private ResourceServiceImpl resourceServiceImpl;
-
 	private static final Logger log = LoggerFactory.getLogger(ResourceController.class);
 
 	/**
