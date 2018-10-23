@@ -7,8 +7,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
@@ -40,7 +41,7 @@ public class RoleController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/toRole.do", method = RequestMethod.GET)
+	@GetMapping(value = "/toRole.do")
 	public String toRole() {
 		return "forward:/user/role.html";
 	}
@@ -50,7 +51,7 @@ public class RoleController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/getAllRole.do", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	@GetMapping(value = "/getAllRole.do")
 	@ResponseBody
 	public String getAllRole(HttpServletRequest request, HttpServletResponse response, Integer limit, Integer offset,
 			String rolename, int available) {
@@ -79,7 +80,7 @@ public class RoleController {
 	 *            ： 角色资源id
 	 * @return
 	 */
-	@RequestMapping(value = "/createRole.do", method = RequestMethod.POST)
+	@PostMapping(value = "/createRole.do")
 	@ResponseBody
 	public JsonResult createRole(String roleName, String roleDesc, int available) {
 
@@ -99,7 +100,7 @@ public class RoleController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/deleteRole.do", method = RequestMethod.POST)
+	@PostMapping(value = "/deleteRole.do")
 	@ResponseBody
 	public JsonResult deleteRole(int roleId) {
 		try {
@@ -119,7 +120,7 @@ public class RoleController {
 	 * @param roleDesc
 	 * @return
 	 */
-	@RequestMapping(value = "/updateRole.do", method = RequestMethod.POST)
+	@PostMapping(value = "/updateRole.do")
 	@ResponseBody
 	public JsonResult updateRole(Integer roleId, String roleName, String roleDesc) {
 
@@ -140,7 +141,7 @@ public class RoleController {
 	 * @param request
 	 * @param ids
 	 */
-	@RequestMapping(value = "deleteSelectedRole.do", method = RequestMethod.POST)
+	@PostMapping(value = "deleteSelectedRole.do")
 	@ResponseBody
 	public JsonResult deleteSelectedRole(String ids) {
 
@@ -159,7 +160,7 @@ public class RoleController {
 	 * @param rolename
 	 * @return
 	 */
-	@RequestMapping(value = "/queryRoleNameIsExist.do", method = RequestMethod.POST)
+	@PostMapping(value = "/queryRoleNameIsExist.do")
 	@ResponseBody
 	public JsonResult queryRoleNameIsExist(String roleName) {
 
@@ -182,7 +183,7 @@ public class RoleController {
 	 * @param role
 	 * @return
 	 */
-	@RequestMapping(value = "/updateRoleState.do", method = RequestMethod.POST)
+	@PostMapping(value = "/updateRoleState.do")
 	@ResponseBody
 	public JsonResult updateRoleState(Role role) {
 		try {
@@ -202,7 +203,7 @@ public class RoleController {
 	 * @param rolename
 	 * @return
 	 */
-	@RequestMapping(value = "/getAll.do", method = RequestMethod.GET)
+	@GetMapping(value = "/getAll.do")
 	@ResponseBody
 	public JsonResult getAll(HttpServletResponse response, int limit, int page, String roleName, Integer available) {
 		// 解决跨域问题，这里需要设置头信息，不然客户端无法接收到返回值
@@ -213,11 +214,16 @@ public class RoleController {
 		if (available == null) {
 			available = 2;
 		}
-		// 获取角色列表
-		List<Role> list = roleServiceImpl.findAll(limit, page, roleName, available);
-		// 查询角色总数
-		int total = roleServiceImpl.queryRoleCount(roleName, available);
-		return JsonResult.buildSuccessLayuiResult(0, "成功", total, list);
+		try {
+			// 获取角色列表
+			List<Role> list = roleServiceImpl.findAll(limit, page, roleName, available);
+			// 查询角色总数
+			int total = roleServiceImpl.queryRoleCount(roleName, available);
+			return JsonResult.buildTableDataResult(0, true, "查询成功", total, list);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return JsonResult.buildTableDataResult(0, true, "查询失败", 0, null);
+		}
 	}
 
 }
