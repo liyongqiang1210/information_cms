@@ -102,7 +102,7 @@ public class JsonResult {
 	 * @return
 	 */
 	public static JsonResult buildSuccessResult(String msg) {
-		BasicJsonResult result = new BasicJsonResult();
+		JsonResult result = new JsonResult();
 		result.setSuccess(true);
 		result.setMessage(msg);
 		return result;
@@ -114,23 +114,26 @@ public class JsonResult {
 	 * @return
 	 */
 	public static JsonResult buildFailedResult(String msg) {
-		BasicJsonResult result = new BasicJsonResult();
+		JsonResult result = new JsonResult();
 		result.setSuccess(false);
 		result.setMessage(msg);
 		return result;
 	}
 
 	/**
-	 * layui请求成功时所需的json格式数据
+	 * layui数据表格所需的json格式
 	 * 
-	 * @param total
-	 * @param rows
+	 * @param code code码
+	 * @param success 状态
+	 * @param msg 信息
+	 * @param total 数据总数
+	 * @param list 数据集合
 	 * @return
 	 */
-	public static JsonResult buildSuccessLayuiResult(int code, String msg, int total,
+	public static JsonResult buildTableDataResult(int code, boolean success, String msg, int total,
 			@SuppressWarnings("rawtypes") List list) {
-		BasicJsonResult result = new BasicJsonResult();
-		result.setSuccess(true);
+		JsonResult result = new JsonResult();
+		result.setSuccess(success);
 		result.setData(list);
 		result.setCode(code);
 		result.setMessage(msg);
@@ -146,7 +149,7 @@ public class JsonResult {
 	 * @return
 	 */
 	public static JsonResult buildFailedLayuiResult(int code, String msg) {
-		BasicJsonResult result = new BasicJsonResult();
+		JsonResult result = new JsonResult();
 		result.setSuccess(false);
 		result.setData("");
 		result.setCode(code);
