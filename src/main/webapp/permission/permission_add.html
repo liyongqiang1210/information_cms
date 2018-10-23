@@ -207,7 +207,6 @@
 
 		// 监听form表单提交
 		form.on('submit(save)', function(data) {
-			console.log(data.field);
 			$.ajax({
 				type : 'POST',
 				url : 'createResource.do',
@@ -215,7 +214,8 @@
 					name : $('#name').val(),
 					url : $('#url').val(),
 					type : $('input[name]:checked').val(),
-					parentId : $('#parentIdInput').val(),
+					parentId : $('#parentIdInput').val() === '' ? 0 : $(
+							'#parentIdInput').val(),
 					permission : $('#permission').val(),
 					available : $('#available').is(':checked') === true ? 1 : 0
 				},
@@ -235,6 +235,7 @@
 					parent.layer.closeAll('iframe'); //关闭弹框
 				},
 				error : function(data) {
+					console.log(data);
 					// 异常提示
 					parent.layer.msg('出现网络故障', {
 						icon : 5

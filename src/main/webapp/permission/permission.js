@@ -7,9 +7,6 @@ layui
 				function() {
 					var table = layui.table, laypage = layui.laypage, form = layui.form, layer = layui.layer;
 
-					// 给选择框赋默认值
-					$('#permissionType').val('');
-
 					// 表格顶部工具栏
 					var toolbarHtml = '<div class="layui-btn-container">'
 							+ '<button class="layui-btn layui-btn-sm" lay-event="add">添加权限</button>'
@@ -17,7 +14,7 @@ layui
 					// 首次渲染表格
 					var tableIns = table
 							.render({
-								elem : '#permissionTable',
+								elem : '#resourceTable',
 								height : 600,
 								url : 'getAll.do', // 数据接口
 								page : {
@@ -123,10 +120,10 @@ layui
 													// 重载条件
 													where : {
 														name : $(
-																'#permissionName')
+																'#resourceName')
 																.val(),
 														type : $(
-																'#permissionType>option:selected')
+																'#resourceType>option:selected')
 																.val()
 													},
 													page : {
@@ -150,8 +147,8 @@ layui
 					});
 
 					// 监听头工具栏
-					table.on('toolbar(permissionTable)', function(obj) {
-						var checkStatus = table.checkStatus('permissionTable'); // 获取表格的选中行
+					table.on('toolbar(resourceTable)', function(obj) {
+						var checkStatus = table.checkStatus('resourceTable'); // 获取表格的选中行
 						switch (obj.event) {
 						case 'add': // 添加权限
 							bindingAddEvent(form, table);
