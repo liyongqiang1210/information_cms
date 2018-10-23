@@ -167,7 +167,7 @@ layui
 					});
 
 					// 监听操作列按钮
-					table.on('tool(role_table)', function(obj) { // 注：tool是工具条事件名，test是table原始容器的属性
+					table.on('tool(resourceTable)', function(obj) { // 注：tool是工具条事件名，test是table原始容器的属性
 						var id = obj.data.id; // 获得当前行数据id
 						var roleName = obj.data.roleName; // 获取roleName
 						var roleDesc = obj.data.roleDesc; // 获取roleDesc
@@ -239,10 +239,10 @@ function updateResourceAvailable(id, available) {
 }
 
 /**
- * 添加权限
+ * 添加功能
  * 
  * @param form
- * @param html
+ * @param table
  * @returns
  */
 function bindingAddEvent(form, table) {
@@ -256,11 +256,11 @@ function bindingAddEvent(form, table) {
 		btn : [ '保存', '取消' ],
 		content : 'permission_add.html',
 		success : function(layero, index) { // 成功弹出后回调
-			
+			$(':focus').blur(); // 解决按enter键重复弹窗问题
 		},
 		yes : function(index, layero) { // 保存按钮回调函数
-			var body = layer.getChildFrame('body', index);
-			body.find('#resourceSubmit').click();
+			var body = layer.getChildFrame('body', index); // 找到子页面body标签内容
+			body.find('#resourceSubmit').click(); // 获取到提交按钮点击
 		},
 		btn2 : function(index, layero) { // 取消按钮回调函数
 			layer.close(index); // 关闭弹出层
@@ -280,17 +280,17 @@ function bindingAddEvent(form, table) {
 function bindingDelSelectedEvent(ids, delCount) {
 
 	if (null === ids || '' === ids) {
-		layer.msg('请选择要删除的权限', {
+		layer.msg('请选择要删除的功能', {
 			icon : 7
 		});
 	} else {
-		layer.confirm('确认删除选中的权限吗？', {
+		layer.confirm('确认删除选中的功能吗？', {
 			icon : 6,
-			title : '删除选中权限'
+			title : '删除选中功能'
 		}, function(index) {
 			$.ajax({
 				type : 'POST',
-				url : 'deleteSelectedRole.do',
+				url : 'deleteSelectedResource.do',
 				data : {
 					ids : ids
 				},
@@ -329,29 +329,41 @@ function bindingDelSelectedEvent(ids, delCount) {
  */
 function bindingEditEvent(form, id, roleName, roleDesc) {
 
-	var html = '<form class="layui-form" id="form" style="margin:20px;">'
-			+ '<div class="layui-form-item"><label class="layui-form-label">权限名</label><div class="layui-input-block"><input type="text" id="roleName" lay-verify="roleName" placeholder="请输入权限名" autocomplete="off"  class="layui-input" value='
-			+ roleName
-			+ '><input type="text" id="roleNameDefault" value='
-			+ roleName
-			+ ' hidden></div></div>'
-			+ '<div class="layui-form-item layui-form-text"><label class="layui-form-label">权限描述</label><div class="layui-input-block"><textarea id="roleDesc" required  lay-verify="roleDesc" placeholder="请输入权限描述" class="layui-textarea">'
-			+ roleDesc + '</textarea></div></div>' + '</form>';
-
 	layer.open({
-		type : 1,
+		type : 2,
 		title : '编辑权限',
-		area : [ '500px', '350px' ],
+		area : [ '500px', '450px' ],
+		offset : '160px',
 		shadeClose : true, // 点击遮罩关闭
-		content : html,
+		content : 'permission_edit.html',
 		btn : [ '保存', '取消' ],
 		success : function(layero, index) { // 成功弹出后回调
-			// 修改保存按钮为表单提交按钮
-			modifyButton(layero, 'updateRole');
-			// 表单验证
-			checkForm(form);
-			// 刷新渲染(否则开关按钮会不显示)
-			form.render('checkbox');
+			$.ajax({
+				type : 'POST',
+				url : 'updateRole.do',
+				data : {
+					roleId : id,
+					roleName : roleName,
+					roleDesc : roleDesc
+				},
+				dataType : 'json',
+				success : function(data) {
+					layer.msg('权限更新成功', {
+						icon : 6
+					});
+					// 关闭弹出层
+					layer.close(index);
+					// 模拟点击确定按钮刷新页面数据
+					$('.layui-laypage-btn').click();
+				},
+				error : function(data) {
+					layer.msg('权限更新失败', {
+						icon : 5
+					});
+					// 关闭弹出层
+					layer.close(index);
+				}
+			});
 		},
 		yes : function(index, layero) { // 保存按钮回调函数
 
@@ -505,9 +517,9 @@ function bindingPermissionEvent(form, authtree, id) {
 function bindingDelEvent(id, index) {
 	$.ajax({
 		type : 'POST',
-		url : 'deleteRole.do',
+		url : 'deleteResource.do',
 		data : {
-			roleId : id
+			id : id
 		},
 		dataType : 'json',
 		success : function(data) {
@@ -521,27 +533,6 @@ function bindingDelEvent(id, index) {
 			layer.msg('删除失败', {
 				icon : 5,
 			});
-		}
-	});
-}
-
-/**
- * 表单验证
- * 
- * @param form
- * @returns
- */
-function checkForm(form) {
-	// 表单验证
-	form.verify({
-		name : function(value, item) {
-			return '成功';
-		},
-		url : function(value, item) {
-
-		},
-		permission : function(value, item) {
-
 		}
 	});
 }
