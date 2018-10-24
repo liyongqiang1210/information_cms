@@ -57,7 +57,6 @@ public class MyRealm extends AuthorizingRealm {
 	/**
 	 * 登录验证
 	 */
-	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 
