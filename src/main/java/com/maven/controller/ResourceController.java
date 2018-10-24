@@ -47,7 +47,7 @@ public class ResourceController {
 	@GetMapping(value = "/toResource.do")
 	public String toResource() {
 
-		return "forward:/user/resource.html";
+		return "forward:/permission/permission.html";
 	}
 
 	/**
@@ -80,15 +80,18 @@ public class ResourceController {
 	 */
 	@PostMapping(value = "/updateResource.do")
 	@ResponseBody
-	public String updateResource(HttpServletRequest request, Resource resource) {
+	public JsonResult updateResource(HttpServletRequest request, Resource resource) {
 
 		try {
-			resourceServiceImpl.updateResource(resource);
-			return MessageUtil.SUCCESS_MESSAGE;
+			// 更新功能信息
+			boolean updateResource = resourceServiceImpl.updateResource(resource);
+			if (updateResource) {
+				return JsonResult.buildSuccessResult("更新成功");
+			}
 		} catch (Exception e) {
 			log.debug(e.getMessage());
-			return MessageUtil.ERROR_MESSAGE;
 		}
+		return JsonResult.buildFailedResult("更新失败");
 	}
 
 	/**

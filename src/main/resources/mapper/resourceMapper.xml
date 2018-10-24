@@ -43,7 +43,7 @@
 	<select id="findPermissionById" parameterType="int" resultType="string">
 		select permission from sys_resource where id = #{id}
 	</select>
-	
+
 	<!-- 根据资源id查询功能 -->
 	<select id="queryResourceById" parameterType="int" resultMap="resourceResultMap">
 		select * from sys_resource where id = #{id}
@@ -59,8 +59,20 @@
 	<!-- 更新 -->
 	<update id="updateResource" parameterType="com.maven.model.pojo.Resource">
 		update sys_resource
-		set name = #{name},url = #{url},type = #{type}, permission =
-		#{permission} where id = #{id}
+		set
+		<if test="name != null and name != ''">
+			name = #{name}
+		</if>
+		<if test="url != null and url != ''">
+			,url = #{url}
+		</if>
+		<if test="type != null and type != ''">
+			,type = #{type}
+		</if>
+		<if test="permission != null and permission != ''">
+			,permission = #{permission}
+		</if>
+		,available = #{available},parent_id = #{parentId} where id = #{id}
 	</update>
 
 	<!-- 删除 -->

@@ -43,7 +43,7 @@ public class RoleController {
 	 */
 	@GetMapping(value = "/toRole.do")
 	public String toRole() {
-		return "forward:/user/role.html";
+		return "forward:/role/role.html";
 	}
 
 	/**

@@ -1,5 +1,5 @@
 $(function() {
-
+	layuiInit();
 	// 从cookie中获取当前用户名
 	// var username = getCookie("username");
 	// // 如何cookie中当前用户为空的话页面自动跳转到登录页面
@@ -210,3 +210,12 @@ function openModal(title, content) {
 	$("body").prepend("<div class='modal-backdrop fade in'></div>");// 打开子页面的背景幕布
 	$("body").prepend(html);// 将页面内容添加到弹框中
 };
+
+/**
+ * 引入layui
+ */
+function layuiInit() {
+	layui.use([ 'layer' ], function() {
+		var layer = layui.layer;
+	});
+}

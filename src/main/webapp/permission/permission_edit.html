@@ -12,6 +12,7 @@
 <body>
 	<form class="layui-form" id="form" style="margin: 20px;">
 		<div class="layui-form-item">
+			<input type="text" id="id" value='' hidden>
 			<div class="layui-form-item" style="width: 450px;">
 				<label class="layui-form-label">功能名</label>
 				<div class="layui-input-block">
@@ -23,8 +24,9 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">功能类型</label>
 				<div class="layui-input-block">
-					<input name="type" value="menu" title="菜单" checked type="radio">
-					<input name="type" value="button" title="按钮" type="radio">
+					<input id="type" value="" hidden> <input name="type"
+						value="menu" title="菜单" checked type="radio"> <input
+						name="type" value="button" title="按钮" type="radio">
 				</div>
 			</div>
 			<div class="layui-form-item" style="width: 450px;">
@@ -39,7 +41,7 @@
 				<label class="layui-form-label">父级功能</label>
 				<div class="layui-input-block">
 					<select id="parentId" lay-search lay-filter="parentId">
-						<option value="0" selected="selected">请选择</option>
+						<option name="parentName" value="0" selected="selected">请选择</option>
 					</select> <input id="parentIdInput" hidden>
 				</div>
 			</div>
@@ -55,13 +57,13 @@
 				<label class="layui-form-label">是否启用</label>
 				<div class="layui-input-block">
 					<input type="checkbox" id="available" checked lay-skin="switch"
-						lay-text="启用|关闭">
+						lay-text="启用|关闭"> <input id="availableInput" hidden>
 				</div>
 			</div>
 			<div class="layui-form-item" hidden>
 				<div class="layui-input-block">
 					<button id="resourceSubmit" class="layui-btn" lay-submit
-						lay-filter="save">保存</button>
+						lay-filter="resourceSubmit">保存</button>
 				</div>
 			</div>
 		</div>

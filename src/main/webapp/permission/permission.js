@@ -5,8 +5,12 @@ layui
 		.use(
 				[ 'table', 'laypage', 'form', 'layer' ],
 				function() {
-					var table = layui.table, laypage = layui.laypage, form = layui.form, layer = layui.layer;
-
+					var table = layui.table, laypage = layui.laypage, form = layui.form, layer = parent.layer === undefined ? layui.layer
+							: parent.layer;
+					// 给选择框赋默认值
+					$('#resourceType').val('0');
+					// 刷新select选择框渲染
+					form.render('select');
 					// 表格顶部工具栏
 					var toolbarHtml = '<div class="layui-btn-container">'
 							+ '<button class="layui-btn layui-btn-sm" lay-event="add">添加功能</button>'
@@ -15,7 +19,7 @@ layui
 					var tableIns = table
 							.render({
 								elem : '#resourceTable',
-								height : 600,
+								height : 666,
 								url : 'getAll.do', // 数据接口
 								page : {
 									prev : '上一页',
@@ -63,7 +67,7 @@ layui
 										},
 										{
 											field : 'parentId',
-											title : '父级功能',
+											title : '父级功能id',
 											width : 100
 										},
 										{
@@ -110,30 +114,22 @@ layui
 							});
 
 					// 查询按钮绑定点击事件
-					$("#search")
-							.on(
-									'click',
-									function() {
-										// 执行重载
-										tableIns
-												.reload({
-													// 重载条件
-													where : {
-														name : $(
-																'#resourceName')
-																.val(),
-														type : $(
-																'#resourceType>option:selected')
-																.val()
-													},
-													page : {
-														curr : 1,
-														prev : '上一页',
-														next : '下一页',
-														groups : 3
-													}
-												});
-									});
+					$("#search").on('click', function() {
+						// 执行重载
+						tableIns.reload({
+							// 重载条件
+							where : {
+								name : $('#resourceName').val(),
+								type : $('#resourceType>option:selected').val()
+							},
+							page : {
+								curr : 1,
+								prev : '上一页',
+								next : '下一页',
+								groups : 3
+							}
+						});
+					});
 
 					// 监听开关按钮
 					form.on('switch(available)', function(data) {
@@ -169,7 +165,7 @@ layui
 					// 监听操作列按钮
 					table.on('tool(resourceTable)', function(obj) { // 注：tool是工具条事件名，test是table原始容器的属性
 						var id = obj.data.id; // 获得当前行数据id
-						
+
 						switch (obj.event) {
 						case 'permission': // 分配权限
 							bindingPermissionEvent(form, authtree, id);
@@ -329,13 +325,6 @@ function bindingDelSelectedEvent(ids, delCount) {
 function bindingEditEvent(form, obj) {
 
 	var id = obj.data.id; // 获得当前行数据id
-	var name = obj.data.name; // 获取name
-	var type = obj.data.type; // 获取type
-	var url = obj.data.url; // 获取url
-	var parentId = obj.data.parentId; // 获取父级功能
-	var permission = obj.data.permission; // 获取权限字符串
-	var avilable = obj.data.avilable; // 获取是否可用
-	
 	layer.open({
 		type : 2,
 		title : '编辑权限',
@@ -345,41 +334,17 @@ function bindingEditEvent(form, obj) {
 		content : 'permission_edit.html',
 		btn : [ '保存', '取消' ],
 		success : function(layero, index) { // 成功弹出后回调
-			
+			var body = layer.getChildFrame('body', index); // 找到子页面body标签内容
+			body.find('#id').val(id);// 回显值
+			var body = layer.getChildFrame('body', index);
+			// 得到iframe页的窗口对象
+			var iframeWin = window[layero.find('iframe')[0]['name']];
+			// 执行子页面方法
+			iframeWin.formInit();
 		},
 		yes : function(index, layero) { // 保存按钮回调函数
-
-			var roleName = $('#roleName').val();
-			var roleDesc = $('#roleDesc').val();
-			// 监听提交按钮
-			form.on('submit(updateRole)', function(data) {
-				$.ajax({
-					type : 'POST',
-					url : 'updateRole.do',
-					data : {
-						roleId : id,
-						roleName : roleName,
-						roleDesc : roleDesc
-					},
-					dataType : 'json',
-					success : function(data) {
-						layer.msg('权限更新成功', {
-							icon : 6
-						});
-						// 关闭弹出层
-						layer.close(index);
-						// 模拟点击确定按钮刷新页面数据
-						$('.layui-laypage-btn').click();
-					},
-					error : function(data) {
-						layer.msg('权限更新失败', {
-							icon : 5
-						});
-						// 关闭弹出层
-						layer.close(index);
-					}
-				});
-			});
+			var body = layer.getChildFrame('body', index); // 找到子页面body标签内容
+			body.find('#resourceSubmit').click(); // 获取到提交按钮点击
 		},
 		btn2 : function(index, layero) { // 取消按钮回调函数
 			layer.close(index); // 关闭弹出层
