@@ -19,7 +19,7 @@ layui
 					var tableIns = table
 							.render({
 								elem : '#resourceTable',
-								height : 666,
+								height : 650,
 								url : 'getAll.do', // 数据接口
 								page : {
 									prev : '上一页',
@@ -168,7 +168,6 @@ layui
 
 						switch (obj.event) {
 						case 'permission': // 分配权限
-							bindingPermissionEvent(form, authtree, id);
 							break;
 						case 'del': // 删除
 							layer.confirm('确认删除这个功能信息吗？', function(index) {
@@ -242,34 +241,34 @@ function updateResourceAvailable(id, available) {
  */
 function bindingAddEvent(form, table) {
 
-	layer.open({
+	parent.layer.open({
 		type : 2,
 		title : '添加权限',
 		area : [ '500px', '450px' ],
 		offset : '160px',
 		shadeClose : true, // 点击遮罩关闭
 		btn : [ '保存', '取消' ],
-		content : 'permission_add.html',
+		content : '../permission/permission_add.html',
 		success : function(layero, index) { // 成功弹出后回调
 			$(':focus').blur(); // 解决按enter键重复弹窗问题
 		},
 		yes : function(index, layero) { // 保存按钮回调函数
-			var body = layer.getChildFrame('body', index); // 找到子页面body标签内容
+			var body = parent.layer.getChildFrame('body', index); // 找到子页面body标签内容
 			body.find('#resourceSubmit').click(); // 获取到提交按钮点击
 		},
 		btn2 : function(index, layero) { // 取消按钮回调函数
-			layer.close(index); // 关闭弹出层
+			parent.layer.close(index); // 关闭弹出层
 		}
 	});
 }
 
 /**
- * 删除选中权限
+ * 删除选中功能
  * 
  * @param ids
- *            权限id拼接的字符串
+ *            功能id拼接的字符串
  * @param delCount
- *            删除权限数量
+ *            删除功能数量
  * @returns
  */
 function bindingDelSelectedEvent(ids, delCount) {
@@ -279,7 +278,7 @@ function bindingDelSelectedEvent(ids, delCount) {
 			icon : 7
 		});
 	} else {
-		layer.confirm('确认删除选中的功能吗？', {
+		parent.layer.confirm('确认删除选中的功能吗？', {
 			icon : 6,
 			title : '删除选中功能'
 		}, function(index) {
@@ -300,14 +299,14 @@ function bindingDelSelectedEvent(ids, delCount) {
 							icon : 5
 						});
 					}
-					layer.close(index);
+					parent.layer.close(index);
 					delDataRefreshTable(delCount); // 刷新表格
 				},
 				error : function(data) {
 					layer.msg('删除失败', {
 						icon : 5
 					});
-					layer.close(index);
+					parent.layer.close(index);
 				}
 			});
 		});
@@ -325,22 +324,26 @@ function bindingDelSelectedEvent(ids, delCount) {
 function bindingEditEvent(form, obj) {
 
 	var id = obj.data.id; // 获得当前行数据id
-	layer.open({
+	parent.layer.open({
+		id : 'editResource',
 		type : 2,
 		title : '编辑权限',
 		area : [ '500px', '450px' ],
 		offset : '160px',
 		shadeClose : true, // 点击遮罩关闭
-		content : 'permission_edit.html',
+		content : '../permission/permission_edit.html',
 		btn : [ '保存', '取消' ],
 		success : function(layero, index) { // 成功弹出后回调
-			var body = layer.getChildFrame('body', index); // 找到子页面body标签内容
-			body.find('#id').val(id);// 回显值
-			var body = layer.getChildFrame('body', index);
-			// 得到iframe页的窗口对象
-			var iframeWin = window[layero.find('iframe')[0]['name']];
-			// 执行子页面方法
-			iframeWin.formInit();
+//			if (ifm.contentWindow.document.readyState == "complete") {
+//				var zdoc = document.frames['layui-layer-iframe1'].document;
+//				zdoc.getElementById('id').value = id;
+//			}
+
+			// 获取iframe页面
+			var iframe = $(window.parent.document).contents().find(
+					"#editResource>iframe")[0].contentWindow;
+			// 调用iframe页面的formInit方法
+			iframe.formInit();
 		},
 		yes : function(index, layero) { // 保存按钮回调函数
 			var body = layer.getChildFrame('body', index); // 找到子页面body标签内容
@@ -473,7 +476,7 @@ function bindingDelEvent(id, index) {
 			layer.msg('删除成功', {
 				icon : 6,
 			});
-			layer.close(index); // 关闭弹出层
+			parent.layer.close(index); // 关闭弹出层
 			delDataRefreshTable(1); // 刷新表格
 		},
 		error : function(data) {
