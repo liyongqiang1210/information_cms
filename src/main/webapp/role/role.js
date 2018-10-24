@@ -13,10 +13,10 @@ layui
 				[ 'authtree', 'table', 'laypage', 'form', 'layer' ],
 				function() {
 					var table = layui.table, laypage = layui.laypage, form = layui.form, layer = layui.layer, authtree = layui.authtree;
-
 					// 给选择框赋默认值
 					$('#available_search').val('2');
-
+					// 刷新select选择框渲染
+					form.render('select');
 					// 表格顶部工具栏
 					var toolbarHtml = '<div class="layui-btn-container">'
 							+ '<button class="layui-btn layui-btn-sm" lay-event="add">添加角色</button>'
@@ -614,7 +614,7 @@ function checkForm(form) {
 function addDataRefreshTable() {
 	$('.layui-laypage-btn').click();
 	// 计算出最后一页页码向上取整
-	var lastPage = Math.ceil((total+1) / limit);
+	var lastPage = Math.ceil((total + 1) / limit);
 	// 等待100ms页面加载完成后在跳转页数输入框中输入最后一页页码然后点击确定跳转到最后一页
 	setTimeout(function() {
 		$('.layui-laypage-skip>input').attr('value', lastPage);
