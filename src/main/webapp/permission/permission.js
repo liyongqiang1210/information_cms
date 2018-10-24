@@ -334,11 +334,6 @@ function bindingEditEvent(form, obj) {
 		content : '../permission/permission_edit.html',
 		btn : [ '保存', '取消' ],
 		success : function(layero, index) { // 成功弹出后回调
-//			if (ifm.contentWindow.document.readyState == "complete") {
-//				var zdoc = document.frames['layui-layer-iframe1'].document;
-//				zdoc.getElementById('id').value = id;
-//			}
-
 			// 获取iframe页面
 			var iframe = $(window.parent.document).contents().find(
 					"#editResource>iframe")[0].contentWindow;
