@@ -139,43 +139,48 @@ layui.use([ 'form', 'layer' ], function() {
 
 	// 监听form表单提交
 	form.on('submit(save)', function(data) {
-		$.ajax({
-			type : 'POST',
-			url : 'createResource.do',
-			data : {
-				name : $('#name').val(),
-				url : $('#url').val(),
-				type : $('input[name]:checked').val(),
-				parentId : $('#parentIdInput').val() === '' ? 0 : $(
-						'#parentIdInput').val(),
-				permission : $('#permission').val(),
-				available : $('#available').is(':checked') === true ? 1 : 0
-			},
-			dataType : 'json',
-			success : function(data) {
-				if (data.success) { // 成功
-					// 成功提示框
-					parent.layer.msg('添加成功', {
-						icon : 6,
-					});
-					parent.addDataRefreshTable(); // 执行添加完数据之后刷新表格的方法
-				} else { // 失败
-					// 失败提示框
-					parent.layer.msg('添加失败', {
-						icon : 5,
-					});
-				}
-				parent.layer.closeAll('iframe'); // 关闭弹框
-			},
-			error : function(data) {
-				console.log(data);
-				// 异常提示
-				parent.layer.msg('出现网络故障', {
-					icon : 5
+		$
+				.ajax({
+					type : 'POST',
+					url : 'createResource.do',
+					data : {
+						name : $('#name').val(),
+						url : $('#url').val(),
+						type : $('input[name]:checked').val(),
+						parentId : $('#parentIdInput').val() === '' ? 0 : $(
+								'#parentIdInput').val(),
+						permission : $('#permission').val(),
+						available : $('#available').is(':checked') === true ? 1
+								: 0
+					},
+					dataType : 'json',
+					success : function(data) {
+						if (data.success) { // 成功
+							// 成功提示框
+							parent.layer.msg('添加成功', {
+								icon : 6,
+							});
+							// 调用id为left-content的iframe页面的js方法
+							$(window.parent.document).contents().find(
+									"#left-content")[0].contentWindow
+									.addDataRefreshTable();
+						} else { // 失败
+							// 失败提示框
+							parent.layer.msg('添加失败', {
+								icon : 5,
+							});
+						}
+						parent.layer.closeAll('iframe'); // 关闭弹框
+					},
+					error : function(data) {
+						console.log(data);
+						// 异常提示
+						parent.layer.msg('出现网络故障', {
+							icon : 5
+						});
+						parent.layer.closeAll('iframe'); // 关闭弹框
+					}
 				});
-				parent.layer.closeAll('iframe'); // 关闭弹框
-			}
-		});
 		return false;
 	});
 });
