@@ -6,11 +6,14 @@
 function formInit() {
 	layui.use([ 'form', 'layer' ], function() {
 		var form = layui.form, layer = layui.layer, $ = layui.$;
+		// 取出父页面隐藏的id值
+		var id = parent.document.getElementById('left-content').contentDocument
+				.getElementById('edit-id').defaultValue;
 		$.ajax({
 			type : 'POST',
 			url : 'queryResourceById.do',
 			data : {
-				id : parseInt($('#id').val())
+				id : id
 			},
 			dataType : 'json',
 			success : function(data) {
@@ -135,13 +138,13 @@ function formInit() {
 
 		// 监听form表单提交
 		form.on('submit(resourceSubmit)', function(data) {
-//			console.log($('#id').val());
-//			console.log($('#name').val());
-//			console.log($('#url').val());
-//			console.log($('input[name]:checked').val());
-//			console.log($('#parentIdInput').val() === '' ? 0 : $(
-//					'#parentIdInput').val());
-//			console.log($('#available').is(':checked') === true ? 1 : 0);
+			// console.log($('#id').val());
+			// console.log($('#name').val());
+			// console.log($('#url').val());
+			// console.log($('input[name]:checked').val());
+			// console.log($('#parentIdInput').val() === '' ? 0 : $(
+			// '#parentIdInput').val());
+			// console.log($('#available').is(':checked') === true ? 1 : 0);
 			var type = $('input[name="type"]:checked').val();
 			var parentId = $('#parentIdInput').val() === '' ? 0 : $(
 					'#parentIdInput').val();

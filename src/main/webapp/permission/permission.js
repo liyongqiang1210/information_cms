@@ -323,7 +323,9 @@ function bindingDelSelectedEvent(ids, delCount) {
  */
 function bindingEditEvent(form, obj) {
 
-	var id = obj.data.id; // 获得当前行数据id
+	// 将功能id赋值到功能数据表页面隐藏的id输入框中
+	$('#edit-id').attr('value', obj.data.id);
+
 	parent.layer.open({
 		id : 'editResource',
 		type : 2,
