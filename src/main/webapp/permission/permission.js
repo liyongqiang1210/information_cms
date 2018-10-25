@@ -336,15 +336,11 @@ function bindingEditEvent(form, obj) {
 		content : '../permission/permission_edit.html',
 		btn : [ '保存', '取消' ],
 		success : function(layero, index) { // 成功弹出后回调
-			// 获取iframe页面
-			var iframe = $(window.parent.document).contents().find(
-					"#editResource>iframe")[0].contentWindow;
-			// 调用iframe页面的formInit方法
-			iframe.formInit();
+
 		},
 		yes : function(index, layero) { // 保存按钮回调函数
-			var body = layer.getChildFrame('body', index); // 找到子页面body标签内容
-			body.find('#resourceSubmit').click(); // 获取到提交按钮点击
+			var body = parent.layer.getChildFrame('body', index); // 找到子页面body标签内容
+			body.find('#edit').click(); // 获取到提交按钮点击
 		},
 		btn2 : function(index, layero) { // 取消按钮回调函数
 			layer.close(index); // 关闭弹出层
@@ -520,6 +516,13 @@ function delDataRefreshTable(delCount) {
 	} else { // 不是最后一页的情况
 		$('.layui-laypage-btn').click();
 	}
+}
+
+/**
+ * 编辑完数据之后刷新页面方法
+ */
+function editDataRefreshTable() {
+	$('.layui-laypage-btn').click();
 }
 
 /**
