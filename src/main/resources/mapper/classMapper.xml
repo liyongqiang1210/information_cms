@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maven.dao.ClassDao">
+
+	<select id="getClass1" parameterType="int" resultMap="ClassResultMap1">
+		select * from class c, teacher t,student t where c.teacher_id=t.t_id and c.c_id=s.class_id and c.c_id=#{id}
+	</select>
+	<resultMap type="com.maven.model.pojo.Classes" id="ClassResultMap1">
+		<id property="id" column="c_id"/>
+		<result property="name" column="c_name"/>
+		<association property="teacher" column="teacher_id" javaType="com.maven.model.pojo.Teacher">
+			<id property="id" column="t_id"/>
+			<result property="name" column="t_name"/>
+		</association>
+		<collection property="students" ofType="com.maven.model.pojo.Student">
+			<id property="id" column="s_id"/>
+			<result property="name" column="s_name"/>
+		</collection>
+	</resultMap>
+	
+	<select id="getClass2" parameterType="int" resultMap="ClassResultMap2">
+		select * from class where c_id = #{id}
+	</select>
+	<resultMap type="com.maven.model.pojo.Classes" id="ClassResultMap2">
+		<association property="teacher" column="teacher_id" javaType="com.maven.model.pojo.Teacher" select="getTeacher"></association>
+		<collection property="students" ofType="com.maven.model.pojo.Student" column="c_id" select="getStudent"></collection>
+	</resultMap>
+	
+	<select id="getTeacher" parameterType="int" resultType="com.maven.model.pojo.Teacher">
+		select t_id id,t_name name from teacher where t_id=#{id}
+	</select>
+	<select id="getStudent" parameterType="int" resultType="com.maven.model.pojo.Student">
+		select s_id id, s_name name from student where s_id=#{id}
+	</select>
+</mapper>
