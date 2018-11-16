@@ -447,7 +447,7 @@ function bindingPermissionEvent(form, authtree, id) {
 			modifyButton(layero, 'permission'); // 修改按钮
 			// 初始化
 			$.ajax({
-				url : 'http://localhost:8080/Information_cms/role/tree.json',
+				url : 'http://127.0.0.1:8080/Information_cms/role/tree.json',
 				dataType : 'json',
 				success : function(data) {
 					// 渲染时传入渲染目标ID，树形结构数据（具体结构看样例，checked表示默认选中），以及input表单的名字

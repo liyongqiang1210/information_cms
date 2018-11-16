@@ -8,7 +8,7 @@ $(function() {
 	// 随机获取一个验证码
 	$("img.checkCode").prop(
 			"src",
-			"http://localhost:8080/Information_cms/login/getCheckCode.do?number="
+			"http://127.0.0.1:8080/Information_cms/login/getCheckCode.do?number="
 					+ Math.random());
 
 	// 用户登录 
@@ -35,7 +35,7 @@ $(function() {
 							$
 									.ajax({
 										type : "POST",
-										url : "http://localhost:8080/Information_cms/login/login.do",
+										url : "http://127.0.0.1:8080/Information_cms/login/login.do",
 										data : {
 											username : username,
 											password : password,
@@ -56,7 +56,7 @@ $(function() {
 												// 页面跳转到主页
 												$(location)
 														.prop('href',
-																'http://localhost:8080/Information_cms/html/index.html');
+																'http://127.0.0.1:8080/Information_cms/html/index.html');
 											} else { // 登录失败，提示错误信息
 												// 将错误信息输出到登录页面提示信息中
 												promptMessage("form", message);
@@ -76,7 +76,7 @@ $(function() {
 				// 此处加上随机数是为了告诉浏览器要发送一个新的请求
 				$("img.checkCode").prop(
 						"src",
-						"http://localhost:8080/Information_cms/login/getCheckCode.do?number="
+						"http://127.0.0.1:8080/Information_cms/login/getCheckCode.do?number="
 								+ Math.random());
 			});
 });
